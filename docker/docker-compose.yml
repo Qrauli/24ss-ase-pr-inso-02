@@ -1,0 +1,56 @@
+version: '3.8'
+services:
+  postgres:
+    image: 'postgres'
+    ports:
+      - '5432:5432'
+    environment:
+      - 'POSTGRES_DB=db'
+      - 'POSTGRES_USER=user'
+      - 'POSTGRES_PASSWORD=passwd'
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+  rabbit:
+    image: 'rabbitmq:management'
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    environment:
+      - 'RABBITMQ_DEFAULT_USER=user'
+      - 'RABBITMQ_DEFAULT_PASS=passwd'
+  categorizer:
+    build: '../categorizer'
+    ports:
+      - '8081:8081'
+    depends_on:
+      - postgres
+      - rabbit
+    environment:
+      - 'SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db'
+      - 'SPRING_DATASOURCE_USERNAME=user'
+      - 'SPRING_DATASOURCE_PASSWORD=passwd'
+      - 'SPRING_RABBITMQ_HOST=rabbit'
+      - 'SPRING_RABBITMQ_PORT=5672'
+      - 'SPRING_RABBITMQ_USERNAME=user'
+      - 'SPRING_RABBITMQ_PASSWORD=passwd'
+  dispatcher:
+    build: '../dispatcher'
+    ports:
+      - '8082:8082'
+    depends_on:
+      - mongo
+      - rabbit
+    environment:
+      - 'SPRING_DATA_MONGODB_DATABASE=db'
+      - 'SPRING_DATA_MONGODB_HOST=mongo'
+      - 'SPRING_DATA_MONGODB_PORT=27017'
+      - 'SPRING_RABBITMQ_HOST=rabbit'
+      - 'SPRING_RABBITMQ_PORT=5672'
+      - 'SPRING_RABBITMQ_USERNAME=user'
+      - 'SPRING_RABBITMQ_PASSWORD=passwd'
+  dashboard:
+    build: '../dashboard'
+    ports:
+      - '4200:4200'
