@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-postgres
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-postgres
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-postgres
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-postgres-container
+          image: postgres
+          ports:
+            - containerPort: 5432
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "25m"
+              ephemeral-storage: "300Mi"
+            limits:
+              memory: "512Mi"
+              cpu: "400m"
+              ephemeral-storage: "300Mi"
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-postgres-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-postgres-secret
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-postgres-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  POSTGRES_DB: 'db'
+  POSTGRES_USER: 'user'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-postgres-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+  POSTGRES_PASSWORD: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-postgres-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+  clusterIP: None

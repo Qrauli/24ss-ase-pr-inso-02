@@ -18,4 +18,5 @@ public final class IncidentMapper {
     public static Incident toEntity(IncidentDTO incident) {
         return new Incident(UUID.fromString(incident.id()));
     }
+
 }

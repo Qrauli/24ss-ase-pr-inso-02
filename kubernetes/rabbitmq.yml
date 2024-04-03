@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-rabbitmq
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-rabbitmq
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-rabbitmq
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-rabbitmq-container
+          image: rabbitmq:management
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "25m"
+              ephemeral-storage: "300Mi"
+            limits:
+              memory: "512Mi"
+              cpu: "400m"
+              ephemeral-storage: "300Mi"
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-rabbitmq-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-rabbitmq-secret
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-rabbitmq-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  RABBITMQ_DEFAULT_USER: 'user'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-rabbitmq-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+  RABBITMQ_DEFAULT_PASS: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-rabbitmq-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-rabbitmq
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+      name: amqp
+    - protocol: TCP
+      port: 15672
+      targetPort: 15672
+      name: mgmt
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-rabbitmq-ingress
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  rules:
+    - host: "rabbitmq-mgmt.24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-rabbitmq-service
+                port:
+                  number: 15672

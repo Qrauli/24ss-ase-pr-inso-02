@@ -10,8 +10,7 @@ public final class IncidentMapper {
     }
 
     public static IncidentCreatedEvent toDTO(Incident incident) {
-        return new IncidentCreatedEvent(
-                incident.getId().toString()
-        );
+        return new IncidentCreatedEvent(incident.getId().toString());
     }
+
 }

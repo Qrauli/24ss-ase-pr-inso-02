@@ -8,8 +8,8 @@ public interface IncidentService {
 
     /**
      * Returns a list of all incidents.
-     *
      * @return a list of all incidents
      */
     List<Incident> findAll();
+
 }

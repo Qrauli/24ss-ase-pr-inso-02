@@ -28,4 +28,5 @@ public class IncidentServiceImpl implements IncidentService {
     public List<Incident> findAll() {
         return repository.findAll();
     }
+
 }

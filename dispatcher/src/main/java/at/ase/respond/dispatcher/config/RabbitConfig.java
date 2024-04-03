@@ -26,4 +26,5 @@ public class RabbitConfig {
     public Jackson2JsonMessageConverter converter() {
         return new Jackson2JsonMessageConverter();
     }
+
 }
