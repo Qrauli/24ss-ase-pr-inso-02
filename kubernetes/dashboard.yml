@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-dashboard
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-dashboard
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-dashboard
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-dashboard-container
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dashboard:latest
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "100m"
+      imagePullSecrets:
+        - name: secret-dockercfg
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-dashboard-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-dashboard
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-dashboard-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /dashboard(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-dashboard-service
+                port:
+                  number: 8080

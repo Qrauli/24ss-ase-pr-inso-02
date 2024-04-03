@@ -20,4 +20,5 @@ public class IncidentController {
     public ResponseEntity<UUID> create() {
         return ResponseEntity.ok(service.create());
     }
+
 }

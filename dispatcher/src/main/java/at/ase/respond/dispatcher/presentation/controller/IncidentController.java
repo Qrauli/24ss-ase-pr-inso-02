@@ -20,10 +20,7 @@ public class IncidentController {
 
     @GetMapping
     public ResponseEntity<List<IncidentDTO>> findAll() {
-        return ResponseEntity.ok(
-                service.findAll().stream()
-                        .map(IncidentMapper::toDTO)
-                        .toList()
-        );
+        return ResponseEntity.ok(service.findAll().stream().map(IncidentMapper::toDTO).toList());
     }
+
 }

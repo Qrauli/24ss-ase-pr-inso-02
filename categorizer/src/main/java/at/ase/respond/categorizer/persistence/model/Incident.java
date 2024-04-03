@@ -15,4 +15,5 @@ public class Incident {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
 }
