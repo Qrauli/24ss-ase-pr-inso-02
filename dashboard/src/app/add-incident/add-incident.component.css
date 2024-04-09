@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: calc(100vh - 104px);
+    overflow: auto;
+ 
+  }
+  .center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .tab-center{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    min-height: 500px;
+  }
+
+  .sidenav-left{
+    border-right: 1px solid #e0e0e0;
+  }
+
+  .mat-stepper-horizontal {
+    margin-top: 8px;
+  }
+  
+  .mat-mdc-form-field {
+    margin-top: 16px;
+  }
+
+  .check {
+    color: green;
+}
+.notcheck{
+    color: red;
+}

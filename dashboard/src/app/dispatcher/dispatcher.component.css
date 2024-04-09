@@ -1,0 +1,130 @@
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    height: calc(100vh - 64px); /* Adjust 64px according to the height of the toolbar */
+  }
+.containervert{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+  
+  .section-1 {
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .section-2 {
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .section-3 {
+    border: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+
+
+  .section-vert-1 {
+    height: calc(100vh - 174px);
+    width: 100%;
+    overflow-y: scroll;
+  }
+  
+  .resource-tabs{
+    width: 100%;
+  }
+
+  .section-vert-1-checked{
+    height: calc(50vh - 124px);
+    width: 100%;
+    overflow-y: scroll;
+  }
+
+
+
+  .section-vert-2 {
+    height: calc(50vh - 50px);
+    width: 100%;
+    overflow-y: scroll;
+  }
+
+  .section-vert-3 {
+    height: calc(100vh - 170px);
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    overflow-y: scroll;
+  }
+
+  .center-heading{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+    padding: 0px;
+    position: relative;
+  }
+
+  
+.incident-list mat-list-item {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.incident-list mat-list-item:hover {
+  border-color: currentColor;
+  background-color: lightgray;
+}
+
+.selected-incident {
+  border-color: currentColor;
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  background-color: lightgray;
+}
+
+.incident-table .mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+}
+
+.incident-table .mat-mdc-row:hover .mat-mdc-cell {
+  border-color: currentColor;
+  background-color: lightgray;
+}
+
+.check {
+  color: green;
+}
+.notcheck{
+  color: red;
+}
+
+.scrollsection::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scrollsection::-webkit-scrollbar-track {
+  border-radius: 8px;
+  background-color: white;
+  border: 1px solid #cacaca;
+}
+
+.scrollsection::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: lightgray;
+}
