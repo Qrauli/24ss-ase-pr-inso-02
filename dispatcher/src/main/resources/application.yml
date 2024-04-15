@@ -1,8 +1,28 @@
 server:
   port: 8082
 
+logging:
+  level:
+    at.ase.respond.dispatcher: 'debug'
+
+rabbit:
+  backoff-policy:
+    multiplier: 5
+    init-interval: 500
+    max-interval: 10000
+  retry-policy:
+    max-attempts: 15
+  exchange: 'respond-exchange'
+  routes:
+    incidents: 'respond-incidents-route'
+  queues:
+    incidents: 'respond-incidents-queue'
+
 spring:
   rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: 'manual'
     host: 'localhost'
     port: 5672
     username: 'user'
