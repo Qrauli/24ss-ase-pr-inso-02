@@ -1,172 +1,178 @@
 <app-header title="Dispatcher"></app-header>
 <div class="container">
-    <div class="section-1">
-      <div class="center-heading">
+  <div class="section-1">
+    <div class="center-heading">
 
-        <p>Incident Liste</p> 
-        <button style="position:absolute; right: 3px;"mat-icon-button (click)="unselectIncident()" [disabled]="selectedIncident === null" aria-label="Example icon button with a vertical three dot icon">
-          <mat-icon>deselect</mat-icon>
-        </button>
+      <p>Einsatz-Liste</p>
+      <button style="position:absolute; right: 3px;" mat-icon-button (click)="unselectIncident()"
+        [disabled]="selectedIncident === null" aria-label="Einsatz abwählen">
+        <mat-icon>deselect</mat-icon>
+      </button>
     </div>
-      <div class="section-vert-1 scrollsection" [ngClass]="{'section-vert-1-checked' : selectedIncident !== null}" style="border-bottom: 1px solid #ccc;">
-       
-        <table mat-table [dataSource]="incidents" class="mat-elevation-z8 incident-table">
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
-            <td mat-cell *matCellDef="let element"> 
-              <mat-icon *ngIf="element.status" class="check" fontIcon="check"></mat-icon>
-              <mat-icon *ngIf="!element.status" class="notcheck" fontIcon="close"></mat-icon>
-      
+    <div class="section-vert-1 scrollsection" [ngClass]="{'section-vert-1-checked' : selectedIncident !== null}"
+      style="border-bottom: 1px solid #ccc;">
+
+      <table mat-table [dataSource]="incidents" class="mat-elevation-z8 incident-table">
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon *ngIf="element.status" class="check" fontIcon="task_alt"></mat-icon>
+            <mat-icon *ngIf="!element.status" class="notcheck" fontIcon="circle"></mat-icon>
+
           </td>
-          </ng-container>
-        
-          <ng-container matColumnDef="location" >
-            <th mat-header-cell *matHeaderCellDef> Standort </th>
-            <td mat-cell *matCellDef="let element"> {{element.location}} </td>
-          </ng-container>
-        
-          <ng-container matColumnDef="class">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Klassifikation </th>
-            <td mat-cell *matCellDef="let element"> {{element.class}} </td>
-          </ng-container>
-        
-          <ng-container matColumnDef="time">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Uhrzeit </th>
-            <td mat-cell *matCellDef="let element"> {{element.time}} </td>
-          </ng-container>
-        
-          <tr mat-row (click)="selectIncident(row)" [ngClass]="{'selected-incident': row == selectedIncident}" *matRowDef="let row; columns: displayedColumnsIncidents;"></tr>
-        </table>
-      </div>
-      <div class="center-heading"><p>Incident Daten</p></div>
-      <div class="section-vert-2 scrollsection" *ngIf="selectedIncident !== null">
-        <mat-list>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          <mat-list-item>
-            <span matListItemTitle>Personenanzahl</span>
-            <span matListItemLine>Produced by a plant</span>
-          </mat-list-item>
-          
-        </mat-list>
-      </div>
+        </ng-container>
+
+        <ng-container matColumnDef="location">
+          <th mat-header-cell *matHeaderCellDef> Standort </th>
+          <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="class">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Klassifikation </th>
+          <td mat-cell *matCellDef="let element"> {{element.class}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="time">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Uhrzeit </th>
+          <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+        </ng-container>
+
+        <tr mat-row (click)="selectIncident(row)" [ngClass]="{'selected-incident': row == selectedIncident}"
+          *matRowDef="let row; columns: displayedColumnsIncidents;"></tr>
+      </table>
     </div>
-    <div class="section-2" >
-      <div class="center-heading"><p>Resourcen</p></div>
-        <mat-tab-group class="resource-tabs">
-          <mat-tab label="Standard">     
-            <div class="section-vert-3 scrollsection">
+    <div class="center-heading">
+      <p>Ausgewählter Einsatz</p>
+    </div>
+    <div class="section-vert-2 scrollsection" *ngIf="selectedIncident !== null">
+      <mat-grid-list cols="5" rowHeight="3:1">
+        <mat-grid-tile colspan="2" class="incident-key">Dispatch Status</mat-grid-tile>
+        <mat-grid-tile colspan="3" class="incident-property">Dispatched</mat-grid-tile>
+        <mat-grid-tile colspan="2" class="incident-key">Klassifikation</mat-grid-tile>
+        <mat-grid-tile colspan="3" class="incident-property">Atemnot</mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+  <div class="section-2">
+    <div class="center-heading">
+      <p>Resourcen</p>
+      <button style="position:absolute; right: 6px;" color="primary" mat-stroked-button (click)="dispatchIncident()"
+        [disabled]="selectedIncident === null" aria-label="Einsatz dispatchen">
+        Dispatch
+      </button>
+    </div>
+    <mat-tab-group class="resource-tabs">
+      <mat-tab label="Standard">
+        <div class="section-vert-3 scrollsection">
 
-              <table mat-table [dataSource]="resources" class="mat-elevation-z8">
+          <table mat-table [dataSource]="resources" class="mat-elevation-z8">
 
-                <ng-container matColumnDef="location">
-                  <th mat-header-cell *matHeaderCellDef> Location </th>
-                  <td mat-cell *matCellDef="let element"> {{element.location}} </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="type">
-                  <th mat-header-cell *matHeaderCellDef> Type </th>
-                  <td mat-cell *matCellDef="let element"> <span *ngIf="recommended.has(element.id)" style="color: green;">Empfohlen</span> {{element.type}} </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef> Status </th>
-                  <td mat-cell *matCellDef="let element">  <mat-icon *ngIf="element.assigned" class="check" fontIcon="check"></mat-icon>
-                    <mat-icon *ngIf="!element.assigned" class="notcheck" fontIcon="close"></mat-icon> </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="locate">
-                  <th mat-header-cell *matHeaderCellDef> Locate </th>
-                  <td mat-cell *matCellDef="let element">      
-                    <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-                    <mat-icon>location_pin</mat-icon>
-                  </button> </td>
-                </ng-container>
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef> Location </th>
+              <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+            </ng-container>
 
-                <ng-container matColumnDef="assign">
-                  <th mat-header-cell *matHeaderCellDef>assign</th>
-                  <td mat-cell *matCellDef="let element">      
-                    <button [disabled]="selectedIncident === null" mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-                    <mat-icon>add</mat-icon>
-                  </button> </td>
-                </ng-container>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Type </th>
+              <td mat-cell *matCellDef="let element"> <span *ngIf="recommended.has(element.id)"
+                  style="color: green;">Empfohlen <br></span> {{element.type}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element"> <mat-icon *ngIf="element.assigned" class="notcheck"
+                  fontIcon="crisis_alert"></mat-icon>
+                <mat-icon *ngIf="!element.assigned" class="check" fontIcon="house"></mat-icon>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="locate">
+              <th mat-header-cell *matHeaderCellDef> Locate </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button aria-label="Resource lokalisieren" >
+                  <mat-icon>location_pin</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assign">
+              <th mat-header-cell *matHeaderCellDef>assign</th>
+              <td mat-cell *matCellDef="let element">
+
+                <button *ngIf="!assignedResources?.includes(element)"  (click)="assignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
+                aria-label="Ressource zuweisen">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
+              aria-label="Ressource abwählen">
+              <mat-icon class="notcheck">close</mat-icon>
+            </button>
               
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;"></tr>
-              </table>
+              </td>
+            </ng-container>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;"></tr>
+          </table>
         </div>
 
-         </mat-tab>
-          <mat-tab label="Zusätzlich"> 
+      </mat-tab>
+      <mat-tab label="Zusätzlich">
 
-            <div class="section-vert-3 scrollsection">
+        <div class="section-vert-3 scrollsection">
 
-              <table mat-table [dataSource]="resourcesAdditional" class="mat-elevation-z8">
-              
-                <ng-container matColumnDef="location">
-                  <th mat-header-cell *matHeaderCellDef> Location </th>
-                  <td mat-cell *matCellDef="let element"> {{element.location}} </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="type">
-                  <th mat-header-cell *matHeaderCellDef> Type </th>
-                  <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="status">
-                  <th mat-header-cell *matHeaderCellDef> Status </th>
-                  <td mat-cell *matCellDef="let element">  <mat-icon *ngIf="element.assigned" class="check" fontIcon="check"></mat-icon>
-                    <mat-icon *ngIf="!element.assigned" class="notcheck" fontIcon="close"></mat-icon> </td>
-                </ng-container>
-              
-                <ng-container matColumnDef="locate">
-                  <th mat-header-cell *matHeaderCellDef> Locate </th>
-                  <td mat-cell *matCellDef="let element">      
-                    <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-                    <mat-icon>location_pin</mat-icon>
-                  </button> </td>
-                </ng-container>
+          <table mat-table [dataSource]="resourcesAdditional" class="mat-elevation-z8">
 
-                <ng-container matColumnDef="assign">
-                  <th mat-header-cell *matHeaderCellDef>assign</th>
-                  <td mat-cell *matCellDef="let element">      
-                    <button mat-icon-button [disabled]="selectedIncident === null" aria-label="Example icon button with a vertical three dot icon">
-                    <mat-icon>add</mat-icon>
-                  </button> </td>
-                </ng-container>
-              
-                <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;"></tr>
-              </table>
-          </div>
+            <ng-container matColumnDef="location">
+              <th mat-header-cell *matHeaderCellDef> Location </th>
+              <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+            </ng-container>
 
-          </mat-tab>
-        </mat-tab-group>
-  
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef> Type </th>
+              <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef> Status </th>
+              <td mat-cell *matCellDef="let element"> <mat-icon *ngIf="element.assigned" class="notcheck"
+                fontIcon="crisis_alert"></mat-icon>
+              <mat-icon *ngIf="!element.assigned" class="check" fontIcon="house"></mat-icon>
+            </td>
+            </ng-container>
+
+            <ng-container matColumnDef="locate">
+              <th mat-header-cell *matHeaderCellDef> Locate </th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button aria-label="Resource lokalisieren">
+                  <mat-icon>location_pin</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="assign">
+              <th mat-header-cell *matHeaderCellDef>assign</th>
+              <td mat-cell *matCellDef="let element">
+                <button *ngIf="!assignedResources?.includes(element)"  (click)="assignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
+                  aria-label="Ressource zuweisen">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
+                aria-label="Ressource abwählen">
+                <mat-icon class="notcheck">close</mat-icon>
+              </button>
+              </td>
+            </ng-container>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;"></tr>
+          </table>
+        </div>
+
+      </mat-tab>
+    </mat-tab-group>
+
   </div>
-    <div class="section-3"><img src="../../assets/location_picker.png"></div>
+  <div class="section-3">
+    <div class="map" leaflet [leafletOptions]="options">
+    </div>
   </div>
+</div>

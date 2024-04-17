@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DispatcherComponent } from './dispatcher.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 
 describe('DispatcherComponent', () => {
@@ -10,7 +11,7 @@ describe('DispatcherComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DispatcherComponent, NoopAnimationsModule]
+      imports: [DispatcherComponent, NoopAnimationsModule, HttpClientTestingModule]
     })
     .compileComponents();
     
