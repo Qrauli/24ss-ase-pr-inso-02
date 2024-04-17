@@ -1,20 +1,27 @@
-import { Component } from '@angular/core';
-import { MatCardModule} from '@angular/material/card'
+import { Component, OnInit } from '@angular/core';
+import { MatCardModule } from '@angular/material/card'
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import {MatIconModule} from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { HeaderComponent } from '../header/header.component';
-import {MatListModule} from '@angular/material/list';
-import { Incident } from '../incident';
+import { MatListModule } from '@angular/material/list';
+import { Incident } from '../dto/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Resource } from '../resource';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatInputModule} from '@angular/material/input';
+import { Resource } from '../dto/resource';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import * as Leaflet from 'leaflet';
+import { IncidentService } from '../incidents.service';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
+import { ResourceService } from '../resources.service';
 
 
 
@@ -36,90 +43,83 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
     NgIf,
     MatTabsModule,
     MatInputModule,
-    MatTableModule
-      ],
+    MatTableModule,
+    LeafletModule,
+    MatGridListModule
+  ],
   templateUrl: './dispatcher.component.html',
   styleUrl: './dispatcher.component.css'
 })
-export class DispatcherComponent {
+export class DispatcherComponent implements OnInit {
 
   selectedIncident: Incident | null = null;
+  assignedResources: Resource[] | null = null;
+  selectedIncidentData: Incident | null = null;
 
   recommended: Set<number> = new Set();
 
-  incidents: Incident[] = [
-    {id: 1, status: false, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 2, status: false, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 3, status: false, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 4, status: false, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 5, status: false, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 6, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 7, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 8, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 9, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 10, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 11, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 12, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 13, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 14, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 15, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-    {id: 16, status: true, location: 'Wien', class: 'Atemnot', time: '12:30'},
-  
-  ];
+  incidents: Incident[];
 
-  resources: Resource[] = [
-    {id: 1, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 2, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 3, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 4, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 5, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 6, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 7, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 8, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 9, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 10, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 11, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 12, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 13, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 14, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 15, type: 'Rettungswagen', location: 'Wien', assigned: true},
-    {id: 16, type: 'Rettungswagen', location: 'Wien', assigned: true},
-    {id: 17, type: 'Rettungswagen', location: 'Wien', assigned: true},
-    {id: 18, type: 'Rettungswagen', location: 'Wien', assigned: true},
-    {id: 19, type: 'Rettungswagen', location: 'Wien', assigned: true},
-    {id: 20, type: 'Rettungswagen', location: 'Wien', assigned: true},
-  ];
+  resources: Resource[];
 
-  resourcesAdditional: Resource[] = [
-    {id: 1, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 2, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 3, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 4, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 5, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 6, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 7, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 8, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 9, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 10, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 11, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 12, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 13, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 14, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 15, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 16, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 17, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 18, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 19, type: 'Rettungswagen', location: 'Wien', assigned: false},
-    {id: 20, type: 'Rettungswagen', location: 'Wien', assigned: false},
-  ];
+  resourcesAdditional: Resource[];
 
-  displayedColumnsResources: string[] = ['status', 'type', 'location',  'locate', 'assign'];
-  displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location',  'locate', 'assign'];
+  displayedColumnsResources: string[] = ['status', 'type', 'location', 'locate', 'assign'];
+  displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
   displayedColumnsIncidents: string[] = ['status', 'location', 'class', 'time'];
 
+  options: Leaflet.MapOptions = {
+    layers: [
+      Leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' })
+    ],
+    zoom: 10,
+    center: new Leaflet.LatLng(48.227747192035764, 16.40545336304577)
+  };
+
+  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog) { }
+
+  ngOnInit(): void {
+    this.incidentService.getIncidentsOngoing().subscribe(data => {
+      this.incidents = data;
+    });
+
+    this.resourcesService.getResources().subscribe(data => {
+      this.resources = data;
+    });
+
+    this.resourcesService.getResourcesAdditional().subscribe(data => {
+      this.resourcesAdditional = data;
+    });
+
+  }
+
+  unassignResource(resource: Resource): void {
+    const index = this.assignedResources?.indexOf(resource);
+    if (index !== undefined && index !== -1) {
+      this.assignedResources?.splice(index, 1);
+    }
+  }
 
 
-  constructor(private router: Router, private authService: AuthService) { }
+  assignResource(resource: Resource): void {
+    if (resource.assigned) {
+      const dialogData = new ConfirmDialogModel("Neu zuweisen", "Diese Resource ist bereits einem Einsatz zugeweisen. <br> Möchten Sie diese Resource sicher neu zuweisen?");
+
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: dialogData,
+        enterAnimationDuration: 0,
+        exitAnimationDuration: 0
+      });
+      dialogRef.afterClosed().subscribe(dialogResult => {
+        if (dialogResult === true) {
+          this.assignedResources?.push(resource);
+        }
+      });
+    }
+    else {
+      this.assignedResources?.push(resource);
+    }
+  }
 
   /**
    * selects the given incident for further inspection
@@ -129,10 +129,16 @@ export class DispatcherComponent {
     if (this.selectedIncident === incident) {
       this.selectedIncident = null;
       this.recommended = new Set();
+      this.assignedResources = [];
       return;
     }
     this.selectedIncident = incident;
-    this.recommended = new Set([1,2,3]);;
+    this.incidentService.getIncidentById(incident.id).subscribe(data => {
+      this.selectedIncidentData = data;
+    });
+    this.recommended = new Set([1, 2, 3]);
+    this.assignedResources = [];
+
   }
 
   /**
@@ -141,7 +147,24 @@ export class DispatcherComponent {
 
   unselectIncident(): void {
     this.selectedIncident = null;
-    this.recommended = new Set();;
+    this.recommended = new Set();
+    this.assignedResources = [];
+  }
+
+  dispatchIncident(): void {
+    const dialogData = new ConfirmDialogModel("Dispatch", "Sollen die ausgewählten Ressourcen wirklich zum Einsatz geschickt werden?");
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: dialogData,
+      enterAnimationDuration: 0,
+      exitAnimationDuration: 0
+    });
+
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if (dialogResult === true) {
+      }
+    });
   }
 
 }
+

@@ -128,3 +128,19 @@
   border-radius: 8px;
   background-color: lightgray;
 }
+
+.map {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+}
+
+.incident-property{
+  border-bottom: 1px solid lightgray;
+}
+
+.incident-key{
+  font-style: italic;
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid gray;
+}

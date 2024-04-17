@@ -1,21 +1,18 @@
 <app-header title="Call-Taker"></app-header>
 <div class="button-container">
-<button class="main-button" mat-flat-button color="primary" (click)="performMainAction()">Neues Incident</button>
+<button class="main-button" mat-flat-button color="primary" (click)="performMainAction()">Neuer Einsatz</button>
 <form class="example-form" style="margin-left: 40px; margin-top: 20px;">
   <mat-form-field>
     <input matInput type="text" (keyup)="doFilter($event)" placeholder="Filter">
   </mat-form-field>
     </form>
-    <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-      <mat-icon>settings</mat-icon>
-    </button>
 </div>
 
 <div class="dashboard-container">
 
   <!-- List of incidents -->
   <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
-    <!-- Position Column -->
+    <!-- Status Column -->
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
       <td mat-cell *matCellDef="let element"> 
@@ -25,19 +22,19 @@
     </td>
     </ng-container>
   
-    <!-- Name Column -->
+    <!-- Location Column -->
     <ng-container matColumnDef="location" >
       <th mat-header-cell *matHeaderCellDef> Standort </th>
       <td mat-cell *matCellDef="let element"> {{element.location}} </td>
     </ng-container>
   
-    <!-- Weight Column -->
+    <!-- Classification Column -->
     <ng-container matColumnDef="class">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Klassifikation </th>
       <td mat-cell *matCellDef="let element"> {{element.class}} </td>
     </ng-container>
   
-    <!-- Symbol Column -->
+    <!-- Time Column -->
     <ng-container matColumnDef="time">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Uhrzeit </th>
       <td mat-cell *matCellDef="let element"> {{element.time}} </td>

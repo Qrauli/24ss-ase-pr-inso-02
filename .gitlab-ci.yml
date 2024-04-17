@@ -43,12 +43,13 @@ test-dispatcher:
     - cd dispatcher
     - ./gradlew check
 
-.test-dashboard:
+test-dashboard:
   stage: test
-  image: node-non-root-20
+  image: timbru31/node-chrome:slim
   script:
     - cd dashboard
-    - npm test
+    - npm install
+    - npm run test:ci
 
 .build-template-kaniko:
   stage: build
