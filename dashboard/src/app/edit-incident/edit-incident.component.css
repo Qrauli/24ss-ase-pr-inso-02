@@ -6,21 +6,40 @@
   overflow: auto;
 
 }
-.center{
+
+.center {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
-.tab-center{
+.center-1 {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+.center-2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 30%;
+  height: 70vh;
+  border-left: 1px solid lightgray;
+}
+
+.tab-center {
   display: flex;
   align-items: center;
   flex-direction: column;
   min-height: 500px;
 }
 
-.sidenav-left{
+.sidenav-left {
   border-right: 1px solid #e0e0e0;
 }
 
@@ -35,6 +54,35 @@
 .check {
   color: green;
 }
-.notcheck{
+
+.notcheck {
   color: red;
+}
+
+
+.map {
+  height: 70vh;
+  width: 60%;
+  padding: 0;
+}
+
+.form-field {
+  min-width: 150px;
+  max-width: 300px;
+  width: 100%;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+}
+
+.radio-button {
+  margin: 5px;
+}
+
+.person-table{
+  width: 800px;
 }

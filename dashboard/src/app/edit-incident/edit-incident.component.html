@@ -1,104 +1,245 @@
 <app-header [backButton] = "true" [backRoute] = "incident" title="Einsatz bearbeiten"></app-header>
 <div class="container">
-   
-      <mat-stepper #stepper>
-        <mat-step [stepControl]="firstFormGroup">
-          <form [formGroup]="firstFormGroup">
-            <ng-template matStepLabel>Standort</ng-template>
-            <div class="center"><img src="../../assets/location_picker.png"> 
-                <mat-form-field>
-                    <mat-label>Beschreibung Adresse</mat-label>
-                    <textarea matInput formControlName="firstCtrl" placeholder="Ex. 1 Main St, New York, NY"
-                           required> </textarea>
-                  </mat-form-field>
-            </div>
-            
-          </form>
-        </mat-step>
-        <mat-step>
-          <ng-template matStepLabel>Fragen</ng-template>
-          <mat-tab-group [selectedIndex]="selectedIndex">
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="check">check</mat-icon>
-                First
-              </ng-template>
-              <div class="tab-center">
-                <h3>Frage 1:</h3>
-                <mat-form-field>
-                  <mat-label>Select</mat-label>
-                  <mat-select>
-                    <mat-option value="one">First option</mat-option>
-                    <mat-option value="two">Second option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <button mat-flat-button color="primary" (click)="changeIndex(1)">Bestätigen</button>
-                </div>
-            </mat-tab>
-          
-            <mat-tab >
-              <ng-template mat-tab-label>
-                <mat-icon class="check">check</mat-icon>
-                Second
-              </ng-template>
-              <div class="tab-center">
-              <h3>Frage 2:</h3>
-              <mat-form-field>
-                <mat-label>Select</mat-label>
-                <mat-select>
-                  <mat-option value="one">First option</mat-option>
-                  <mat-option value="two">Second option</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <button mat-flat-button color="primary" (click)="changeIndex(2)">Bestätigen</button>
-              </div>
-            </mat-tab>
-          
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="notcheck">close</mat-icon>
-                Third
-              </ng-template>
-              <div class="tab-center">
-                <h3>Frage 3:</h3>
-                <mat-form-field>
-                  <mat-label>Select</mat-label>
-                  <mat-select>
-                    <mat-option value="one">First option</mat-option>
-                    <mat-option value="two">Second option</mat-option>
-                  </mat-select>
-                </mat-form-field>
-                <button mat-flat-button color="primary" matStepperNext>Bestätigen</button>
-                </div>
-            </mat-tab>
-          </mat-tab-group>
-        </mat-step>
-        <mat-step>
-          <ng-template matStepLabel>Klassifikation</ng-template>
-          <div class="center">
-            <p>Empfehlung des Klassifizierungssystems:  </p>
-            <h2>Atemnot</h2>
-          <mat-form-field>
-            
-            <mat-label>Select</mat-label>
-            <mat-select>
-              <mat-option value="one">First option</mat-option>
-              <mat-option value="two">Second option</mat-option>
-            </mat-select>
-          </mat-form-field> <br>
-          <div class="center">
-            <p>Zusammenfassung des Befragungsschemas</p>
-            <mat-chip-set aria-label="Fish selection">
-              <mat-chip>3 verletzte Personen</mat-chip>
-              <mat-chip>Schnittwunden</mat-chip>
-              <mat-chip>Schwer zugänglich</mat-chip>
-              <mat-chip>Bewusstlos</mat-chip>
-            </mat-chip-set>
+
+  <mat-stepper #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Standort</ng-template>
+        <div class="center-1">
+          <div class="map" (leafletMapReady)="onMapReady($event)" (leafletClick)="selectLocation($event)" leaflet
+            [leafletOptions]="options">
           </div>
-          <br>
-          <button mat-flat-button color="primary" (click)="saveIncident()" matStepperNext>Einsatz updaten</button>
+          <div class="center-2">
+            <mat-form-field class="form-field">
+              <mat-label>Ort</mat-label>
+              <input matInput formControlName="firstCtrl" placeholder="Wien, Österreich" required />
+            </mat-form-field>
+            <br>
+            <mat-form-field class="form-field">
+              <mat-label>Straße</mat-label>
+              <input matInput formControlName="firstCtrl" placeholder="Hauptstraße 1" required />
+            </mat-form-field>
+            <br>
+            <mat-form-field class="form-field">
+              <mat-label>Zusätzliche Informationen</mat-label>
+              <textarea matInput formControlName="firstCtrl" placeholder="Nebengebäude, Stockwerk, etc."
+                required> </textarea>
+            </mat-form-field>
+
+
+          </div>
         </div>
-        </mat-step>
-      </mat-stepper>
+
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Personen</ng-template>
+      <div class="center">
+        <h3>AnruferIn:</h3>
+        <div>
+          <mat-form-field>
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Max Mustermann" />
+          </mat-form-field>
+          <mat-form-field style="margin-left: 5px;">
+            <mat-label>Geschlecht</mat-label>
+            <mat-select>
+              <mat-option value="one">Männlich</mat-option>
+              <mat-option value="two">Weiblich</mat-option>
+              <mat-option value="three">Divers</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field style="margin-left: 5px;">
+            <mat-label>Alter</mat-label>
+            <input type="number" matInput placeholder="20" />
+          </mat-form-field>
+        </div>
+        <h3>Betroffene:</h3>
+        <div class="person-table">
+          <table mat-table [dataSource]="persons" class="mat-elevation-z8">
+
+            <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element">
+                <mat-form-field>
+                  <mat-label>Name</mat-label>
+                  <input matInput placeholder="Max Mustermann" [(ngModel)]="element.name"/>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+
+            <!-- Gender Column -->
+            <ng-container matColumnDef="gender">
+              <th mat-header-cell *matHeaderCellDef> Geschlecht </th>
+              <td mat-cell *matCellDef="let element"> 
+                <mat-form-field>
+                  <mat-label>Geschlecht</mat-label>
+                  <mat-select [(value)]="element.gender">
+                    <mat-option value="male">Männlich</mat-option>
+                    <mat-option value="female">Weiblich</mat-option>
+                    <mat-option value="other">Divers</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+            </ng-container>
+
+            <!-- Age Column -->
+            <ng-container matColumnDef="age">
+              <th mat-header-cell *matHeaderCellDef> Alter </th>
+              <td mat-cell *matCellDef="let element"> 
+                <mat-form-field>
+                  <mat-label>Alter</mat-label>
+                  <input type="number" matInput placeholder="20" [(ngModel)]="element.age"/>
+                </mat-form-field>
+               </td>
+            </ng-container>
+
+            <ng-container matColumnDef="remove">
+              <th mat-header-cell *matHeaderCellDef> </th>
+              <td mat-cell *matCellDef="let element"> 
+                <button mat-icon-button aria-label="Person entfernen" (click)="removePerson(element)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+               </td>
+            </ng-container>
+
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPersons;"></tr>
+          </table>
+        </div>
+        <button (click)="addPerson()" mat-icon-button aria-label="Person hinzufügen">
+          <mat-icon>add</mat-icon>
+        </button>
+
+      </div>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Fragen</ng-template>
+      <mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="changeIndex($event)">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="check">check</mat-icon>
+            First
+          </ng-template>
+          <div class="tab-center">
+            <h3>Frage 1:</h3>
+            <mat-radio-group class="radio-group">
+
+              <mat-radio-button class="radio-button" color="primary">Option 1</mat-radio-button>
+              <mat-radio-button class="radio-button" color="primary">Option 2</mat-radio-button>
+              <mat-radio-button class="radio-button" color="primary">Option 3</mat-radio-button>
+
+            </mat-radio-group>
+            <button mat-flat-button color="primary" (click)="changeIndex(1)">Bestätigen</button>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="check">check</mat-icon>
+            Second
+          </ng-template>
+          <div class="tab-center">
+            <h3>Frage 2:</h3>
+            <mat-form-field>
+              <mat-label>Select</mat-label>
+              <mat-select>
+                <mat-option value="one">First option</mat-option>
+                <mat-option value="two">Second option</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-flat-button color="primary" (click)="changeIndex(2)">Bestätigen</button>
+          </div>
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="notcheck">close</mat-icon>
+            Third
+          </ng-template>
+          <div class="tab-center">
+            <h3>Frage 3:</h3>
+            <mat-form-field>
+              <mat-label>Select</mat-label>
+              <mat-select>
+                <mat-option value="one">First option</mat-option>
+                <mat-option value="two">Second option</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button mat-flat-button color="primary" matStepperNext>Bestätigen</button>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Klassifikation</ng-template>
+      <div class="center">
+        <p>Empfehlung des Klassifizierungssystems: <b>Atemnot</b> </p>
+        <div>
+          <span>Ausgewählt:</span>
+          <button style="margin-left: 5px" mat-raised-button [matMenuTriggerFor]="animals">{{selectedCategory}}</button>
+        </div>
+        <mat-menu #animals="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
+          <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
+        </mat-menu>
+
+        <mat-menu #vertebrates="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="fish">Fishes</button>
+          <button mat-menu-item [matMenuTriggerFor]="amphibians">Amphibians</button>
+          <button mat-menu-item [matMenuTriggerFor]="reptiles">Reptiles</button>
+        </mat-menu>
+
+        <mat-menu #invertebrates="matMenu">
+          <button mat-menu-item (click)="changeCategory('Insects')">Insects</button>
+          <button mat-menu-item>Molluscs</button>
+          <button mat-menu-item>Crustaceans</button>
+          <button mat-menu-item>Corals</button>
+          <button mat-menu-item>Arachnids</button>
+          <button mat-menu-item>Velvet worms</button>
+          <button mat-menu-item>Horseshoe crabs</button>
+        </mat-menu>
+
+        <mat-menu #fish="matMenu">
+          <button mat-menu-item>Baikal oilfish</button>
+          <button mat-menu-item>Bala shark</button>
+          <button mat-menu-item>Ballan wrasse</button>
+          <button mat-menu-item>Bamboo shark</button>
+          <button mat-menu-item>Banded killifish</button>
+        </mat-menu>
+
+        <mat-menu #amphibians="matMenu">
+          <button mat-menu-item>Sonoran desert toad</button>
+          <button mat-menu-item>Western toad</button>
+          <button mat-menu-item>Arroyo toad</button>
+          <button mat-menu-item>Yosemite toad</button>
+        </mat-menu>
+
+        <mat-menu #reptiles="matMenu">
+          <button mat-menu-item>Banded Day Gecko</button>
+          <button mat-menu-item>Banded Gila Monster</button>
+          <button mat-menu-item>Black Tree Monitor</button>
+          <button mat-menu-item>Blue Spiny Lizard</button>
+          <button mat-menu-item>Velociraptor</button>
+        </mat-menu>
+        <br>
+        <div class="center">
+          <p>Zusammenfassung des Befragungsschemas</p>
+          <mat-chip-set aria-label="Fish selection">
+            <mat-chip>3 verletzte Personen</mat-chip>
+            <mat-chip>Schnittwunden</mat-chip>
+            <mat-chip>Schwer zugänglich</mat-chip>
+            <mat-chip>Bewusstlos</mat-chip>
+          </mat-chip-set>
+        </div>
+        <br>
+        <button mat-flat-button color="primary" (click)="saveIncident()" matStepperNext>Einsatz updaten</button>
+      </div>
+    </mat-step>
+  </mat-stepper>
 
 </div>
