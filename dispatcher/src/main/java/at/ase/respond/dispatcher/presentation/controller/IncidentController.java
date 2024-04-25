@@ -1,6 +1,6 @@
 package at.ase.respond.dispatcher.presentation.controller;
 
-import at.ase.respond.dispatcher.presentation.IncidentMapper;
+import at.ase.respond.dispatcher.presentation.mapper.IncidentMapper;
 import at.ase.respond.dispatcher.presentation.dto.IncidentDTO;
 import at.ase.respond.dispatcher.service.IncidentService;
 import io.swagger.v3.oas.annotations.Operation;

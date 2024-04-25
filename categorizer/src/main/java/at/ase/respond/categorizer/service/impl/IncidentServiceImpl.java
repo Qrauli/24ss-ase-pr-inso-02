@@ -2,6 +2,7 @@ package at.ase.respond.categorizer.service.impl;
 
 import at.ase.respond.categorizer.persistence.IncidentRepository;
 import at.ase.respond.categorizer.persistence.model.Incident;
+import at.ase.respond.categorizer.presentation.dto.IncidentDTO;
 import at.ase.respond.categorizer.presentation.mapper.IncidentMapper;
 import at.ase.respond.categorizer.service.IncidentService;
 import at.ase.respond.categorizer.service.MessageSender;
@@ -20,9 +21,9 @@ public class IncidentServiceImpl implements IncidentService {
 
     private final MessageSender sender;
 
-    public UUID create() {
-        Incident saved = repository.save(new Incident());
-        sender.publish(IncidentMapper.toDTO(saved));
+    public UUID create(IncidentDTO incident) {
+        Incident saved = repository.save(IncidentMapper.toEntity(incident));
+        sender.publish(IncidentMapper.toEvent(saved));
         return saved.getId();
     }
 

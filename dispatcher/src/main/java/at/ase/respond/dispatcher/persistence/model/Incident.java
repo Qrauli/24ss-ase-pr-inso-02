@@ -17,4 +17,6 @@ public class Incident {
     @Id
     private UUID id;
 
+    private IncidentState state;
+
 }
