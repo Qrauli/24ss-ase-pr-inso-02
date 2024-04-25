@@ -1,31 +1,65 @@
-<app-header [backButton] = "true" backRoute = "/calltaker" title="Einsatz Details" [backCheck]="false"></app-header>
+<app-header style="position: fixed; width:100%; z-index: 9999;" [backButton] = "true" backRoute = "/calltaker" title="Einsatz Details" [backCheck]="false"></app-header>
 
 <div class="container">
-<button style="position: absolute; right: 30px" mat-raised-button color="primary" (click)="editIncident()">Einsatz bearbeiten</button>
+<button style="position: fixed; right: 30px" mat-raised-button color="primary" (click)="editIncident()">Einsatz bearbeiten</button>
 
-<img src="../../assets/location.png"> 
-<p>Beschreibung Standort</p>
+<div class="map" (leafletMapReady)="onMapReady($event)" leaflet [leafletOptions]="options">
+</div>
+<br>
 
-<mat-divider></mat-divider>
+<mat-grid-list cols="5" rowHeight="50px" style="width: 50%">
+  <mat-grid-tile colspan="2" class="key">Ort</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">Wien</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">Straße</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">Hauptstraße 1</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">Zusätzliche Standortinformationen</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">Beschreibung Standort</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">Aufnahmezeitpunkt</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">14:32 14.3.2024 </mat-grid-tile>
+</mat-grid-list>
 
-<h4>Klassifizierung: Atemnot</h4>
+<h3>Klassifizierung: Atemnot</h3>
 
-<mat-divider></mat-divider>
+<h4>Personen</h4>
+
+<mat-grid-list cols="6" rowHeight="50px" style="width: 50%">
+  <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>AnruferIn</i></mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
+  <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>Betroffene</i></mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
+
+</mat-grid-list>
+
+
+
+
+<h4>Fragen</h4>
+
 <mat-list>
-    <mat-list-item>
-      <span matListItemTitle>Personenanzahl</span>
-      <span matListItemLine>Produced by a plant</span>
-    </mat-list-item>
-    <mat-divider></mat-divider>
-    <mat-list-item>
-      <span matListItemTitle>Uhrzeit</span>
-      <span matListItemLine>Extracted from sea water</span>
-    </mat-list-item>
-    <mat-divider></mat-divider>
+  <mat-list-item>
+    <span matListItemTitle>Personenanzahl</span>
+    <span matListItemLine>Produced by a plant</span>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item>
+    <span matListItemTitle>Uhrzeit</span>
+    <span matListItemLine>Extracted from sea water</span>
+  </mat-list-item>
+  <mat-divider></mat-divider>
 
-    <mat-list-item>
-      <span matListItemTitle>Zugänglichkeit</span>
-      <span matListItemLine>Extracted from sea water</span>
-    </mat-list-item>
-  </mat-list>
+  <mat-list-item>
+    <span matListItemTitle>Zugänglichkeit</span>
+    <span matListItemLine>Extracted from sea water</span>
+  </mat-list-item>
+</mat-list>
 </div>
