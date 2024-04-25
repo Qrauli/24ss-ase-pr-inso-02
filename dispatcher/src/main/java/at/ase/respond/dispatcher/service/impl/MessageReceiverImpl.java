@@ -1,8 +1,8 @@
 package at.ase.respond.dispatcher.service.impl;
 
 import at.ase.respond.dispatcher.persistence.IncidentRepository;
-import at.ase.respond.dispatcher.presentation.IncidentMapper;
-import at.ase.respond.dispatcher.presentation.dto.IncidentDTO;
+import at.ase.respond.dispatcher.presentation.mapper.IncidentMapper;
+import at.ase.respond.dispatcher.presentation.dto.IncidentCreatedEvent;
 import at.ase.respond.dispatcher.service.MessageReceiver;
 import com.rabbitmq.client.Channel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class MessageReceiverImpl implements MessageReceiver {
 
     @Override
     @RabbitListener(queues = "${rabbit.queues.incidents}")
-    public void receive(Channel channel, Message message, IncidentDTO payload) throws IOException {
+    public void receive(Channel channel, Message message, IncidentCreatedEvent payload) throws IOException {
         log.debug("Received payload {}", payload);
         repository.save(IncidentMapper.toEntity(payload));
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);

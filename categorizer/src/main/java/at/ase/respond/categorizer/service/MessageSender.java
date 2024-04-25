@@ -1,6 +1,6 @@
 package at.ase.respond.categorizer.service;
 
-import at.ase.respond.categorizer.presentation.dto.IncidentCreatedEvent;
+import at.ase.respond.categorizer.presentation.event.IncidentCreatedEvent;
 
 public interface MessageSender {
 

@@ -1,6 +1,6 @@
 package at.ase.respond.dispatcher.service;
 
-import at.ase.respond.dispatcher.presentation.dto.IncidentDTO;
+import at.ase.respond.dispatcher.presentation.dto.IncidentCreatedEvent;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 
@@ -15,6 +15,6 @@ public interface MessageReceiver {
      * @param payload The deserialized payload of the message
      * @throws IOException If an error occurs while acknowledging the message
      */
-    void receive(Channel channel, Message message, IncidentDTO payload) throws IOException;
+    void receive(Channel channel, Message message, IncidentCreatedEvent payload) throws IOException;
 
 }

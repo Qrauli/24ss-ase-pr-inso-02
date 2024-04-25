@@ -1,6 +1,6 @@
 package at.ase.respond.categorizer.service.impl;
 
-import at.ase.respond.categorizer.presentation.dto.IncidentCreatedEvent;
+import at.ase.respond.categorizer.presentation.event.IncidentCreatedEvent;
 import at.ase.respond.categorizer.service.MessageSender;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class MessageSenderImpl implements MessageSender {
 
     @Override
     public void publish(IncidentCreatedEvent message) {
-        rabbit.convertAndSend(exchange, route, message, new CorrelationData(message.id()));
+        rabbit.convertAndSend(exchange, route, message, new CorrelationData(message.id().toString()));
     }
 
 }

@@ -1,6 +1,9 @@
 package at.ase.respond.dispatcher.presentation.dto;
 
-import java.io.Serializable;
+import at.ase.respond.dispatcher.persistence.model.IncidentState;
 
-public record IncidentDTO(String id) implements Serializable {
+import java.io.Serializable;
+import java.util.UUID;
+
+public record IncidentDTO(UUID id, IncidentState state) implements Serializable {
 }
