@@ -1,0 +1,13 @@
+server:
+  port: 8083
+
+logging:
+  level:
+    at.ase.respond.categorization: 'debug'
+
+spring:
+  data:
+    mongodb:
+      host: 'localhost'
+      port: 27017
+      database: 'db'
