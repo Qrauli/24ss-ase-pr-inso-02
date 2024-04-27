@@ -2,7 +2,6 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.5"
 	id("io.spring.dependency-management") version "1.1.4"
-	id("io.spring.javaformat") version "0.0.41"
 }
 
 group = "at.ase.respond"
@@ -37,20 +36,6 @@ dependencies {
 
 	// Mongo
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-	// Rabbit
-	implementation("org.springframework.boot:spring-boot-starter-amqp")
-	testImplementation("org.springframework.amqp:spring-rabbit-test")
-}
-
-buildscript {
-	repositories {
-		mavenLocal()
-		mavenCentral()
-	}
-	dependencies {
-		classpath("io.spring.javaformat:spring-javaformat-gradle-plugin:0.0.41")
-	}
 }
 
 tasks.bootJar {

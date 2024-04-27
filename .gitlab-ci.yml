@@ -21,18 +21,29 @@ stages:
     - if: $CI_COMMIT_BRANCH == "main"
       when: always
 
-test-categorizer:
+test-incident-service:
   stage: test
   image: gradle:8.7-jdk21
   artifacts:
     when: always
     reports:
-      junit: categorizer/build/test-results/test/**/TEST-*.xml
+      junit: incident/build/test-results/test/**/TEST-*.xml
   script:
-    - cd categorizer
+    - cd incident
     - ./gradlew check
 
-test-dispatcher:
+test-categorization-service:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: categorization/build/test-results/test/**/TEST-*.xml
+  script:
+    - cd categorization
+    - ./gradlew check
+
+test-dispatcher-service:
   stage: test
   image: gradle:8.7-jdk21
   artifacts:
@@ -67,14 +78,21 @@ test-dashboard:
       --label "org.opencontainers.image.ref.name=${CI_COMMIT_REF_NAME}"
       --destination "${CI_REGISTRY_IMAGE}/${SUBPROJECT}:${IMAGE_TAG}"
 
-build-categorizer-main:
+build-incident-service-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
-    SUBPROJECT: categorizer
+    SUBPROJECT: incident
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-dispatcher-main:
+build-categorization-service-main:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-main, rules]
+  variables:
+    SUBPROJECT: categorization
+    IMAGE_TAG: ${CI_PIPELINE_ID}
+
+build-dispatcher-service-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
@@ -88,14 +106,21 @@ build-dashboard-main:
     SUBPROJECT: dashboard
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-categorizer-dev:
+build-incident-service-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
-    SUBPROJECT: categorizer
+    SUBPROJECT: incident
     IMAGE_TAG: latest
 
-build-dispatcher-dev:
+build-categorization-service-dev:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-dev, rules]
+  variables:
+    SUBPROJECT: categorization
+    IMAGE_TAG: latest
+
+build-dispatcher-service-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
@@ -144,15 +169,20 @@ deploy-mongodb:
   variables:
     DEPLOYMENT_NAME: "mongodb"
 
-deploy-categorizer:
+deploy-incident-service:
   extends: .deploy-internally-built
   variables:
-    DEPLOYMENT_NAME: "categorizer"
+    DEPLOYMENT_NAME: "incident-service"
 
-deploy-dispatcher:
+deploy-categorization-service:
   extends: .deploy-internally-built
   variables:
-    DEPLOYMENT_NAME: "dispatcher"
+    DEPLOYMENT_NAME: "categorization-service"
+
+deploy-dispatcher-service:
+  extends: .deploy-internally-built
+  variables:
+    DEPLOYMENT_NAME: "dispatcher-service"
 
 .deploy-dashboard:
   extends: .deploy-internally-built

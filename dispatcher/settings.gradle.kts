@@ -1,1 +1,1 @@
-rootProject.name = "dispatcher"
+rootProject.name = "dispatcher-service"

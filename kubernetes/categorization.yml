@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-categorization
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-categorization
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-categorization-container
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/categorization:latest
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "100m"
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-categorization-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-categorization-secret
+      imagePullSecrets:
+        - name: secret-dockercfg
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  SPRING_DATA_MONGODB_DATABASE: 'db'
+  SPRING_DATA_MONGODB_HOST: 's-24ss-ase-pr-inso-02-mongodb-service'
+  SPRING_DATA_MONGODB_PORT: '27017'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+    SPRING_DATASOURCE_PASSWORD: cGFzc3dk
+    SPRING_RABBITMQ_PASSWORD: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-categorization-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-categorization
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /categorization(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-categorization-service
+                port:
+                  number: 8081
