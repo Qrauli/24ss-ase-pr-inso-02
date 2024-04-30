@@ -32,6 +32,14 @@
   border-left: 1px solid lightgray;
 }
 
+.center-last {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+}
+
 .tab-center {
   display: flex;
   align-items: center;

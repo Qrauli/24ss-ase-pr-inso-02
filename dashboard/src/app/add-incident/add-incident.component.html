@@ -177,12 +177,16 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Klassifikation</ng-template>
-      <div class="center">
-        <p>Empfehlung des Klassifizierungssystems: <b>Atemnot</b> </p>
-        <div>
-          <span>Ausgewählt:</span>
-          <button style="margin-left: 5px" mat-raised-button [matMenuTriggerFor]="animals">{{selectedCategory}}</button>
-        </div>
+      <div class="center-last">
+        <p>Empfehlung des Klassifizierungssystems: </p>
+        <span style="font-size: 20px; margin-top: 5px;"><b>Atemnot</b></span>
+        <br>
+        <mat-divider style="width: 400px"></mat-divider>
+        <br>
+          <span style="margin-top: 5px;">Ausgewählt:</span>
+          <button style="margin-top: 10px" mat-raised-button [matMenuTriggerFor]="animals">
+            <span style="font-size: 20px;">{{selectedCategory}}</span>
+          </button>
         <mat-menu #animals="matMenu">
           <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
           <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
@@ -227,6 +231,8 @@
           <button mat-menu-item>Velociraptor</button>
         </mat-menu>
         <br>
+        <mat-divider style="width: 400px"></mat-divider>
+
         <div class="center">
           <p>Zusammenfassung des Befragungsschemas</p>
           <mat-chip-set aria-label="Fish selection">

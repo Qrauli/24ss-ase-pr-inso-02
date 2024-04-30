@@ -56,11 +56,15 @@
   <div class="section-2">
     <div class="center-heading">
       <p>Resourcen</p>
-      <button style="position:absolute; right: 6px;" color="primary" mat-stroked-button (click)="dispatchIncident()"
-        [disabled]="selectedIncident === null" aria-label="Einsatz dispatchen">
-        Dispatch
-      </button>
+      <mat-slide-toggle  [(ngModel)]="showDispatched" matTooltip="Zugewiesene Resourcen anzeigen" style="position:absolute; right: 10px;">
+      </mat-slide-toggle>
     </div>
+
+    <button style="position:absolute; bottom: 15px; right: 20px; z-index: 999;" color="primary" mat-flat-button (click)="dispatchIncident()"
+    [disabled]="selectedIncident === null" aria-label="Einsatz dispatchen">
+    Dispatch
+  </button>
+   
     <mat-tab-group class="resource-tabs">
       <mat-tab label="Standard">
         <div class="section-vert-3 scrollsection">
@@ -111,7 +115,7 @@
               </td>
             </ng-container>
 
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;" [ngClass]="{'hidden': !showDispatched && row.assigned}"></tr>
           </table>
         </div>
 
@@ -163,7 +167,7 @@
               </td>
             </ng-container>
 
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;" [ngClass]="{'hidden': !showDispatched && row.assigned}"></tr>
           </table>
         </div>
 

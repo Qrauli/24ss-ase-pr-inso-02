@@ -57,6 +57,10 @@ test-dispatcher-service:
 test-dashboard:
   stage: test
   image: timbru31/node-chrome:slim
+  artifacts:
+    when: always
+    reports:
+      junit: dashboard/tmp/test/TESTS-*.xml
   script:
     - cd dashboard
     - npm install
