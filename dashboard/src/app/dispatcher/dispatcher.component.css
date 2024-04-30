@@ -23,6 +23,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
+    position: relative;
   }
 
   .section-3 {
@@ -33,6 +34,9 @@
     flex-direction: column;
   }
 
+  .hidden {
+    display: none;
+  }
 
 
   .section-vert-1 {

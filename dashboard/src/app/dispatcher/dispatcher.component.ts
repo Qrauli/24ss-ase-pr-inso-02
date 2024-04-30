@@ -22,7 +22,8 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { ResourceService } from '../resources.service';
-
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 
@@ -45,7 +46,9 @@ import { ResourceService } from '../resources.service';
     MatInputModule,
     MatTableModule,
     LeafletModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSlideToggleModule,
+    MatTooltipModule
   ],
   templateUrl: './dispatcher.component.html',
   styleUrl: './dispatcher.component.css'
@@ -57,6 +60,8 @@ export class DispatcherComponent implements OnInit {
   selectedIncidentData: Incident | null = null;
 
   recommended: Set<number> = new Set();
+
+  showDispatched: boolean;
 
   incidents: Incident[];
 
