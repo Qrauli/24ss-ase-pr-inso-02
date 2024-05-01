@@ -1,4 +1,4 @@
-package at.ase.respond.dispatcher.presentation.dto;
+package at.ase.respond.dispatcher.presentation.event;
 
 import java.util.UUID;
 
