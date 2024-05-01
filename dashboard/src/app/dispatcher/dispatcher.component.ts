@@ -14,7 +14,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Resource } from '../dto/resource';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as Leaflet from 'leaflet';
 import { IncidentService } from '../incidents.service';
@@ -22,6 +22,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { ResourceService } from '../resources.service';
+import {interval, switchMap} from "rxjs";
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 
@@ -88,9 +89,14 @@ export class DispatcherComponent implements OnInit {
       this.incidents = data;
     });
 
-    this.resourcesService.getResources().subscribe(data => {
-      this.resources = data;
-    });
+    interval(5000)
+      .pipe(
+        switchMap(() => this.resourcesService.getResources())
+      )
+      .subscribe(data => {
+        this.resources = data;
+        }
+      )
 
     this.resourcesService.getResourcesAdditional().subscribe(data => {
       this.resourcesAdditional = data;
@@ -107,7 +113,7 @@ export class DispatcherComponent implements OnInit {
 
 
   assignResource(resource: Resource): void {
-    if (resource.assigned) {
+    if (resource.assignedIncident) {
       const dialogData = new ConfirmDialogModel("Neu zuweisen", "Diese Resource ist bereits einem Einsatz zugeweisen. <br> Möchten Sie diese Resource sicher neu zuweisen?");
 
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -128,7 +134,7 @@ export class DispatcherComponent implements OnInit {
 
   /**
    * selects the given incident for further inspection
-   * @param incident 
+   * @param incident
    */
   selectIncident(incident: Incident): void {
     if (this.selectedIncident === incident) {
@@ -167,6 +173,9 @@ export class DispatcherComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(dialogResult => {
       if (dialogResult === true) {
+        if (this.selectedIncident && this.assignedResources) {
+          this.resourcesService.assignResources(this.selectedIncident.id, this.assignedResources);
+        }
       }
     });
   }

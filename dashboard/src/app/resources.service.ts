@@ -12,11 +12,19 @@ export class ResourceService {
   constructor(private httpClient: HttpClient) { }
 
   getResources(): Observable<Resource[]> {
-    return this.httpClient.get<Resource[]>('http://localhost:4200/resources?additional=false');
+    return this.httpClient.get<Resource[]>('http://localhost:8082/resources?additional=false');
 
   }
 
   getResourcesAdditional(){
-    return this.httpClient.get<Resource[]>('http://localhost:4200/resources?additional=true');
+    return this.httpClient.get<Resource[]>('http://localhost:8082/resources?additional=true');
+  }
+
+  assignResources(incident: number, resources: Resource[]): void {
+    resources.map(resource =>
+      this.httpClient
+        .post<Resource>(`http://localhost:8082/resources/${resource.id}/assign/${incident}`, null)
+        .subscribe()
+    );
   }
 }

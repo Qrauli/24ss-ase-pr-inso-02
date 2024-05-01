@@ -15,8 +15,10 @@ rabbit:
   exchange: 'respond-exchange'
   routes:
     incidents: 'respond-incidents-route'
+    resources: 'respond-resources-route'
   queues:
     incidents: 'respond-incidents-queue'
+    resources: 'respond-resources-queue'
 
 spring:
   rabbitmq:

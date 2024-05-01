@@ -2,7 +2,7 @@ package at.ase.respond.dispatcher.presentation.mapper;
 
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.dispatcher.persistence.model.IncidentState;
-import at.ase.respond.dispatcher.presentation.dto.IncidentCreatedEvent;
+import at.ase.respond.dispatcher.presentation.event.IncidentCreatedEvent;
 import at.ase.respond.dispatcher.presentation.dto.IncidentDTO;
 
 public final class IncidentMapper {

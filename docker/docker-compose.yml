@@ -111,6 +111,8 @@ services:
       - 'RABBIT_EXCHANGE=respond-exchange'
       - 'RABBIT_ROUTES_INCIDENTS=respond-incidents-route'
       - 'RABBIT_QUEUES_INCIDENTS=respond-incidents-queue'
+      - 'RABBIT_ROUTES_RESOURCES=respond-resources-route'
+      - 'RABBIT_QUEUES_RESOURCES=respond-resources-queue'
       - 'RABBIT_BACKOFF_POLICY_MULTIPLIER=10'
       - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
       - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'

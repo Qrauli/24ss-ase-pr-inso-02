@@ -20,10 +20,16 @@ import org.springframework.retry.support.RetryTemplate;
 public class RabbitConfig {
 
     @Value("${rabbit.queues.incidents}")
-    private String queue;
+    private String incidentsQueue;
+
+    @Value("${rabbit.queues.resources}")
+    private String resourcesQueue;
 
     @Value("${rabbit.routes.incidents}")
-    private String route;
+    private String incidentsRoute;
+
+    @Value("${rabbit.routes.resources}")
+    private String resourcesRoute;
 
     @Value("${rabbit.exchange}")
     private String exchange;
@@ -41,8 +47,13 @@ public class RabbitConfig {
     private Integer maxAttempts;
 
     @Bean
-    public Queue queue() {
-        return new Queue(queue, true);
+    public Queue incidentsQueue() {
+        return new Queue(incidentsQueue, true);
+    }
+
+    @Bean
+    public Queue resourceQueue() {
+        return new Queue(resourcesQueue, true);
     }
 
     @Bean
@@ -51,8 +62,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding binding(Queue queue, Exchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(route).noargs();
+    public Binding incidentsBinding(Queue incidentsQueue, Exchange exchange) {
+        return BindingBuilder.bind(incidentsQueue).to(exchange).with(incidentsRoute).noargs();
+    }
+
+    @Bean
+    public Binding resourcesBinding(Queue resourceQueue, Exchange exchange) {
+        return BindingBuilder.bind(resourceQueue).to(exchange).with(resourcesRoute).noargs();
     }
 
     @Bean
