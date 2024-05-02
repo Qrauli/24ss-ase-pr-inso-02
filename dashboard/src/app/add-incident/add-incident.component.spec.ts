@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddIncidentComponent } from './add-incident.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('AddIncidentComponent', () => {
   let component: AddIncidentComponent;
@@ -9,10 +10,10 @@ describe('AddIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddIncidentComponent, NoopAnimationsModule]
+      imports: [AddIncidentComponent, NoopAnimationsModule, HttpClientTestingModule]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(AddIncidentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -12,12 +12,18 @@ export class IncidentService {
   constructor(private httpClient: HttpClient) { }
 
   getIncidentsOngoing(): Observable<Incident[]> {
-    return this.httpClient.get<Incident[]>('http://localhost:4200/incidents');
+    return this.httpClient.get<Incident[]>( environment.incidentUrl + 'incidents');
   }
 
-  getIncidentById(id: number): Observable<Incident> {
-    return this.httpClient.get<Incident>(`http://localhost:4200/incidents/${id}`);
+  getIncidentById(id: string): Observable<Incident> {
+    return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`);
   }
 
+  saveIncident(incident: Incident): Observable<Incident> {
+    return this.httpClient.post<Incident>(environment.incidentUrl + 'incidents', incident);
+  }
 
+  updateIncident(incident: Incident): Observable<Incident> {
+    return this.httpClient.put<Incident>(environment.incidentUrl + 'incidents', incident);
+  }
 }
