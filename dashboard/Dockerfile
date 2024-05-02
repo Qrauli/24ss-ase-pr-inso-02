@@ -14,7 +14,7 @@ COPY ./ /usr/local/app/
 RUN npm install
 
 # Generate the build of the application
-RUN npm run build
+RUN npm run build:dev
 
 
 # Stage 2: Serve app with nginx server
@@ -23,6 +23,7 @@ RUN npm run build
 FROM nginx:latest
 
 # Copy the build output to replace the default nginx contents.
-COPY --from=build /usr/local/app/dist/respond /usr/share/nginx/html
+COPY --from=build /usr/local/app/dist/respond/browser /usr/share/nginx/html
+COPY /nginx.conf  /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

@@ -45,7 +45,7 @@ services:
           memory: 512M
           cpus: "0.4"
   incident-service:
-    build: '../indicent'
+    build: '../incident'
     ports:
       - '8081:8081'
     depends_on:
@@ -128,7 +128,7 @@ services:
   dashboard:
     build: '../dashboard'
     ports:
-      - '4200:4200'
+      - '80:80'
     deploy:
       resources:
         limits:
