@@ -25,6 +25,7 @@ import { ResourceService } from '../resources.service';
 import {interval, switchMap} from "rxjs";
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSortHeader} from "@angular/material/sort";
 
 
 
@@ -49,7 +50,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     LeafletModule,
     MatGridListModule,
     MatSlideToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSortHeader
   ],
   templateUrl: './dispatcher.component.html',
   styleUrl: './dispatcher.component.css'
@@ -72,7 +74,7 @@ export class DispatcherComponent implements OnInit {
 
   displayedColumnsResources: string[] = ['status', 'type', 'location', 'locate', 'assign'];
   displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
-  displayedColumnsIncidents: string[] = ['status', 'location', 'class', 'time'];
+  displayedColumnsIncidents: string[] = ['status', 'location', 'class', ];
 
   options: Leaflet.MapOptions = {
     layers: [

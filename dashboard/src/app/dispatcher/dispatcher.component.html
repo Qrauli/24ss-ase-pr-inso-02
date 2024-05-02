@@ -13,28 +13,25 @@
       style="border-bottom: 1px solid #ccc;">
 
       <table mat-table [dataSource]="incidents" class="mat-elevation-z8 incident-table">
+        <!-- Status Column -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
           <td mat-cell *matCellDef="let element">
-            <mat-icon *ngIf="element.status" class="check" fontIcon="task_alt"></mat-icon>
-            <mat-icon *ngIf="!element.status" class="notcheck" fontIcon="circle"></mat-icon>
-
+            <mat-icon *ngIf="element.status == 'DISPATCHED'" class="check" fontIcon="check"></mat-icon>
+            <mat-icon *ngIf="element.status != 'DISPATCHED'" class="notcheck" fontIcon="close"></mat-icon>
           </td>
         </ng-container>
 
-        <ng-container matColumnDef="location">
+        <!-- Location Column -->
+        <ng-container matColumnDef="location" >
           <th mat-header-cell *matHeaderCellDef> Standort </th>
-          <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.location.description.street}}, {{element.location.description.postalCode}} {{element.location.description.city}} </td>
         </ng-container>
 
+        <!-- Classification Column -->
         <ng-container matColumnDef="class">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Klassifikation </th>
-          <td mat-cell *matCellDef="let element"> {{element.class}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="time">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Uhrzeit </th>
-          <td mat-cell *matCellDef="let element"> {{element.time}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.categorization.code}} </td>
         </ng-container>
 
         <tr mat-row (click)="selectIncident(row)" [ngClass]="{'selected-incident': row == selectedIncident}"

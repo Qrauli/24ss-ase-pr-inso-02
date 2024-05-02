@@ -2,28 +2,33 @@
 <div class="container">
 
   <mat-stepper #stepper>
-    <mat-step [stepControl]="firstFormGroup">
-      <form [formGroup]="firstFormGroup">
+    <mat-step [stepControl]="locationForm">
+      <form [formGroup]="locationForm">
         <ng-template matStepLabel>Standort</ng-template>
         <div class="center-1">
           <div class="map" (leafletMapReady)="onMapReady($event)" (leafletClick)="selectLocation($event)" leaflet
-            [leafletOptions]="options">
+               [leafletOptions]="options">
           </div>
           <div class="center-2">
             <mat-form-field class="form-field">
               <mat-label>Ort</mat-label>
-              <input matInput formControlName="firstCtrl" placeholder="Wien, Österreich" required />
+              <input matInput placeholder="Wien, Österreich" formControlName="city"/>
+            </mat-form-field>
+            <br>
+            <mat-form-field class="form-field">
+              <mat-label>Postleitzahl</mat-label>
+              <input matInput placeholder="1010" required formControlName="postalCode"/>
             </mat-form-field>
             <br>
             <mat-form-field class="form-field">
               <mat-label>Straße</mat-label>
-              <input matInput formControlName="firstCtrl" placeholder="Hauptstraße 1" required />
+              <input matInput placeholder="Hauptstraße 1" formControlName="street"/>
             </mat-form-field>
             <br>
             <mat-form-field class="form-field">
               <mat-label>Zusätzliche Informationen</mat-label>
-              <textarea matInput formControlName="firstCtrl" placeholder="Nebengebäude, Stockwerk, etc."
-                required> </textarea>
+              <textarea matInput placeholder="Nebengebäude, Stockwerk, etc."
+                        formControlName="additionalInformation"> </textarea>
             </mat-form-field>
 
 
@@ -39,7 +44,7 @@
         <div>
           <mat-form-field>
             <mat-label>Name</mat-label>
-            <input matInput placeholder="Max Mustermann" />
+            <input matInput placeholder="Max Mustermann"/>
           </mat-form-field>
           <mat-form-field style="margin-left: 5px;">
             <mat-label>Geschlecht</mat-label>
@@ -51,66 +56,55 @@
           </mat-form-field>
           <mat-form-field style="margin-left: 5px;">
             <mat-label>Alter</mat-label>
-            <input type="number" matInput placeholder="20" />
+            <input type="number" matInput placeholder="20"/>
           </mat-form-field>
         </div>
         <h3>Betroffene:</h3>
-        <div class="person-table">
-          <table mat-table [dataSource]="persons" class="mat-elevation-z8">
+        <div class="patient-table">
+          <table mat-table [dataSource]="patients" class="mat-elevation-z8">
 
             <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
 
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
+            <!-- Age Column -->
+            <ng-container matColumnDef="age">
+              <th mat-header-cell *matHeaderCellDef> Alter</th>
               <td mat-cell *matCellDef="let element">
                 <mat-form-field>
-                  <mat-label>Name</mat-label>
-                  <input matInput placeholder="Max Mustermann" [(ngModel)]="element.name"/>
+                  <mat-label>Alter</mat-label>
+                  <input type="number" matInput placeholder="20" [(ngModel)]="element.age"/>
                 </mat-form-field>
               </td>
             </ng-container>
 
-
-            <!-- Gender Column -->
-            <ng-container matColumnDef="gender">
-              <th mat-header-cell *matHeaderCellDef> Geschlecht </th>
-              <td mat-cell *matCellDef="let element"> 
+            <!-- Sex Column -->
+            <ng-container matColumnDef="sex">
+              <th mat-header-cell *matHeaderCellDef> Geschlecht</th>
+              <td mat-cell *matCellDef="let element">
                 <mat-form-field>
                   <mat-label>Geschlecht</mat-label>
-                  <mat-select [(value)]="element.gender">
-                    <mat-option value="male">Männlich</mat-option>
-                    <mat-option value="female">Weiblich</mat-option>
-                    <mat-option value="other">Divers</mat-option>
+                  <mat-select [(value)]="element.sex">
+                    <mat-option value="MALE">Männlich</mat-option>
+                    <mat-option value="FEMALE">Weiblich</mat-option>
+                    <mat-option value="UNKNOWN">Unbekannt</mat-option>
                   </mat-select>
                 </mat-form-field>
               </td>
             </ng-container>
 
-            <!-- Age Column -->
-            <ng-container matColumnDef="age">
-              <th mat-header-cell *matHeaderCellDef> Alter </th>
-              <td mat-cell *matCellDef="let element"> 
-                <mat-form-field>
-                  <mat-label>Alter</mat-label>
-                  <input type="number" matInput placeholder="20" [(ngModel)]="element.age"/>
-                </mat-form-field>
-               </td>
-            </ng-container>
-
             <ng-container matColumnDef="remove">
-              <th mat-header-cell *matHeaderCellDef> </th>
-              <td mat-cell *matCellDef="let element"> 
-                <button mat-icon-button aria-label="Person entfernen" (click)="removePerson(element)">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let element">
+                <button mat-icon-button aria-label="Person entfernen" (click)="removePatient(element)">
                   <mat-icon>delete</mat-icon>
                 </button>
-               </td>
+              </td>
             </ng-container>
 
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsPersons;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPatients;"></tr>
           </table>
         </div>
-        <button (click)="addPerson()" mat-icon-button aria-label="Person hinzufügen">
+        <button (click)="addPatient()" mat-icon-button aria-label="Person hinzufügen">
           <mat-icon>add</mat-icon>
         </button>
 
@@ -179,56 +173,37 @@
       <ng-template matStepLabel>Klassifikation</ng-template>
       <div class="center-last">
         <p>Empfehlung des Klassifizierungssystems: </p>
-        <span style="font-size: 20px; margin-top: 5px;"><b>Atemnot</b></span>
+        <span style="font-size: 20px; margin-top: 5px;"><b>{{ recommendedCategory }}</b></span>
         <br>
         <mat-divider style="width: 400px"></mat-divider>
         <br>
-          <span style="margin-top: 5px;">Ausgewählt:</span>
-          <button style="margin-top: 10px" mat-raised-button [matMenuTriggerFor]="animals">
-            <span style="font-size: 20px;">{{selectedCategory}}</span>
-          </button>
-        <mat-menu #animals="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="vertebrates">Vertebrates</button>
-          <button mat-menu-item [matMenuTriggerFor]="invertebrates">Invertebrates</button>
+        <span style="margin-top: 5px;">Ausgewählt:</span>
+        <button style="margin-top: 10px" mat-raised-button [matMenuTriggerFor]="categories">
+          <span style="font-size: 20px;">{{ selectedCategory }}</span>
+        </button>
+        <mat-menu #categories="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="C0T">Kategorie 0</button>
+          <button mat-menu-item [matMenuTriggerFor]="C1C">Kategorie 1</button>
         </mat-menu>
 
-        <mat-menu #vertebrates="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="fish">Fishes</button>
-          <button mat-menu-item [matMenuTriggerFor]="amphibians">Amphibians</button>
-          <button mat-menu-item [matMenuTriggerFor]="reptiles">Reptiles</button>
+        <mat-menu #C0T="matMenu">
+          <button mat-menu-item [matMenuTriggerFor]="C0T0C">Type 0</button>
+          <button mat-menu-item [matMenuTriggerFor]="C0T1C">Type 1</button>
         </mat-menu>
 
-        <mat-menu #invertebrates="matMenu">
-          <button mat-menu-item (click)="changeCategory('Insects')">Insects</button>
-          <button mat-menu-item>Molluscs</button>
-          <button mat-menu-item>Crustaceans</button>
-          <button mat-menu-item>Corals</button>
-          <button mat-menu-item>Arachnids</button>
-          <button mat-menu-item>Velvet worms</button>
-          <button mat-menu-item>Horseshoe crabs</button>
+        <mat-menu #C1C="matMenu">
+          <button mat-menu-item (click)="changeCategory('Insects')">C1C0</button>
+          <button mat-menu-item (click)="changeCategory('Molluscs')">C1C1</button>
         </mat-menu>
 
-        <mat-menu #fish="matMenu">
-          <button mat-menu-item>Baikal oilfish</button>
-          <button mat-menu-item>Bala shark</button>
-          <button mat-menu-item>Ballan wrasse</button>
-          <button mat-menu-item>Bamboo shark</button>
-          <button mat-menu-item>Banded killifish</button>
+        <mat-menu #C0T0C="matMenu">
+          <button mat-menu-item (click)="changeCategory('C0T0C0')">C0T0C0</button>
+          <button mat-menu-item (click)="changeCategory('C0T0C0')">C0T0C0</button>
         </mat-menu>
 
-        <mat-menu #amphibians="matMenu">
-          <button mat-menu-item>Sonoran desert toad</button>
-          <button mat-menu-item>Western toad</button>
-          <button mat-menu-item>Arroyo toad</button>
-          <button mat-menu-item>Yosemite toad</button>
-        </mat-menu>
-
-        <mat-menu #reptiles="matMenu">
-          <button mat-menu-item>Banded Day Gecko</button>
-          <button mat-menu-item>Banded Gila Monster</button>
-          <button mat-menu-item>Black Tree Monitor</button>
-          <button mat-menu-item>Blue Spiny Lizard</button>
-          <button mat-menu-item>Velociraptor</button>
+        <mat-menu #C0T1C="matMenu">
+          <button mat-menu-item (click)="changeCategory('C0T1C0')">C0T1C0</button>
+          <button mat-menu-item (click)="changeCategory('C0T1C1')">C0T1C1</button>
         </mat-menu>
         <br>
         <mat-divider style="width: 400px"></mat-divider>
