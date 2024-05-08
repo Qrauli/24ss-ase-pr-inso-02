@@ -13,7 +13,6 @@ export class ResourceService {
 
   getResources(): Observable<Resource[]> {
     return this.httpClient.get<Resource[]>(environment.resourceUrl + 'resources?additional=false');
-
   }
 
   getResourcesAdditional(){

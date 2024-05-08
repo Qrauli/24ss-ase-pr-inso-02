@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { MatCardModule } from '@angular/material/card'
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -14,7 +14,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Resource } from '../dto/resource';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as Leaflet from 'leaflet';
 import { IncidentService } from '../incidents.service';
@@ -26,7 +26,12 @@ import {interval, switchMap} from "rxjs";
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSortHeader} from "@angular/material/sort";
-
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarRef,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
 
 
 @Component({
@@ -58,7 +63,7 @@ import {MatSortHeader} from "@angular/material/sort";
 })
 export class DispatcherComponent implements OnInit {
 
-  selectedIncident: Incident | null = null;
+  selectedIncident: string | null = null;
   assignedResources: Resource[] | null = null;
   selectedIncidentData: Incident | null = null;
 
@@ -66,11 +71,13 @@ export class DispatcherComponent implements OnInit {
 
   showDispatched: boolean;
 
-  incidents: Incident[];
+  incidents: Incident[] = [];
 
   resources: Resource[];
 
   resourcesAdditional: Resource[];
+
+  notifications: Incident[] = [];
 
   displayedColumnsResources: string[] = ['status', 'type', 'location', 'locate', 'assign'];
   displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
@@ -84,10 +91,10 @@ export class DispatcherComponent implements OnInit {
     center: new Leaflet.LatLng(48.227747192035764, 16.40545336304577)
   };
 
-  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog) { }
-
+  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoing().subscribe(data => {
+      data.sort((a, b) => a.status.localeCompare(b.status));
       this.incidents = data;
     });
 
@@ -100,10 +107,60 @@ export class DispatcherComponent implements OnInit {
         }
       )
 
+    interval(5000)
+      .pipe(
+        switchMap(() => this.incidentService.getIncidentsOngoing())
+      )
+      .subscribe(data => {
+        data.sort((a, b) => a.status.localeCompare(b.status));
+        this.incidentRefresher(data);
+        }
+      )
+
     this.resourcesService.getResourcesAdditional().subscribe(data => {
       this.resourcesAdditional = data;
     });
+  }
 
+
+  // shows notification for new incidents
+  incidentRefresher(data: Incident[]): void {
+    for (let i = 0; i < data.length; i++) {
+      let flag = false;
+      for (let j = 0; j < this.incidents.length; j++) {
+        if (this.incidents[j].id == data[i].id) {
+          flag = true;
+           break;
+        }
+      }
+      if (!flag) {
+        this.notifications.push(data[i]);
+      }
+    }
+    this.incidents = data;
+    if(!this._snackBar._openedSnackBarRef?._open) {
+      this.displayNotifications();
+    }
+  }
+
+  displayNotifications(): void {
+    if(this.notifications.length > 0) {
+    let notification = this.notifications.shift();
+    let classString = this.codeIsPriority(notification!.categorization.code) ? 'alert-red' : 'alert-default';
+    const ref: MatSnackBarRef<any> =  this._snackBar.open('Neuer Einsatz: ' + notification!.categorization.code, 'Auswählen', {
+      horizontalPosition: 'center',
+      verticalPosition: 'top',
+      duration: 7000,
+      panelClass: [classString]
+    });
+    ref.onAction().subscribe(() => {
+      console.log('Einsatz ausgewählt: ' + notification!.id);
+      this.selectIncident(notification!);
+    });
+    ref.afterDismissed().subscribe(() => {
+      this.displayNotifications();
+    });
+  }
   }
 
   unassignResource(resource: Resource): void {
@@ -111,6 +168,15 @@ export class DispatcherComponent implements OnInit {
     if (index !== undefined && index !== -1) {
       this.assignedResources?.splice(index, 1);
     }
+  }
+
+  codeIsPriority(code: string): boolean {
+    //TODO: logic for determining if code is priority
+    let num = parseInt(code.substring(code.length - 1));
+    if (num % 2 == 0) {
+      return true;
+    }
+    return false;
   }
 
 
@@ -139,13 +205,13 @@ export class DispatcherComponent implements OnInit {
    * @param incident
    */
   selectIncident(incident: Incident): void {
-    if (this.selectedIncident === incident) {
+    if (this.selectedIncident === incident.id) {
       this.selectedIncident = null;
       this.recommended = new Set();
       this.assignedResources = [];
       return;
     }
-    this.selectedIncident = incident;
+    this.selectedIncident = incident.id;
     this.incidentService.getIncidentById(incident.id).subscribe(data => {
       this.selectedIncidentData = data;
     });
@@ -176,7 +242,7 @@ export class DispatcherComponent implements OnInit {
     dialogRef.afterClosed().subscribe(dialogResult => {
       if (dialogResult === true) {
         if (this.selectedIncident && this.assignedResources) {
-          this.resourcesService.assignResources(this.selectedIncident.id, this.assignedResources);
+          this.resourcesService.assignResources(this.selectedIncident, this.assignedResources);
         }
       }
     });
