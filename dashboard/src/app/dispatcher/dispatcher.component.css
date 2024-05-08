@@ -141,10 +141,36 @@
 
 .incident-property{
   border-bottom: 1px solid lightgray;
+  text-align: center;
+
 }
 
 .incident-key{
   font-style: italic;
   border-bottom: 1px solid lightgray;
   border-right: 1px solid gray;
+  text-align: center;
+}
+
+.property{
+  border-bottom: 1px solid lightgray;
+}
+
+.key{
+  font-style: italic;
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid gray;
+}
+
+.key-normal{
+  border-bottom: 1px solid lightgray;
+  border-right: 1px solid gray;
+}
+
+.mat-mdc-snack-bar-container {
+  &.blue-snackbar {
+    --mdc-snackbar-container-color: #2196f3 !important;
+    --mat-mdc-snack-bar-button-color: #fff !important;
+    --mdc-snackbar-supporting-text-color: #fff !important;
+  }
 }
