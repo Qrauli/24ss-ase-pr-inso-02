@@ -1,9 +1,6 @@
 package at.ase.respond.dispatcher.presentation.mapper;
 
-import at.ase.respond.dispatcher.persistence.model.Incident;
-import at.ase.respond.dispatcher.persistence.model.IncidentState;
-import at.ase.respond.dispatcher.persistence.model.LocationCoordinates;
-import at.ase.respond.dispatcher.persistence.model.Resource;
+import at.ase.respond.dispatcher.persistence.model.*;
 import at.ase.respond.dispatcher.presentation.dto.LocationCoordinatesDTO;
 import at.ase.respond.dispatcher.presentation.dto.ResourceDTO;
 
@@ -16,19 +13,20 @@ public final class ResourceMapper {
     }
 
     public static ResourceDTO toDTO(Resource resource) {
-        Incident assignedIncident = resource.getAssignedIncident();
         Double lat = resource.getLocationCoordinates().getLatitude();
         Double lon = resource.getLocationCoordinates().getLongitude();
+        ResourceState state = resource.getState();
+        LocationCoordinatesDTO locationCoordinatesDTO = new LocationCoordinatesDTO(lat, lon);
+        Incident assignedIncident = resource.getAssignedIncident();
         return switch (assignedIncident) {
-            case null ->
-                new ResourceDTO(resource.getId(), resource.getType(), new LocationCoordinatesDTO(lat, lon), null);
-            case Incident incident -> new ResourceDTO(resource.getId(), resource.getType(),
-                    new LocationCoordinatesDTO(lat, lon), incident.getId());
+            case null -> new ResourceDTO(resource.getId(), resource.getType(), state, locationCoordinatesDTO, null);
+            case Incident incident ->
+                new ResourceDTO(resource.getId(), resource.getType(), state, locationCoordinatesDTO, incident.getId());
         };
     }
 
     public static Resource toEntity(ResourceDTO resourceDTO) {
-        return new Resource(resourceDTO.id(), resourceDTO.type(),
+        return new Resource(resourceDTO.id(), resourceDTO.type(), resourceDTO.state(),
                 new LocationCoordinates(resourceDTO.locationCoordinates().latitude(),
                         resourceDTO.locationCoordinates().longitude()),
                 new Incident(resourceDTO.assignedIncident(), IncidentState.READY));

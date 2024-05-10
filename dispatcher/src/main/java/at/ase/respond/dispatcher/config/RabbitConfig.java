@@ -22,13 +22,22 @@ public class RabbitConfig {
     @Value("${rabbit.queues.incidents}")
     private String incidentsQueue;
 
-    @Value("${rabbit.queues.resources}")
-    private String resourcesQueue;
+    @Value("${rabbit.queues.resources.status}")
+    private String resourcesStatusQueue;
+
+    @Value("${rabbit.queues.resources.location}")
+    private String resourcesLocationQueue;
+
+    @Value("${rabbit.routes.resources.status}")
+    private String resourcesStatusRoute;
+
+    @Value("${rabbit.routes.resources.location}")
+    private String resourcesLocationRoute;
 
     @Value("${rabbit.routes.incidents}")
     private String incidentsRoute;
 
-    @Value("${rabbit.routes.resources}")
+    @Value("${rabbit.routes.resources.status}")
     private String resourcesRoute;
 
     @Value("${rabbit.exchange}")
@@ -52,8 +61,13 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Queue resourceQueue() {
-        return new Queue(resourcesQueue, true);
+    public Queue resourceStatusQueue() {
+        return new Queue(resourcesStatusQueue, true);
+    }
+
+    @Bean
+    public Queue resourceLocationQueue() {
+        return new Queue(resourcesLocationQueue, true);
     }
 
     @Bean
@@ -67,8 +81,17 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding resourcesBinding(Queue resourceQueue, Exchange exchange) {
-        return BindingBuilder.bind(resourceQueue).to(exchange).with(resourcesRoute).noargs();
+    public Binding resourcesStatusBinding(Queue resourceStatusQueue, Exchange exchange) {
+        return BindingBuilder.bind(resourceStatusQueue).to(exchange).with(resourcesStatusRoute).noargs();
+    }
+
+    @Bean
+    public Binding resourcesLocationBinding(Queue resourceLocationQueue, Exchange exchange) {
+        return BindingBuilder.bind(resourceLocationQueue).to(exchange).with(resourcesLocationRoute).noargs();
+    }
+
+    public String resourceRoutingKey(String resourceId) {
+        return resourcesStatusRoute + "." + resourceId;
     }
 
     @Bean

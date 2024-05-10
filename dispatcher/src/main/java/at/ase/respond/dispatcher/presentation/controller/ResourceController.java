@@ -30,7 +30,12 @@ public class ResourceController {
     @Operation(summary = "Assigns a resource to an incident")
     public ResponseEntity<ResourceDTO> assignToIncident(@PathVariable String resourceId,
             @PathVariable UUID incidentId) {
-        return ResponseEntity.ok(ResourceMapper.toDTO(service.assignToIncident(resourceId, incidentId)));
+        try {
+            return ResponseEntity.ok(ResourceMapper.toDTO(service.assignToIncident(resourceId, incidentId)));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
