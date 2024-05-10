@@ -3,7 +3,7 @@ import {of} from 'rxjs';
 import {Incident, Status} from "./dto/incident";
 import {Patient, Sex} from "./dto/patient";
 import {v4 as uuidv4} from 'uuid';
-import { Resource, ResourceType } from './dto/resource';
+import {Resource, ResourceState, ResourceType} from './dto/resource';
 
 let incidents: Incident[] = [];
 let resources: Resource[] = [];
@@ -61,6 +61,7 @@ function mockResources(entries: number) {
     const resource: Resource = {
       id: "FLO-" + length,
       type: ResourceType.KTW,
+      state: assignment ? ResourceState.DISPATCHED : ResourceState.AVAILABE,
       location: {
         latitude: 48.227747192035764,
         longitude: 16.40545336304577
@@ -124,7 +125,7 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
 
   if (req.method === "GET") {
     if (req.url === "http://localhost:4200/incidents") {
-      
+
   if (Math.random() < 0.5 && incidents.length < 10) {
     mockIncidents(incidents.length + 1);
   }

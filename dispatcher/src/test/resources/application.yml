@@ -8,7 +8,11 @@ rabbit:
   exchange: 'respond-exchange'
   routes:
     incidents: 'respond-incidents-route'
-    resources: 'respond-resources-route'
+    resources:
+      status: 'respond-resources-status-route'
+      location: 'respond-resources-location-route'
   queues:
     incidents: 'respond-incidents-queue'
-    resources: 'respond-resources-queue'
+    resources:
+      status: 'respond-resources-status-queue'
+      location: 'respond-resources-location-queue'

@@ -16,7 +16,7 @@ public class MessageSenderImpl implements MessageSender {
     @Value("${rabbit.exchange}")
     private String exchange;
 
-    @Value("${rabbit.routes.resources}")
+    @Value("${rabbit.routes.resources.status}")
     private String baseRoute;
 
     private final RabbitTemplate rabbit;
@@ -41,7 +41,7 @@ public class MessageSenderImpl implements MessageSender {
 
     @Override
     public void publish(ResourceStatusUpdatedEvent message) {
-        rabbit.convertAndSend(exchange, baseRoute + message.recipientResourceId(), message);
+        rabbit.convertAndSend(exchange, baseRoute + message.resourceId(), message);
     }
 
 }

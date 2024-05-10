@@ -11,10 +11,10 @@ import { HeaderComponent } from '../header/header.component';
 import { MatListModule } from '@angular/material/list';
 import { Incident } from '../dto/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Resource } from '../dto/resource';
+import {Resource, ResourceState} from '../dto/resource';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as Leaflet from 'leaflet';
 import { IncidentService } from '../incidents.service';
@@ -79,7 +79,7 @@ export class DispatcherComponent implements OnInit {
 
   notifications: Incident[] = [];
 
-  displayedColumnsResources: string[] = ['status', 'type', 'location', 'locate', 'assign'];
+  displayedColumnsResources: string[] = ['status', 'id', 'type', 'location', 'locate', 'assign'];
   displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
   displayedColumnsIncidents: string[] = ['status', 'location', 'class', ];
 
@@ -103,7 +103,7 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.resourcesService.getResources())
       )
       .subscribe(data => {
-        this.resources = data;
+          this.resources = data;
         }
       )
 
@@ -112,8 +112,8 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoing())
       )
       .subscribe(data => {
-        data.sort((a, b) => a.status.localeCompare(b.status));
-        this.incidentRefresher(data);
+          data.sort((a, b) => a.status.localeCompare(b.status));
+          this.incidentRefresher(data);
         }
       )
 
@@ -121,7 +121,6 @@ export class DispatcherComponent implements OnInit {
       this.resourcesAdditional = data;
     });
   }
-
 
   // shows notification for new incidents
   incidentRefresher(data: Incident[]): void {
@@ -248,5 +247,6 @@ export class DispatcherComponent implements OnInit {
     });
   }
 
+  protected readonly ResourceState = ResourceState;
 }
 

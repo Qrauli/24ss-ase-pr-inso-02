@@ -125,6 +125,33 @@ services:
         limits:
           memory: 512M
           cpus: "0.1"
+  datafeeder:
+    build: '../datafeeder'
+    ports:
+      - '8084:8084'
+    depends_on:
+      - rabbit
+    environment:
+      - 'SPRING_RABBITMQ_HOST=rabbit'
+      - 'SPRING_RABBITMQ_PORT=5672'
+      - 'SPRING_RABBITMQ_USERNAME=user'
+      - 'SPRING_RABBITMQ_PASSWORD=passwd'
+      - 'SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE=manual'
+      - 'RABBIT_EXCHANGE=respond-exchange'
+      - 'RABBIT_ROUTES_RESOURCES=respond-resources-route'
+      - 'RABBIT_QUEUES_RESOURCES=respond-resources-queue'
+      - 'RABBIT_BACKOFF_POLICY_MULTIPLIER=10'
+      - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
+      - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
+      - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+    deploy:
+      resources:
+        reservations:
+          memory: 256M
+          cpus: "0.1"
+        limits:
+          memory: 512M
+          cpus: "0.1"
   dashboard:
     build: '../dashboard'
     ports:

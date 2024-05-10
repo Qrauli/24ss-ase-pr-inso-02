@@ -16,6 +16,8 @@ public class Resource {
 
     private ResourceType type;
 
+    private ResourceState state;
+
     private LocationCoordinates locationCoordinates;
 
     @DocumentReference(collection = "incidents")
