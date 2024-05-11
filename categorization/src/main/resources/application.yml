@@ -1,5 +1,10 @@
 server:
   port: 8083
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 
 logging:
   level:
@@ -11,3 +16,8 @@ spring:
       host: 'localhost'
       port: 27017
       database: 'db'
+
+custom:
+  questionschema:
+    path: "/data/question_schema.json"
+    protocolSelectorQuestionId: 6
