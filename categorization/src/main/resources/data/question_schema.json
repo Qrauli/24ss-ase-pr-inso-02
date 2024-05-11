@@ -1,0 +1,758 @@
+{
+    "version": "1.0",
+    "questions": {
+        "baseQuestions": [
+            {
+                "id": 1,
+                "questionType": "BASE",
+                "text": "Wo ist der Unfallort?",
+                "nextBaseQuestionId": 2,
+                "fields": [
+                    {
+                        "fieldId": "street",
+                        "text": "Straße",
+                        "type": "TEXT"
+                    },
+                    {
+                        "fieldId": "number",
+                        "text": "Hausnummer",
+                        "type": "TEXT"
+                    },
+                    {
+                        "fieldId": "district",
+                        "text": "Bezirk",
+                        "type": "SINGLE_CHOICE",
+                        "options": [
+                            "1010",
+                            "1020",
+                            "1030",
+                            "1040",
+                            "1050",
+                            "1060",
+                            "1070",
+                            "1080",
+                            "1090",
+                            "1100",
+                            "11",
+                            "1120",
+                            "1130",
+                            "1140",
+                            "1150",
+                            "1160",
+                            "1170",
+                            "1180",
+                            "1190",
+                            "1200",
+                            "1210",
+                            "1220",
+                            "1230"
+                        ]
+                    },
+                    {
+                        "fieldId": "lat",
+                        "text": "Latitude",
+                        "type": "TEXT"
+                    },
+                    {
+                        "fieldId": "lon",
+                        "text": "Longitude",
+                        "type": "TEXT"
+                    },
+                    {
+                        "fieldId": "additionalData",
+                        "text": "Zusatzinformationen",
+                        "type": "TEXT"
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "questionType": "BASE",
+                "text": "Wer ruft an?",
+                "nextBaseQuestionId": 3,
+                "fields": [
+                    {
+                        "fieldId": "name",
+                        "text": "Name",
+                        "type": "TEXT"
+                    },
+                    {
+                        "fieldId": "phone",
+                        "text": "Telefonnummer",
+                        "type": "TEXT"
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "questionType": "BASE",
+                "text": "Wie viele Personen sind betroffen?",
+                "nextBaseQuestionId": 4,
+                "fields": [
+                    {
+                        "fieldId": "numberOfPeople",
+                        "text": "Anzahl",
+                        "type": "TEXT"
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "questionType": "BASE",
+                "text": "Wie alt ist die betroffene Person?",
+                "nextBaseQuestionId": 5,
+                "fields": [
+                    {
+                        "fieldId": "age",
+                        "text": "Alter",
+                        "type": "TEXT"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "questionType": "BASE",
+                "text": "Welches Geschlecht hat die betroffene Person?",
+                "nextBaseQuestionId": 6,
+                "fields": [
+                    {
+                        "fieldId": "gender",
+                        "text": "Geschlecht",
+                        "type": "SINGLE_CHOICE",
+                        "options": [
+                            "Male",
+                            "Female",
+                            "Unknown"
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "text": "Was ist passiert?",
+                "questionType": "BASE",
+                "fields": [
+                    {
+                        "fieldId": "mpdsProtocolId",
+                        "text": "Auswahl",
+                        "type": "SINGLE_CHOICE",
+                        "options": [
+                            "1-Bauchschmerzen/-beschwerden",
+                            "2-Allergie/Kontakt mit giftigen Tieren",
+                            "3-Tierbiss/-angriff",
+                            "4-Verbrechen",
+                            "5-Rückenschmerzen",
+                            "6-Atembeschwerden",
+                            "7-Verbrennungen/Explosion",
+                            "8-Kohlenmonoxid",
+                            "9-Kreislaufstillstand",
+                            "10-Brustschmerzenv",
+                            "11-Ersticken",
+                            "12-Krampfanfall",
+                            "13-Blutzuckerentgleisung",
+                            "14-Ertrinken",
+                            "15-Stromunfall/Blitzschlag",
+                            "16-Augenprobleme/-verletzungen",
+                            "17-Sturz/Absturz",
+                            "18-Kopfschmerzen",
+                            "19-Herzbeschwerden",
+                            "20-Hitze-/Kälteprobleme",
+                            "21-Blutung",
+                            "22-Unzugängliche/Verschüttete Person",
+                            "23-Überdosis/Vergiftung",
+                            "24-Schwangerschaft",
+                            "25-Psychiatrie",
+                            "26-Kranke Person",
+                            "27-Stich-/Schuss-/Pfählungsverletzung",
+                            "28 Schlaganfall",
+                            "29-Verkehrsunfall",
+                            "30-Verletzungen",
+                            "31-Bewusstlosigkeit/Ohnmacht (Beinahe-)",
+                            "32-Unklares Geschehen",
+                            "33-Transportanforderung",
+                            "37-Untersuchung/Transport (von/zu Versorgungseinrichtung)",
+                            "42-Nachforderung"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "protocols": {
+            "1": {
+                "title": "Bauchschmerzen - Beschwerden",
+                "description": "Fragebogen zur Ermittlung des passenden Einsatzcodes bei Bauchschmerzen.",
+                "questions": [
+                    {
+                        "id": 1,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegt eine Bewusstseinstrübung vor?",
+                        "fields": [
+                            {
+                                "fieldId": "consciousness",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01D01"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 2
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Hat der Patient eine aschfahle oder graue Hautfarbe und ist er älter als 50 Jahre?",
+                        "fields": [
+                            {
+                                "fieldId": "skinColor",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01D02"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 3
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Ist eine Aufwertung notwendig?",
+                        "fields": [
+                            {
+                                "fieldId": "upgrading",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01D00"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 4
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Besteht der Verdacht auf ein Aortenaneurysma (Zerreißungsschmerz) und ist der Patient älter als 50 Jahre?",
+                        "fields": [
+                            {
+                                "fieldId": "aorticAneurysm",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C01"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegt ein bekanntes Aortenaneurysma vor?",
+                        "fields": [
+                            {
+                                "fieldId": "knownAorticAneurysm",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C02"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 6
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 6,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegt eine Ohnmacht vor und ist der Patient älter als 50 Jahre?",
+                        "fields": [
+                            {
+                                "fieldId": "fainting",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C03"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 7
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 7,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Ist eine Frau zwischen 12-50 Jahren mit Ohnmacht betroffen?",
+                        "fields": [
+                            {
+                                "fieldId": "faintingWoman",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C04"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 8
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 8,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Ist ein Mann mit Schmerzen oberhalb des Bauchnabels und älter als 35 Jahre betroffen?",
+                        "fields": [
+                            {
+                                "fieldId": "painAboveBellyButton",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C05"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 9
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 9,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Ist eine Frau mit Schmerzen oberhalb des Bauchnabels und älter als 45 Jahre betroffen?",
+                        "fields": [
+                            {
+                                "fieldId": "painAboveBellyButtonWoman",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C06"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 10
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 10,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Ist eine Aufwertung notwendig?",
+                        "fields": [
+                            {
+                                "fieldId": "upgrading",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01C00"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 11
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 11,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegen Bauchschmerzen vor ohne weitere spezifische Symptome?",
+                        "fields": [
+                            {
+                                "fieldId": "abdominalPain",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01A01"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 1,
+                                            "questionId": 12
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 12,
+                        "protocolId": 1,
+                        "questionType": "PROTOCOL",
+                        "text": "Bestehen Hoden- oder Leistenschmerzen?",
+                        "fields": [
+                            {
+                                "fieldId": "testiclePain",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "01A02"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "dispatchCode": "01C00"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "2": {
+                "title": "Einsatzcodebestimmung für Allergien und Kontakt mit giftigen Tieren",
+                "description": "Fragebogen zur Ermittlung des passenden Einsatzcodes bei Allergien oder Kontakt mit giftigen Tieren.",
+                "questions": [
+                    {
+                        "id": 1,
+                        "protocolId": 2,
+                        "questionType": "PROTOCOL",
+                        "text": "Handelt es sich um eine Ineffektive Atmung oder Bewusstseinstrübung?",
+                        "fields": [
+                            {
+                                "fieldId": "ineffectiveBreathing",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja, ineffektive Atmung",
+                                        "dispatchCode": "02E01"
+                                    },
+                                    {
+                                        "text": "Ja, ineffektive Atmung. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02E01I"
+                                    },
+                                    {
+                                        "text": "Ja, ineffektive Atmung. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02E01M"
+                                    },
+                                    {
+                                        "text": "Ja, Bewusstseinstrübung",
+                                        "dispatchCode": "02D01"
+                                    },
+                                    {
+                                        "text": "Ja, Bewusstseinstrübung. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02D01I"
+                                    },
+                                    {
+                                        "text": "Ja, Bewusstseinstrübung. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02D01M"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 2,
+                                            "questionId": 2
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "protocolId": 2,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegen Sprachschwierigkeiten zwischen Atemzügen vor?",
+                        "fields": [
+                            {
+                                "fieldId": "speechDifficulties",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "02D02"
+                                    },
+                                    {
+                                        "text": "Ja. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02D02I"
+                                    },
+                                    {
+                                        "text": "Ja. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02D02M"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 2,
+                                            "questionId": 3
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 3,
+                        "protocolId": 2,
+                        "questionType": "PROTOCOL",
+                        "text": "Liegen Atem- oder Schluckbeschwerden vor?",
+                        "fields": [
+                            {
+                                "fieldId": "breathingOrSwallowingProblems",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "02C01"
+                                    },
+                                    {
+                                        "text": "Ja. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02C01"
+                                    },
+                                    {
+                                        "text": "Ja. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02C01"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 2,
+                                            "questionId": 4
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 4,
+                        "protocolId": 2,
+                        "questionType": "PROTOCOL",
+                        "text": "Hat der Patient eine Vorgeschichte mit schweren allergischen Reaktionen?",
+                        "fields": [
+                            {
+                                "fieldId": "allergicHistory",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Ja",
+                                        "dispatchCode": "02C02"
+                                    },
+                                    {
+                                        "text": "Ja. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02C02I"
+                                    },
+                                    {
+                                        "text": "Ja. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02C02M"
+                                    },
+                                    {
+                                        "text": "Nein",
+                                        "nextProtocolQuestion": {
+                                            "protocolId": 2,
+                                            "questionId": 5
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "id": 5,
+                        "protocolId": 2,
+                        "questionType": "PROTOCOL",
+                        "text": "Welcher Fall trifft zu?",
+                        "fields": [
+                            {
+                                "fieldId": "case",
+                                "type": "SINGLE_CHOICE",
+                                "options": [
+                                    {
+                                        "text": "Angriff von Insektenschwarm",
+                                        "dispatchCode": "02D03"
+                                    },
+                                    {
+                                        "text": "Angriff von Insektenschwarm. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02D03I"
+                                    },
+                                    {
+                                        "text": "Angriff von Insektenschwarm. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02D03M"
+                                    },
+                                    {
+                                        "text": "Schlangenbiss",
+                                        "dispatchCode": "02D04"
+                                    },
+                                    {
+                                        "text": "Schlangenbiss. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02D04I"
+                                    },
+                                    {
+                                        "text": "Schlangenbiss. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02D04M"
+                                    },
+                                    {
+                                        "text": "Spinnenbiss",
+                                        "dispatchCode": "02A02"
+                                    },
+                                    {
+                                        "text": "Spinnenbiss. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02A02I"
+                                    },
+                                    {
+                                        "text": "Spinnenbiss. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02A02M"
+                                    },
+                                    {
+                                        "text": "Keine Atem- oder Schluckbeschwerden, eventuell Ausschlag oder Juckreiz",
+                                        "dispatchCode": "02A01"
+                                    },
+                                    {
+                                        "text": "Keine Atem- oder Schluckbeschwerden, eventuell Ausschlag oder Juckreiz. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02A01I"
+                                    },
+                                    {
+                                        "text": "Keine Atem- oder Schluckbeschwerden, eventuell Ausschlag oder Juckreiz. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02A01M"
+                                    },
+                                    {
+                                        "text": "Unbekannter Zustand/Andere Codes nicht zutreffend",
+                                        "dispatchCode": "02B01"
+                                    },
+                                    {
+                                        "text": "Unbekannter Zustand/Andere Codes nicht zutreffend. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02B01I"
+                                    },
+                                    {
+                                        "text": "Unbekannter Zustand/Andere Codes nicht zutreffend. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02B01M"
+                                    },
+                                    {
+                                        "text": "Aufwertung Bravo",
+                                        "dispatchCode": "02B00"
+                                    },
+                                    {
+                                        "text": "Aufwertung Bravo. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02B00I"
+                                    },
+                                    {
+                                        "text": "Aufwertung Bravo. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02B00M"
+                                    },
+                                    {
+                                        "text": "Aufwertung Charlie",
+                                        "dispatchCode": "02C00"
+                                    },
+                                    {
+                                        "text": "Aufwertung Charlie. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02C00I"
+                                    },
+                                    {
+                                        "text": "Aufwertung Charlie. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02C00M"
+                                    },
+                                    {
+                                        "text": "Aufwertung Delta",
+                                        "dispatchCode": "02D00"
+                                    },
+                                    {
+                                        "text": "Aufwertung Delta. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02D00I"
+                                    },
+                                    {
+                                        "text": "Aufwertung Delta. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02D00M"
+                                    },
+                                    {
+                                        "text": "Aufwertung Echo",
+                                        "dispatchCode": "02E00"
+                                    },
+                                    {
+                                        "text": "Aufwertung Echo. Injektion verabreicht oder angewiesen",
+                                        "dispatchCode": "02E00I"
+                                    },
+                                    {
+                                        "text": "Aufwertung Echo. Medikamente verabreicht oder angewiesen",
+                                        "dispatchCode": "02E00M"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

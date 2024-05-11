@@ -1,0 +1,4 @@
+custom:
+  questionschema:
+    path: "/data/question_schema.json"
+    protocolSelectorQuestionId: 6
