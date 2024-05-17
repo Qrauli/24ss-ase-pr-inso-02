@@ -18,7 +18,19 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
+	maven {
+		url = uri("https://reset.inso.tuwien.ac.at/repo/api/v4/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
+		name = "GitLab"
+		credentials(HttpHeaderCredentials::class) {
+			name = "Job-Token"
+			value = System.getenv("CI_JOB_TOKEN")
+		}
+		authentication {
+			create("header", HttpHeaderAuthentication::class)
+		}
+	}
 }
 
 dependencies {
@@ -36,6 +48,9 @@ dependencies {
 
 	// Mongo
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+	// Respond Common Lib
+	implementation("at.ase.respond:common-lib:0.0.1")
 }
 
 tasks.bootJar {

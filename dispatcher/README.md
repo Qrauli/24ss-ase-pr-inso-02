@@ -1,3 +1,5 @@
 # Dispatcher Service
 
 The OpenAPI documentation is available [here](http://localhost:8082/swagger-ui/index.html).
+
+Activate the `presentation` profile to generate presentation data.

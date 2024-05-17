@@ -1,0 +1,47 @@
+[
+  {
+    "id": "JOK-2",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.27168550900315,
+      "longitude": 16.402937368172754
+    }
+  },
+  {
+    "id": "JOH-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.27168550900315,
+      "longitude": 16.402937368172754
+    }
+  },
+  {
+    "id": "ZTR-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.211393204183665,
+      "longitude": 16.386821678911726
+    }
+  },
+  {
+    "id": "AKH-NEF-1",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.22091369291262,
+      "longitude": 16.346745182259237
+    }
+  },
+  {
+    "id": "DSP-NEF-1",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.21948318149794,
+      "longitude": 16.464497497601503
+    }
+  }
+]

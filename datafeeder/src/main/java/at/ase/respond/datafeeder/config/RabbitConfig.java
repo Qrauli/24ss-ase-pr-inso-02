@@ -15,77 +15,66 @@ import org.springframework.retry.support.RetryTemplate;
 @Configuration
 public class RabbitConfig {
 
-	@Value("${rabbit.queues.resources}")
-	private String resourcesQueue;
+    @Value("${rabbit.queues.incidents}")
+    private String incidentsQueue;
 
-	@Value("${rabbit.routes.resources.status}")
-	private String resourcesStatusRoute;
+    @Value("${rabbit.routes.incidents}")
+    private String incidentsRoute;
 
-	@Value("${rabbit.routes.resources.location}")
-	private String resourcesLocationRoute;
+    @Value("${rabbit.exchange}")
+    private String exchange;
 
-	@Value("${rabbit.exchange}")
-	private String exchange;
+    @Value("${rabbit.backoff-policy.init-interval}")
+    private Integer initInterval;
 
-	@Value("${rabbit.backoff-policy.init-interval}")
-	private Integer initInterval;
+    @Value("${rabbit.backoff-policy.max-interval}")
+    private Integer maxInterval;
 
-	@Value("${rabbit.backoff-policy.max-interval}")
-	private Integer maxInterval;
+    @Value("${rabbit.backoff-policy.multiplier}")
+    private Integer multiplier;
 
-	@Value("${rabbit.backoff-policy.multiplier}")
-	private Integer multiplier;
+    @Value("${rabbit.retry-policy.max-attempts}")
+    private Integer maxAttempts;
 
-	@Value("${rabbit.retry-policy.max-attempts}")
-	private Integer maxAttempts;
+    @Bean
+    public Queue incidentsQueue() {
+        return new Queue(incidentsQueue, true);
+    }
 
-	@Bean
-	public Queue resourceQueue() {
-		return new Queue(resourcesQueue, true);
-	}
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange(exchange);
+    }
 
-	@Bean
-	public TopicExchange exchange() {
-		return new TopicExchange(exchange);
-	}
+    @Bean
+    public Binding incidentsBinding(Queue resourceQueue, Exchange exchange) {
+        return BindingBuilder.bind(resourceQueue).to(exchange).with(incidentsRoute + ".*").noargs();
+    }
 
-	@Bean
-	public Binding resourcesBinding(Queue resourceQueue, Exchange exchange) {
-		return BindingBuilder.bind(resourceQueue).to(exchange).with(resourcesStatusRoute + ".*").noargs();
-	}
+    @Bean
+    public MessageConverter converter() {
+        return new Jackson2JsonMessageConverter();
+    }
 
-	public String resourceStatusRoutingKey() {
-		return resourcesStatusRoute;
-	}
+    @Bean
+    public RabbitTemplate template(ConnectionFactory connectionFactory, MessageConverter converter) {
+        ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
+        backOffPolicy.setInitialInterval(initInterval);
+        backOffPolicy.setMaxInterval(maxInterval);
+        backOffPolicy.setMultiplier(multiplier);
 
-	public String resourceLocationRoutingKey() {
-		return resourcesLocationRoute;
-	}
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+        retryPolicy.setMaxAttempts(maxAttempts);
 
-	@Bean
-	public MessageConverter converter() {
-		return new Jackson2JsonMessageConverter();
-	}
+        RetryTemplate retryTemplate = new RetryTemplate();
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        retryTemplate.setRetryPolicy(retryPolicy);
 
-	@Bean
-	public RabbitTemplate template(ConnectionFactory connectionFactory, MessageConverter converter) {
-		ExponentialBackOffPolicy backOffPolicy = new ExponentialBackOffPolicy();
-		backOffPolicy.setInitialInterval(initInterval);
-		backOffPolicy.setMaxInterval(maxInterval);
-		backOffPolicy.setMultiplier(multiplier);
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setRetryTemplate(retryTemplate);
+        rabbitTemplate.setMessageConverter(converter);
 
-		SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-		retryPolicy.setMaxAttempts(maxAttempts);
-
-		RetryTemplate retryTemplate = new RetryTemplate();
-		retryTemplate.setBackOffPolicy(backOffPolicy);
-		retryTemplate.setRetryPolicy(retryPolicy);
-
-		RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setRetryTemplate(retryTemplate);
-		rabbitTemplate.setMessageConverter(converter);
-
-		return rabbitTemplate;
-	}
+        return rabbitTemplate;
+    }
 
 }

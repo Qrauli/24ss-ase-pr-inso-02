@@ -1,5 +1,10 @@
 package at.ase.respond.incident.presentation.mapper;
 
+import at.ase.respond.common.dto.LocationAddressDTO;
+import at.ase.respond.common.dto.LocationCoordinatesDTO;
+import at.ase.respond.common.dto.LocationDTO;
+import at.ase.respond.common.dto.PatientDTO;
+import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.persistence.model.Location;
 import at.ase.respond.incident.persistence.model.LocationAddress;
@@ -7,12 +12,8 @@ import at.ase.respond.incident.persistence.model.LocationCoordinates;
 import at.ase.respond.incident.persistence.model.OperationCode;
 import at.ase.respond.incident.persistence.model.Patient;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
-import at.ase.respond.incident.presentation.dto.LocationAddressDTO;
-import at.ase.respond.incident.presentation.dto.LocationCoordinatesDTO;
-import at.ase.respond.incident.presentation.dto.LocationDTO;
-import at.ase.respond.incident.presentation.dto.PatientDTO;
-import at.ase.respond.incident.presentation.event.IncidentCreatedEvent;
 
+import java.time.ZonedDateTime;
 import java.util.Collection;
 
 public final class IncidentMapper {
@@ -31,19 +32,25 @@ public final class IncidentMapper {
             .build();
     }
 
-    public static IncidentCreatedEvent toEvent(Incident incident) {
-        return new IncidentCreatedEvent(incident.getId(), incident.getCode().getCode(), toEvent(incident.getLocation()),
-                toEvent(incident.getPatients()), incident.getNumberOfPatients());
+    public static IncidentCreatedOrUpdatedEvent toEvent(Incident incident) {
+        return new IncidentCreatedOrUpdatedEvent(
+                incident.getId(),
+                incident.getCode().getCode(),
+                toEvent(incident.getLocation()),
+                toEvent(incident.getPatients()),
+                incident.getNumberOfPatients(),
+                ZonedDateTime.now()
+        );
     }
 
     private static Location toEntity(LocationDTO location) {
         Double lat = location.coordinates().latitude();
         Double lon = location.coordinates().longitude();
 
-        String street = location.description().street();
-        String postalCode = location.description().postalCode();
-        String city = location.description().city();
-        String additionalInformation = location.description().additionalInformation();
+        String street = location.address().street();
+        String postalCode = location.address().postalCode();
+        String city = location.address().city();
+        String additionalInformation = location.address().additionalInformation();
 
         return Location.builder()
             .coordinates(new LocationCoordinates(lat, lon))

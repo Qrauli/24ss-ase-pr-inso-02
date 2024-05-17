@@ -1,32 +1,59 @@
 package at.ase.respond.datafeeder.service.impl;
 
-import at.ase.respond.datafeeder.config.RabbitConfig;
-import at.ase.respond.datafeeder.presentation.dto.ResourceLocationUpdatedEvent;
-import at.ase.respond.datafeeder.presentation.dto.ResourceStatusUpdatedEvent;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import at.ase.respond.common.event.ResourceLocationUpdatedEvent;
+import at.ase.respond.common.event.ResourceStatusUpdatedEvent;
+
+import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class MessageSenderImpl implements at.ase.respond.datafeeder.service.MessageSender {
 
-	private final RabbitConfig rabbitConfig;
+	@Value("${rabbit.exchange}")
+	private String exchange;
 
-	private final RabbitTemplate rabbitTemplate;
+	@Value("${rabbit.routes.resources.status}")
+	private String statusRoute;
 
-	@Override
-	public void send(ResourceStatusUpdatedEvent payload) {
-		log.debug("Sending resource status update payload {}", payload);
-		rabbitTemplate.convertAndSend(rabbitConfig.exchange().getName(), rabbitConfig.resourceStatusRoutingKey(), payload);
+	@Value("${rabbit.routes.resources.location}")
+	private String locationRoute;
+
+	private final RabbitTemplate rabbit;
+
+	public MessageSenderImpl(RabbitTemplate rabbit) {
+		this.rabbit = rabbit;
+	}
+
+	@PostConstruct
+	private void postConstruct() {
+		rabbit.setConfirmCallback(this::handleConfirmCallback);
+	}
+
+	private void handleConfirmCallback(CorrelationData correlationData, boolean ack, String cause) {
+		if (ack) {
+			log.debug("Sent message {}", correlationData);
+		}
+		else {
+			log.error("Could not send message {} ({})", correlationData, cause);
+		}
 	}
 
 	@Override
-	public void send(ResourceLocationUpdatedEvent payload) {
-		log.debug("Sending resource location update payload {}", payload);
-		rabbitTemplate.convertAndSend(rabbitConfig.exchange().getName(), rabbitConfig.resourceLocationRoutingKey(), payload);
+	public void publish(ResourceStatusUpdatedEvent message) {
+		log.debug("Publish resource status update {}", message);
+		rabbit.convertAndSend(exchange, statusRoute, message);
+	}
+
+	@Override
+	public void publish(ResourceLocationUpdatedEvent message) {
+		log.debug("Publish resource location update {}", message);
+		rabbit.convertAndSend(exchange, locationRoute, message);
 	}
 
 }

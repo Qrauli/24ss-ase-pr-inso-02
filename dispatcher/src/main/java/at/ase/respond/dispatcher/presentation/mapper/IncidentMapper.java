@@ -1,22 +1,16 @@
 package at.ase.respond.dispatcher.presentation.mapper;
 
+import at.ase.respond.common.dto.IncidentDTO;
 import at.ase.respond.dispatcher.persistence.model.Incident;
-import at.ase.respond.dispatcher.persistence.model.IncidentState;
-import at.ase.respond.dispatcher.presentation.event.IncidentCreatedEvent;
-import at.ase.respond.dispatcher.presentation.dto.IncidentDTO;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-public final class IncidentMapper {
+@Mapper(componentModel = "spring")
+public interface IncidentMapper {
 
-    private IncidentMapper() {
-        throw new AssertionError("Static Class - Do not instantiate!");
-    }
+    IncidentDTO toDTO(Incident incident);
 
-    public static IncidentDTO toDTO(Incident incident) {
-        return new IncidentDTO(incident.getId(), incident.getState());
-    }
-
-    public static Incident toEntity(IncidentCreatedEvent incident) {
-        return new Incident(incident.id(), IncidentState.READY);
-    }
+    @Mapping(target = "version", ignore = true)
+    Incident toEntity(IncidentDTO incident);
 
 }

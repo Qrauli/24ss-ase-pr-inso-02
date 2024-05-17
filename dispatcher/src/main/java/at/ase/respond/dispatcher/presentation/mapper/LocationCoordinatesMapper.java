@@ -1,20 +1,14 @@
 package at.ase.respond.dispatcher.presentation.mapper;
 
-import at.ase.respond.dispatcher.persistence.model.LocationCoordinates;
-import at.ase.respond.dispatcher.presentation.dto.LocationCoordinatesDTO;
+import at.ase.respond.common.dto.LocationCoordinatesDTO;
+import at.ase.respond.dispatcher.persistence.vo.LocationCoordinatesVO;
+import org.mapstruct.Mapper;
 
-public final class LocationCoordinatesMapper {
+@Mapper(componentModel = "spring")
+public interface LocationCoordinatesMapper {
 
-    private LocationCoordinatesMapper() {
-        throw new AssertionError("Static Class - Do not instantiate!");
-    }
+    LocationCoordinatesDTO toDTO(LocationCoordinatesVO locationCoordinates);
 
-    public static LocationCoordinatesDTO toDTO(LocationCoordinates locationCoordinates) {
-        return new LocationCoordinatesDTO(locationCoordinates.getLatitude(), locationCoordinates.getLongitude());
-    }
-
-    public static LocationCoordinates toEntity(LocationCoordinatesDTO locationCoordinates) {
-        return new LocationCoordinates(locationCoordinates.latitude(), locationCoordinates.longitude());
-    }
+    LocationCoordinatesVO toVO(LocationCoordinatesDTO locationCoordinates);
 
 }

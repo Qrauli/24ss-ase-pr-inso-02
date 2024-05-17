@@ -1,5 +1,6 @@
 package at.ase.respond.incident.persistence.model;
 
+import at.ase.respond.common.Sex;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
