@@ -1,12 +1,22 @@
 package at.ase.respond.datafeeder.service;
 
-import at.ase.respond.datafeeder.presentation.dto.ResourceLocationUpdatedEvent;
-import at.ase.respond.datafeeder.presentation.dto.ResourceStatusUpdatedEvent;
+import at.ase.respond.common.event.ResourceLocationUpdatedEvent;
+import at.ase.respond.common.event.ResourceStatusUpdatedEvent;
 
 public interface MessageSender {
 
-	void send(ResourceStatusUpdatedEvent payload);
+    /**
+     * Publishes the specified event to the broker.
+     *
+     * @param message the event to publish
+     */
+    void publish(ResourceStatusUpdatedEvent message);
 
-	void send(ResourceLocationUpdatedEvent payload);
+    /**
+     * Publishes the specified event to the broker.
+     *
+     * @param message the event to publish
+     */
+    void publish(ResourceLocationUpdatedEvent message);
 
 }

@@ -37,9 +37,6 @@ public class RabbitConfig {
     @Value("${rabbit.routes.incidents}")
     private String incidentsRoute;
 
-    @Value("${rabbit.routes.resources.status}")
-    private String resourcesRoute;
-
     @Value("${rabbit.exchange}")
     private String exchange;
 
@@ -88,10 +85,6 @@ public class RabbitConfig {
     @Bean
     public Binding resourcesLocationBinding(Queue resourceLocationQueue, Exchange exchange) {
         return BindingBuilder.bind(resourceLocationQueue).to(exchange).with(resourcesLocationRoute).noargs();
-    }
-
-    public String resourceRoutingKey(String resourceId) {
-        return resourcesStatusRoute + "." + resourceId;
     }
 
     @Bean

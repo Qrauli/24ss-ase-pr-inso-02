@@ -1,5 +1,7 @@
 package at.ase.respond.incident.presentation.dto;
 
+import at.ase.respond.common.dto.LocationDTO;
+import at.ase.respond.common.dto.PatientDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;

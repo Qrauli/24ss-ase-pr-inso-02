@@ -14,11 +14,12 @@ rabbit:
     max-attempts: 15
   exchange: 'respond-exchange'
   routes:
+    incidents: 'respond-incidents-route'
     resources:
       status: 'respond-resources-status-route'
       location: 'respond-resources-location-route'
   queues:
-    resources: 'respond-resources-datafeeder-queue'
+    incidents: 'respond-datafeeder-incidents-queue'
 
 spring:
   rabbitmq:

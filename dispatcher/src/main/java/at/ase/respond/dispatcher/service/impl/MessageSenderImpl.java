@@ -1,6 +1,6 @@
 package at.ase.respond.dispatcher.service.impl;
 
-import at.ase.respond.dispatcher.presentation.event.ResourceStatusUpdatedEvent;
+import at.ase.respond.common.event.IncidentStatusUpdatedEvent;
 import at.ase.respond.dispatcher.service.MessageSender;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class MessageSenderImpl implements MessageSender {
     private String exchange;
 
     @Value("${rabbit.routes.resources.status}")
-    private String baseRoute;
+    private String resourcesBaseRoute;
 
     private final RabbitTemplate rabbit;
 
@@ -40,8 +40,8 @@ public class MessageSenderImpl implements MessageSender {
     }
 
     @Override
-    public void publish(ResourceStatusUpdatedEvent message) {
-        rabbit.convertAndSend(exchange, baseRoute + message.resourceId(), message);
+    public void publish(IncidentStatusUpdatedEvent message) {
+        rabbit.convertAndSend(exchange, resourcesBaseRoute + "-" +  message.resourceId(), message);
     }
 
 }

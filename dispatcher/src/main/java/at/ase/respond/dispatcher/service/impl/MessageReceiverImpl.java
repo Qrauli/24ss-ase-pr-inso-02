@@ -1,18 +1,17 @@
 package at.ase.respond.dispatcher.service.impl;
 
-import at.ase.respond.dispatcher.persistence.IncidentRepository;
-import at.ase.respond.dispatcher.persistence.ResourceRepository;
-import at.ase.respond.dispatcher.persistence.model.LocationCoordinates;
-import at.ase.respond.dispatcher.persistence.model.Resource;
-import at.ase.respond.dispatcher.persistence.model.ResourceState;
-import at.ase.respond.dispatcher.presentation.event.ResourceLocationUpdatedEvent;
-import at.ase.respond.dispatcher.presentation.event.ResourceStatusUpdatedEvent;
-import at.ase.respond.dispatcher.presentation.mapper.IncidentMapper;
-import at.ase.respond.dispatcher.presentation.mapper.ResourceMapper;
-import at.ase.respond.dispatcher.presentation.event.IncidentCreatedEvent;
-import at.ase.respond.dispatcher.presentation.dto.ResourceDTO;
-import at.ase.respond.dispatcher.presentation.event.IncidentCreatedEvent;
+import at.ase.respond.common.IncidentState;
+import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
+import at.ase.respond.common.event.ResourceLocationUpdatedEvent;
+import at.ase.respond.common.event.ResourceStatusUpdatedEvent;
+import at.ase.respond.common.exception.NotFoundException;
+import at.ase.respond.dispatcher.persistence.model.Incident;
+
+import at.ase.respond.dispatcher.persistence.vo.LocationCoordinatesVO;
 import at.ase.respond.dispatcher.presentation.mapper.LocationCoordinatesMapper;
+import at.ase.respond.dispatcher.presentation.mapper.LocationMapper;
+import at.ase.respond.dispatcher.presentation.mapper.PatientMapper;
+import at.ase.respond.dispatcher.service.IncidentService;
 import at.ase.respond.dispatcher.service.MessageReceiver;
 import at.ase.respond.dispatcher.service.ResourceService;
 import com.rabbitmq.client.Channel;
@@ -29,63 +28,70 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class MessageReceiverImpl implements MessageReceiver {
 
-    private final IncidentRepository repository;
-
-    private final ResourceRepository resourceRepository;
+    private final IncidentService incidentService;
 
     private final ResourceService resourceService;
 
+    private final LocationMapper locationMapper;
+
+    private final LocationCoordinatesMapper locationCoordinatesMapper;
+
+    private final PatientMapper patientMapper;
+
     @Override
     @RabbitListener(queues = "${rabbit.queues.incidents}")
-    public void receive(Channel channel, Message message, IncidentCreatedEvent payload) throws IOException {
+    public void receive(Channel channel, Message message, IncidentCreatedOrUpdatedEvent payload) throws IOException {
         log.debug("Received incident payload {}", payload);
-        repository.save(IncidentMapper.toEntity(payload));
+
+        IncidentState state;
+        try {
+            // Check if incident already exists, if so, keep its state
+            state = incidentService.findById(payload.id()).getState();
+        } catch (NotFoundException e) {
+            // Incident does not exist yet, so it is in READY state
+            state = IncidentState.READY;
+        }
+
+        Incident incident = Incident.builder()
+                .id(payload.id())
+                .code(payload.code())
+                .state(state)
+                .patients(payload.patients().stream().map(patientMapper::toVO).toList())
+                .numberOfPatients(payload.numberOfPatients())
+                .location(locationMapper.toVO(payload.location()))
+                .build();
+
+        incidentService.save(incident);
+
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
     @Override
     @RabbitListener(queues = "${rabbit.queues.resources.location}")
     public void receive(Channel channel, Message message, ResourceLocationUpdatedEvent payload) throws IOException {
-        log.debug("Received resource location update payload {} in message {}", payload, message);
+        log.debug("Received resource location update payload {}", payload);
+
         try {
-            LocationCoordinates locationCoordinates = LocationCoordinatesMapper.toEntity(payload.locationCoordinates());
-            resourceService.updateLocation(payload.resourceId(), locationCoordinates);
-        }
-        catch (IllegalArgumentException e) {
+            LocationCoordinatesVO location = locationCoordinatesMapper.toVO(payload.locationCoordinates());
+            resourceService.updateLocation(payload.resourceId(), location);
+        } catch (NotFoundException e) {
             log.error("Failed to update resource location for id {}: Resource not found", payload.resourceId());
         }
+
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
     @Override
     @RabbitListener(queues = "${rabbit.queues.resources.status}")
     public void receive(Channel channel, Message message, ResourceStatusUpdatedEvent payload) throws IOException {
-        log.debug("Received resource status update payload {} in message {}", payload, message);
-        ResourceState state = payload.state();
-        if (state == null) {
-            return;
-        }
+        log.debug("Received resource status update payload {}", payload);
 
         try {
-            resourceService.updateState(payload.resourceId(), state);
-        }
-        catch (IllegalArgumentException e) {
-            if (state == ResourceState.AVAILABLE) {
-                log.info("Resource with id {} not found, creating new resource", payload.resourceId());
-                Resource newResource = new Resource(payload.resourceId(), payload.type(), state,
-                        new LocationCoordinates(0.0, 0.0), null);
-                resourceService.create(newResource);
-            }
-            else {
-                log.error("Failed to update resource state for id {}: Resource not found", payload.resourceId());
-                throw e;
-            }
+            resourceService.updateState(payload.resourceId(), payload.state());
+        } catch (NotFoundException e) {
+            log.error("Failed to update resource status for id {}: Resource not found", payload.resourceId());
         }
 
-        if (state == ResourceState.UNAVAILABLE) {
-            log.info("Resource with id {} is unavailable, deleting", payload.resourceId());
-            resourceService.deleteById(payload.resourceId());
-        }
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 

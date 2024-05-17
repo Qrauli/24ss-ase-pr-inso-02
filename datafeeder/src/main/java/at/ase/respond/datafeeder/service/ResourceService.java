@@ -1,17 +1,18 @@
 package at.ase.respond.datafeeder.service;
 
-import at.ase.respond.datafeeder.presentation.dto.ResourceDTO;
-import at.ase.respond.datafeeder.presentation.dto.ResourceState;
-import at.ase.respond.datafeeder.presentation.dto.ResourceType;
+import java.util.List;
+
+import at.ase.respond.common.ResourceState;
+import at.ase.respond.common.dto.LocationCoordinatesDTO;
+import at.ase.respond.common.dto.ResourceDTO;
+import at.ase.respond.common.exception.NotFoundException;
 
 public interface ResourceService {
 
-	ResourceDTO create(String resourceId, ResourceType type, Double latitude, Double longitude);
+	List<ResourceDTO> findAll();
 
-	ResourceDTO updateState(String resourceId, ResourceState state);
+	ResourceDTO updateState(String resourceId, ResourceState newState) throws NotFoundException;
 
-	void updateLocation(String resourceId, Double latitude, Double longitude);
-
-	void delete(String resourceId);
+	ResourceDTO updateLocation(String resourceId, LocationCoordinatesDTO newLocation) throws NotFoundException;
 
 }

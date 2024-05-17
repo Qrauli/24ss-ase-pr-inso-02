@@ -1,7 +1,7 @@
 package at.ase.respond.dispatcher.presentation.controller;
 
+import at.ase.respond.common.dto.ResourceDTO;
 import at.ase.respond.dispatcher.presentation.mapper.ResourceMapper;
-import at.ase.respond.dispatcher.presentation.dto.ResourceDTO;
 import at.ase.respond.dispatcher.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +19,23 @@ public class ResourceController {
 
     private final ResourceService service;
 
+    private final ResourceMapper mapper;
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Returns a list of all resources")
     public ResponseEntity<List<ResourceDTO>> findAll(
-            @RequestParam(value = "additional", required = false, defaultValue = "false") boolean additional) {
-        return ResponseEntity.ok(service.findAll().stream().map(ResourceMapper::toDTO).toList());
+            @RequestParam(value = "additional", required = false, defaultValue = "false") boolean additional
+    ) {
+        return ResponseEntity.ok(service.findAll().stream().map(mapper::toDTO).toList());
     }
 
     @PostMapping(value = "/{resourceId}/assign/{incidentId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Assigns a resource to an incident")
-    public ResponseEntity<ResourceDTO> assignToIncident(@PathVariable String resourceId,
-            @PathVariable UUID incidentId) {
-        try {
-            return ResponseEntity.ok(ResourceMapper.toDTO(service.assignToIncident(resourceId, incidentId)));
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ResourceDTO> assignToIncident(
+            @PathVariable String resourceId,
+            @PathVariable UUID incidentId
+    ) {
+            return ResponseEntity.ok(mapper.toDTO(service.assignToIncident(resourceId, incidentId)));
     }
 
 }

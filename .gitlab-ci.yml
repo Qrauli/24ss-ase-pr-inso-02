@@ -2,6 +2,7 @@ variables:
   FF_PRINT_POD_EVENTS: "true"
 
 stages:
+  - publish
   - test
   - build
   - deploy
@@ -20,6 +21,13 @@ stages:
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: always
+
+publish-common-lib:
+  stage: publish
+  image: gradle:8.7-jdk21
+  script:
+    - cd common
+    - ./gradlew publish
 
 test-incident-service:
   stage: test

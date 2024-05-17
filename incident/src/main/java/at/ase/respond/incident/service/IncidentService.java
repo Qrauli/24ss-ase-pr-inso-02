@@ -8,8 +8,8 @@ public interface IncidentService {
 
     /**
      * Creates a new incident and publishes it to the broker.
-     * @param incident the DTO containing the meta-information of the incident to be
-     * created
+     *
+     * @param incident the DTO containing the meta-information of the incident to be created
      * @return the {@link UUID} of the newly created incident
      */
     UUID create(IncidentDTO incident);

@@ -1,6 +1,6 @@
 package at.ase.respond.incident.service.impl;
 
-import at.ase.respond.incident.presentation.event.IncidentCreatedEvent;
+import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.service.MessageSender;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +40,7 @@ public class MessageSenderImpl implements MessageSender {
     }
 
     @Override
-    public void publish(IncidentCreatedEvent message) {
+    public void publish(IncidentCreatedOrUpdatedEvent message) {
         rabbit.convertAndSend(exchange, route, message, new CorrelationData(message.id().toString()));
     }
 

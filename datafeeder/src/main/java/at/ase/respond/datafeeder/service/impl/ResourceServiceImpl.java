@@ -1,90 +1,136 @@
 package at.ase.respond.datafeeder.service.impl;
 
-import at.ase.respond.datafeeder.config.RabbitConfig;
-import at.ase.respond.datafeeder.presentation.dto.*;
-import at.ase.respond.datafeeder.service.MessageSender;
-import at.ase.respond.datafeeder.service.ResourceService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static at.ase.respond.datafeeder.presentation.dto.ResourceState.AVAILABLE;
-import static at.ase.respond.datafeeder.presentation.dto.ResourceState.UNAVAILABLE;
+import at.ase.respond.common.ResourceState;
+import at.ase.respond.common.dto.LocationCoordinatesDTO;
+import at.ase.respond.common.dto.ResourceDTO;
+import at.ase.respond.common.event.ResourceLocationUpdatedEvent;
+import at.ase.respond.common.event.ResourceStatusUpdatedEvent;
+import at.ase.respond.common.exception.NotFoundException;
+import at.ase.respond.datafeeder.service.MessageSender;
+import at.ase.respond.datafeeder.service.ResourceService;
+
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl implements ResourceService {
 
-	private final RabbitTemplate rabbitTemplate;
+    private final Environment environment;
 
-	private final RabbitConfig rabbitConfig;
+    private final ObjectMapper objectMapper;
 
-	private final TopicExchange exchange;
+    private final ApplicationContext context;
 
-	private final MessageSender messageSender;
+    private final MessageSender messageSender;
 
-	private final Map<String, ResourceDTO> resources = new HashMap<>();
+    private final Map<String, ResourceDTO> resources = new ConcurrentHashMap<>();
 
-	@Override
-	public ResourceDTO create(String resourceId, ResourceType type, Double latitude, Double longitude) {
-		LocationCoordinatesDTO locationCoordinates = new LocationCoordinatesDTO(latitude, longitude);
-		ResourceDTO resourceDTO = new ResourceDTO(resourceId, type, AVAILABLE, locationCoordinates, null);
-		if (resources.containsKey(resourceId)) {
-			throw new IllegalArgumentException("Resource with id " + resourceId + " already exists");
-		}
+    @PostConstruct
+    private void generateData() {
+        if (Arrays.asList(environment.getActiveProfiles()).contains("presentation")) {
+            log.info("Generating presentation data...");
 
-		ResourceStatusUpdatedEvent resourceStatusUpdatedEvent = new ResourceStatusUpdatedEvent(OffsetDateTime.now(), resourceId, type,
-				AVAILABLE, null);
-		messageSender.send(resourceStatusUpdatedEvent);
-		resources.put(resourceId, resourceDTO);
+            List<ResourceDTO> newResources;
+            try {
+                newResources = objectMapper.readValue(
+                        context.getResource("classpath:resources.json").getInputStream(),
+                        new TypeReference<>() {}
+                );
+            } catch (IOException e) {
+                throw new UncheckedIOException("Could not read resources.json", e);
+            }
 
-		ResourceLocationUpdatedEvent resourceLocationUpdatedEvent = new ResourceLocationUpdatedEvent(resourceId,
-				locationCoordinates);
-		messageSender.send(resourceLocationUpdatedEvent);
+            newResources.forEach(resource -> resources.put(resource.id(), resource));
 
-		return resourceDTO;
-	}
+            log.info("Generated presentation data");
+        }
+    }
 
-	@Override
-	public ResourceDTO updateState(String resourceId, ResourceState state) {
-		ResourceDTO resourceDTO = resources.get(resourceId);
-		if (resourceDTO == null) {
-			throw new IllegalArgumentException("Resource with id " + resourceId + " not found");
-		}
-		ResourceStatusUpdatedEvent event = new ResourceStatusUpdatedEvent(OffsetDateTime.now(), resourceDTO.id(), null, state,
-				resourceDTO.assignedIncident());
-		messageSender.send(event);
-		ResourceDTO updatedResource = new ResourceDTO(resourceDTO.id(), resourceDTO.type(), state,
-				resourceDTO.locationCoordinates(), resourceDTO.assignedIncident());
-		resources.put(resourceId, updatedResource);
-		return updatedResource;
-	}
+    @Override
+    @Synchronized("resources")
+    public List<ResourceDTO> findAll() {
+        return List.copyOf(resources.values());
+    }
 
-	@Override
-	public void updateLocation(String resourceId, Double latitude, Double longitude) {
-		ResourceLocationUpdatedEvent event = new ResourceLocationUpdatedEvent(resourceId,
-				new LocationCoordinatesDTO(latitude, longitude));
-		messageSender.send(event);
-	}
+    @Override
+    @Synchronized("resources")
+    public ResourceDTO updateState(String resourceId, ResourceState newState) {
+        ResourceDTO newResource = resources.computeIfPresent(resourceId, (id, resource) -> {
+            ResourceDTO updatedResource = new ResourceDTO(
+                    resource.id(),
+                    resource.type(),
+                    newState,
+                    resource.locationCoordinates(),
+                    resource.assignedIncident(),
+                    ZonedDateTime.now()
+            );
+            resources.put(id, updatedResource);
 
-	@Override
-	public void delete(String resourceId) {
-		if (!resources.containsKey(resourceId)) {
-			throw new IllegalArgumentException("Resource with id " + resourceId + " not found");
-		}
-		ResourceStatusUpdatedEvent event = new ResourceStatusUpdatedEvent(OffsetDateTime.now(), resourceId, resources.get(resourceId).type(),
-				UNAVAILABLE, null);
-		messageSender.send(event);
+            ResourceStatusUpdatedEvent event = new ResourceStatusUpdatedEvent(
+                    resourceId,
+                    newState,
+                    ZonedDateTime.now()
+            );
+            messageSender.publish(event);
 
-		resources.remove(resourceId);
-	}
+            return updatedResource;
+        });
+
+        if (newResource != null) {
+            return newResource;
+        }
+
+        throw new NotFoundException("Resource " + resourceId + " not found");
+    }
+
+    @Override
+    @Synchronized("resources")
+    public ResourceDTO updateLocation(String resourceId, LocationCoordinatesDTO newLocation) {
+        ResourceDTO newResource = resources.computeIfPresent(resourceId, (id, resource) -> {
+            ResourceDTO updatedResource = new ResourceDTO(
+                    resource.id(),
+                    resource.type(),
+                    resource.state(),
+                    newLocation,
+                    resource.assignedIncident(),
+                    ZonedDateTime.now()
+            );
+            resources.put(id, updatedResource);
+
+            ResourceLocationUpdatedEvent event = new ResourceLocationUpdatedEvent(
+                    resourceId,
+                    newLocation,
+                    ZonedDateTime.now()
+            );
+            messageSender.publish(event);
+
+            return updatedResource;
+        });
+
+        if (newResource != null) {
+            return newResource;
+        }
+
+        throw new NotFoundException("Resource " + resourceId + " not found");
+    }
 
 }

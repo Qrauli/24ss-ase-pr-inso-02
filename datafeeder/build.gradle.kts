@@ -19,7 +19,19 @@ configurations {
 }
 
 repositories {
+	mavenLocal()
 	mavenCentral()
+	maven {
+		url = uri("https://reset.inso.tuwien.ac.at/repo/api/v4/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
+		name = "GitLab"
+		credentials(HttpHeaderCredentials::class) {
+			name = "Job-Token"
+			value = System.getenv("CI_JOB_TOKEN")
+		}
+		authentication {
+			create("header", HttpHeaderAuthentication::class)
+		}
+	}
 }
 
 dependencies {
@@ -39,6 +51,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 
+	// Respond Common Lib
+	implementation("at.ase.respond:common-lib:0.0.1")
 }
 
 buildscript {
@@ -58,10 +72,7 @@ tasks.withType<Test> {
 
 spotless {
 	java {
-		target("src/**/*.java")
-		toggleOffOn()
-		palantirJavaFormat()
-		importOrder("java", "javax", "org", "com", "at", )
+		importOrder("java", "javax", "org", "com", "at")
 		removeUnusedImports()
 		trimTrailingWhitespace()
 	}
