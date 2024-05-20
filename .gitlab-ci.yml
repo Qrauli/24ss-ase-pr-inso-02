@@ -36,6 +36,8 @@ test-incident-service:
     when: always
     reports:
       junit: incident/build/test-results/test/**/TEST-*.xml
+  variables:
+    CI_JOB_TOKEN_TYPE: "Job-Token"
   script:
     - cd incident
     - ./gradlew check
@@ -47,6 +49,8 @@ test-categorization-service:
     when: always
     reports:
       junit: categorization/build/test-results/test/**/TEST-*.xml
+  variables:
+    CI_JOB_TOKEN_TYPE: "Job-Token"
   script:
     - cd categorization
     - ./gradlew check
@@ -58,6 +62,8 @@ test-dispatcher-service:
     when: always
     reports:
       junit: dispatcher/build/test-results/test/**/TEST-*.xml
+  variables:
+    CI_JOB_TOKEN_TYPE: "Job-Token"
   script:
     - cd dispatcher
     - ./gradlew check
