@@ -84,6 +84,7 @@ test-dashboard:
     - /kaniko/executor 
       --context "${CI_PROJECT_DIR}/${SUBPROJECT}" 
       --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}"
+      --build-arg CI_JOB_TOKEN_TYPE="Job-Token"
       --build-arg CI_PROJECT_ID="${CI_PROJECT_ID}"
       --dockerfile "${CI_PROJECT_DIR}/${SUBPROJECT}/Dockerfile" 
       --label "org.opencontainers.image.source=${CI_PROJECT_URL}"
