@@ -10,10 +10,10 @@ public interface IncidentService {
 
     /**
      * Returns a list of all incidents.
-     *
+     * @param running if true, only non-completed incidents are returned
      * @return a list of all incidents
      */
-    List<Incident> findAll();
+    List<Incident> findAll(boolean running);
 
     /**
      * Returns the incident with the specified id, if present.

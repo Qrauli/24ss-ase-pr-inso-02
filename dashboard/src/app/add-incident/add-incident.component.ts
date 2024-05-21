@@ -22,11 +22,10 @@ import {Geocoder} from 'leaflet-control-geocoder';
 import {MatDividerModule} from '@angular/material/divider';
 import {LocationCoordinates} from "../dto/location-coordinates";
 import {Patient, Sex} from "../dto/patient";
-import {Incident, Status} from "../dto/incident";
+import {Incident, State} from "../dto/incident";
 import {Observable} from "rxjs";
 import {GeocodingResult} from "leaflet-control-geocoder/src/geocoders/api";
 import {IncidentService} from "../incidents.service";
-
 
 @Component({
   selector: 'app-add-incident',
@@ -224,16 +223,14 @@ export class AddIncidentComponent {
   // ####################### Saving ####################### //
 
   saveIncident(): void {
-    const incident: Incident = {
+    const incident: Incident= {
       id: "",
       patients: this.patients,
       numberOfPatients: this.patients.length,
-      categorization: {
-        id: "",
-        code: this.selectedCategory
-      },
+      code: this.selectedCategory,
+      questionaryId: "",
       location: {
-        description: {
+        address: {
           street: this.locationForm.value.street!,
           postalCode: this.locationForm.value.postalCode!,
           city: this.locationForm.value.city!,
@@ -241,7 +238,7 @@ export class AddIncidentComponent {
         },
         coordinates: this.locationCoordinates
       },
-      status: Status.CREATED
+      state: State.READY
     };
 
     this.incidentService.saveIncident(incident).subscribe(saved => {

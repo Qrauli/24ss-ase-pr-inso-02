@@ -1,7 +1,9 @@
 package at.ase.respond.incident.service;
 
+import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IncidentService {
@@ -13,5 +15,19 @@ public interface IncidentService {
      * @return the {@link UUID} of the newly created incident
      */
     UUID create(IncidentDTO incident);
+
+    /**
+     * Finds incidents by their IDs.
+     * @param ids the IDs of the incidents to be found
+     * @return a list of incidents
+     */
+    List<Incident> findIncidents(UUID[] ids);
+
+    /**
+     * Finds an incident by its ID.
+     * @param id the ID of the incident to be found
+     * @return the incident
+     */
+    Incident findById(UUID id);
 
 }

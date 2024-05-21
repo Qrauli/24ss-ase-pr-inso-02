@@ -22,16 +22,17 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
 import { ResourceService } from '../resources.service';
-import {interval, switchMap} from "rxjs";
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSortHeader} from "@angular/material/sort";
+import { interval, switchMap } from "rxjs";
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSortHeader } from "@angular/material/sort";
 import {
   MatSnackBar,
   MatSnackBarHorizontalPosition,
   MatSnackBarRef,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
+import { ResourceRequest } from '../dto/resource-request';
 
 
 @Component({
@@ -69,6 +70,8 @@ export class DispatcherComponent implements OnInit {
 
   recommended: Set<number> = new Set();
 
+  resourceRequests: ResourceRequest[] = [];
+
   showDispatched: boolean;
 
   incidents: Incident[] = [];
@@ -77,11 +80,11 @@ export class DispatcherComponent implements OnInit {
 
   resourcesAdditional: Resource[];
 
-  notifications: Incident[] = [];
+  notifications: any[] = [];
 
   displayedColumnsResources: string[] = ['status', 'id', 'type', 'location', 'locate', 'assign'];
   displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
-  displayedColumnsIncidents: string[] = ['status', 'location', 'class', ];
+  displayedColumnsIncidents: string[] = ['status', 'location', 'class',];
 
   options: Leaflet.MapOptions = {
     layers: [
@@ -94,8 +97,12 @@ export class DispatcherComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoing().subscribe(data => {
-      data.sort((a, b) => a.status.localeCompare(b.status));
+      data.sort((a, b) => a.state.localeCompare(b.state));
       this.incidents = data;
+    });
+
+    this.resourcesService.getOpenResourceRequests().subscribe(data => {
+      this.resourceRequests = data;
     });
 
     interval(5000)
@@ -112,9 +119,18 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoing())
       )
       .subscribe(data => {
-          data.sort((a, b) => a.status.localeCompare(b.status));
+          data.sort((a, b) => a.state.localeCompare(b.state));
           this.incidentRefresher(data);
         }
+      )
+
+    interval(5000)
+      .pipe(
+        switchMap(() => this.resourcesService.getOpenResourceRequests())
+      )
+      .subscribe(data => {
+        this.requestRefresher(data);
+      }
       )
 
     this.resourcesService.getResourcesAdditional().subscribe(data => {
@@ -122,14 +138,17 @@ export class DispatcherComponent implements OnInit {
     });
   }
 
-  // shows notification for new incidents
+  /**
+   * checks if the given incident is already in the list of incidents
+   * @param data refreshed incidents
+   */
   incidentRefresher(data: Incident[]): void {
     for (let i = 0; i < data.length; i++) {
       let flag = false;
       for (let j = 0; j < this.incidents.length; j++) {
         if (this.incidents[j].id == data[i].id) {
           flag = true;
-           break;
+          break;
         }
       }
       if (!flag) {
@@ -137,29 +156,71 @@ export class DispatcherComponent implements OnInit {
       }
     }
     this.incidents = data;
-    if(!this._snackBar._openedSnackBarRef?._open) {
+    if (!this._snackBar._openedSnackBarRef?._open) {
       this.displayNotifications();
     }
   }
 
-  displayNotifications(): void {
-    if(this.notifications.length > 0) {
-    let notification = this.notifications.shift();
-    let classString = this.codeIsPriority(notification!.categorization.code) ? 'alert-red' : 'alert-default';
-    const ref: MatSnackBarRef<any> =  this._snackBar.open('Neuer Einsatz: ' + notification!.categorization.code, 'Auswählen', {
-      horizontalPosition: 'center',
-      verticalPosition: 'top',
-      duration: 7000,
-      panelClass: [classString]
-    });
-    ref.onAction().subscribe(() => {
-      console.log('Einsatz ausgewählt: ' + notification!.id);
-      this.selectIncident(notification!);
-    });
-    ref.afterDismissed().subscribe(() => {
+  /**
+   * checks if the given resource request is already in the list of resource requests
+   * @param data refreshed resource requests
+   */
+  requestRefresher(data: ResourceRequest[]): void {
+    for (let i = 0; i < data.length; i++) {
+      let flag = false;
+      for (let j = 0; j < this.resourceRequests.length; j++) {
+        if (this.resourceRequests[j].id == data[i].id) {
+          flag = true;
+          break;
+        }
+      }
+      if (!flag) {
+        this.notifications.push(data[i]);
+      }
+    }
+    this.resourceRequests = data;
+    if (!this._snackBar._openedSnackBarRef?._open) {
       this.displayNotifications();
-    });
+    }
   }
+
+  
+  /**
+   * displays the notifications in the snackbar
+   */
+  displayNotifications(): void {
+    if (this.notifications.length > 0) {
+      let notification = this.notifications.shift();
+      if (<Incident>notification.code) {
+        let classString = this.codeIsPriority(notification!.code) ? 'alert-red' : 'alert-default';
+        const ref: MatSnackBarRef<any> = this._snackBar.open('Neuer Einsatz: ' + notification!.code, 'Auswählen', {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 7000,
+          panelClass: [classString]
+        });
+        ref.onAction().subscribe(() => {
+          this.selectIncident(notification!);
+        });
+        ref.afterDismissed().subscribe(() => {
+          this.displayNotifications();
+        });
+      }
+      else if(<ResourceRequest>notification.requestedResourceType){
+        const ref: MatSnackBarRef<any> = this._snackBar.open('Neue Resourcen-Anfrage', 'Auswählen', {
+          horizontalPosition: 'center',
+          verticalPosition: 'top',
+          duration: 7000,
+          panelClass: ['alert-default']
+        });
+        ref.onAction().subscribe(() => {
+          this.selectIncident(this.incidentFromId(notification.assignedIncident));
+        });
+        ref.afterDismissed().subscribe(() => {
+          this.displayNotifications();
+        });
+      }
+    }
   }
 
   unassignResource(resource: Resource): void {
@@ -204,16 +265,11 @@ export class DispatcherComponent implements OnInit {
    * @param incident
    */
   selectIncident(incident: Incident): void {
-    if (this.selectedIncident === incident.id) {
-      this.selectedIncident = null;
-      this.recommended = new Set();
-      this.assignedResources = [];
-      return;
-    }
     this.selectedIncident = incident.id;
-    this.incidentService.getIncidentById(incident.id).subscribe(data => {
+    this.selectedIncidentData = incident;
+    /*this.incidentService.getIncidentById(incident.id).subscribe(data => {
       this.selectedIncidentData = data;
-    });
+    });*/
     this.recommended = new Set([1, 2, 3]);
     this.assignedResources = [];
 
@@ -248,5 +304,50 @@ export class DispatcherComponent implements OnInit {
   }
 
   protected readonly ResourceState = ResourceState;
+  hasRequest(incident: Incident): boolean {
+    for (let i = 0; i < this.resourceRequests.length; i++) {
+      if (this.resourceRequests[i].assignedIncident == incident.id) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getRequests(incident: Incident): ResourceRequest[] {
+    let requests: ResourceRequest[] = [];
+    for (let i = 0; i < this.resourceRequests.length; i++) {
+      if (this.resourceRequests[i].assignedIncident == incident.id) {
+        requests.push(this.resourceRequests[i]);
+      }
+    }
+    return requests;
+  }
+
+  /**
+   * Marks the given request as finished
+   * @param request request to be finished
+   */
+
+  finishRequest(request: ResourceRequest): void {
+    const dialogData = new ConfirmDialogModel("Anfrage abschließen", "Soll die Anfrage wirklich abgeschlossen werden?");
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: dialogData,
+      enterAnimationDuration: 0,
+      exitAnimationDuration: 0
+    });
+
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if (dialogResult === true) {
+        this.resourcesService.finishRequest(request).subscribe(data => {
+          this.resourceRequests = this.resourceRequests.filter(item => item.id !== request.id);
+        });
+      }
+    });
+  }
+
+  incidentFromId(id: string): Incident {
+    return this.incidents.find(incident => incident.id === id)!;
+  }
+
 }
 

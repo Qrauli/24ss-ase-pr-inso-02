@@ -18,8 +18,11 @@ rabbit:
     resources:
       status: 'respond-resources-status-route'
       location: 'respond-resources-location-route'
+    requests: 'respond-requests-route'
   queues:
-    incidents: 'respond-datafeeder-incidents-queue'
+    incidents: 'respond-queue'
+    requests: 'respond-requests-datafeeder-incidents-queue'
+    resources: 'respond-resources-queue'
 
 spring:
   rabbitmq:

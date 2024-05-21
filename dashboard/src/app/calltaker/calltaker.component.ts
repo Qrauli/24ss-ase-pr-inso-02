@@ -11,7 +11,7 @@ import {HeaderComponent} from '../header/header.component';
 import {MatListModule} from '@angular/material/list';
 import {NgFor, NgIf} from '@angular/common';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {Incident, Status} from '../dto/incident';
+import {Incident, State} from '../dto/incident';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
@@ -56,8 +56,8 @@ export class CalltakerComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.dataSource.data.sort((a, b) => {
         // move created to the top and everything else to the bottom
-        if (a.status == Status.CREATED) return -1;
-        if (b.status == Status.CREATED) return 1;
+        if (a.state == State.READY) return -1;
+        if (b.state == State.READY) return 1;
         return 0;
       });
       console.log(data);

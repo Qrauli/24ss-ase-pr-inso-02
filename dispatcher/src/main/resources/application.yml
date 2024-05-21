@@ -14,12 +14,14 @@ rabbit:
     max-attempts: 15
   exchange: 'respond-exchange'
   routes:
+    requests: 'respond-requests-route'
     incidents: 'respond-incidents-route'
     resources:
       status: 'respond-resources-status-route'
       location: 'respond-resources-location-route'
   queues:
     incidents: 'respond-incidents-queue'
+    requests: 'respond-requests-queue'
     resources:
       status: 'respond-resources-status-queue'
       location: 'respond-resources-location-queue'

@@ -11,28 +11,33 @@ import at.ase.respond.incident.persistence.model.LocationAddress;
 import at.ase.respond.incident.persistence.model.LocationCoordinates;
 import at.ase.respond.incident.persistence.model.OperationCode;
 import at.ase.respond.incident.persistence.model.Patient;
+import at.ase.respond.incident.presentation.dto.CategorizationDTO;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
-public final class IncidentMapper {
 
-    private IncidentMapper() {
-        throw new AssertionError("Static Class - Do not instantiate!");
-    }
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-    public static Incident toEntity(IncidentDTO incident) {
+
+@Mapper(componentModel = "spring")
+public interface IncidentMapper {
+
+    IncidentDTO toDTO(Incident incident);
+
+    default Incident toEntity(IncidentDTO incident) {
         return Incident.builder()
             .id(incident.id())
-            .code(OperationCode.from(incident.categorization().code()))
+            .code(OperationCode.from(incident.code()))
             .location(toEntity(incident.location()))
             .patients(toEntity(incident.patients()))
             .numberOfPatients(incident.numberOfPatients())
             .build();
     }
 
-    public static IncidentCreatedOrUpdatedEvent toEvent(Incident incident) {
+    default IncidentCreatedOrUpdatedEvent toEvent(Incident incident) {
         return new IncidentCreatedOrUpdatedEvent(
                 incident.getId(),
                 incident.getCode().getCode(),
@@ -43,41 +48,12 @@ public final class IncidentMapper {
         );
     }
 
-    private static Location toEntity(LocationDTO location) {
-        Double lat = location.coordinates().latitude();
-        Double lon = location.coordinates().longitude();
+    Location toEntity(LocationDTO location);
 
-        String street = location.address().street();
-        String postalCode = location.address().postalCode();
-        String city = location.address().city();
-        String additionalInformation = location.address().additionalInformation();
+    Collection<Patient> toEntity(Collection<PatientDTO> patients);
 
-        return Location.builder()
-            .coordinates(new LocationCoordinates(lat, lon))
-            .address(new LocationAddress(street, postalCode, city, additionalInformation))
-            .build();
-    }
+    LocationDTO toEvent(Location location);
 
-    private static Collection<Patient> toEntity(Collection<PatientDTO> patients) {
-        return patients.stream().map(p -> new Patient(p.age(), p.sex())).toList();
-    }
-
-    private static LocationDTO toEvent(Location location) {
-        Double lat = location.getCoordinates().getLatitude();
-        Double lon = location.getCoordinates().getLongitude();
-
-        String street = location.getAddress().getStreet();
-        String postalCode = location.getAddress().getPostalCode();
-        String city = location.getAddress().getCity();
-        String additionalInformation = location.getAddress().getAdditionalInformation();
-
-        LocationAddressDTO address = new LocationAddressDTO(street, postalCode, city, additionalInformation);
-        LocationCoordinatesDTO coordinates = new LocationCoordinatesDTO(lat, lon);
-        return new LocationDTO(address, coordinates);
-    }
-
-    private static Collection<PatientDTO> toEvent(Collection<Patient> patients) {
-        return patients.stream().map(p -> new PatientDTO(p.getAge(), p.getSex())).toList();
-    }
+    Collection<PatientDTO> toEvent(Collection<Patient> patients);
 
 }

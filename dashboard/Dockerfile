@@ -4,6 +4,7 @@
 # Use official node image as the base image
 FROM node:latest as build
 
+ARG BUILD_ENV=prod
 # Set the working directory
 WORKDIR /usr/local/app
 
@@ -14,7 +15,7 @@ COPY ./ /usr/local/app/
 RUN npm install
 
 # Generate the build of the application
-RUN npm run build:dev
+RUN npm run build:${BUILD_ENV}
 
 
 # Stage 2: Serve app with nginx server

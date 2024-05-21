@@ -155,7 +155,10 @@ services:
           memory: 512M
           cpus: "0.1"
   dashboard:
-    build: '../dashboard'
+    build: 
+      context: '../dashboard'
+      args:
+        - BUILD_ENV=dev
     ports:
       - '80:80'
     deploy:
