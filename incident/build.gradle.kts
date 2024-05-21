@@ -55,6 +55,10 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-amqp")
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 
+	// MapStruct
+	implementation("org.mapstruct:mapstruct:1.6.0.Beta1")
+	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
+
 	// Respond Common Lib
 	implementation("at.ase.respond:common-lib:0.0.1")
 }

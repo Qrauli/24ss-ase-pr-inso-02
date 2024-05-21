@@ -22,6 +22,12 @@ public class RabbitConfig {
     @Value("${rabbit.queues.incidents}")
     private String incidentsQueue;
 
+    @Value("${rabbit.queues.requests}")
+    private String requestsQueue;
+
+    @Value("${rabbit.routes.requests}")
+    private String requestsRoute;
+
     @Value("${rabbit.queues.resources.status}")
     private String resourcesStatusQueue;
 
@@ -58,6 +64,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    Queue requestsQueue() {
+        return new Queue(requestsQueue, true);
+    }
+
+    @Bean
     public Queue resourceStatusQueue() {
         return new Queue(resourcesStatusQueue, true);
     }
@@ -75,6 +86,11 @@ public class RabbitConfig {
     @Bean
     public Binding incidentsBinding(Queue incidentsQueue, Exchange exchange) {
         return BindingBuilder.bind(incidentsQueue).to(exchange).with(incidentsRoute).noargs();
+    }
+
+    @Bean
+    public Binding requestsBinding(Queue requestsQueue, Exchange exchange) {
+        return BindingBuilder.bind(requestsQueue).to(exchange).with(requestsRoute).noargs();
     }
 
     @Bean

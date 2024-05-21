@@ -50,7 +50,7 @@
   }
 
   .section-vert-1-checked{
-    height: calc(50vh - 124px);
+    height: calc(40vh - 124px);
     width: 100%;
     overflow-y: scroll;
   }
@@ -58,7 +58,7 @@
 
 
   .section-vert-2 {
-    height: calc(50vh - 50px);
+    height: calc(60vh - 50px);
     width: 100%;
     overflow-y: scroll;
   }
@@ -167,10 +167,18 @@
   border-right: 1px solid gray;
 }
 
+.heading-coloring{
+  background-color: #3F51B5;
+}
+
 .mat-mdc-snack-bar-container {
   &.blue-snackbar {
     --mdc-snackbar-container-color: #2196f3 !important;
     --mat-mdc-snack-bar-button-color: #fff !important;
     --mdc-snackbar-supporting-text-color: #fff !important;
   }
+}
+
+.white-icon{
+  color: white;
 }

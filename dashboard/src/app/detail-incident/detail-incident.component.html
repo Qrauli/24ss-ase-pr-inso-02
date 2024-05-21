@@ -9,18 +9,18 @@
 
 <mat-grid-list cols="5" rowHeight="50px" style="width: 50%">
   <mat-grid-tile colspan="2" class="key">PLZ</mat-grid-tile>
-  <mat-grid-tile colspan="3" class="property">{{incident?.location?.description?.postalCode}}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.postalCode}}</mat-grid-tile>
   <mat-grid-tile colspan="2" class="key">Ort</mat-grid-tile>
-  <mat-grid-tile colspan="3" class="property">{{incident?.location?.description?.city}}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.city}}</mat-grid-tile>
   <mat-grid-tile colspan="2" class="key">Straße</mat-grid-tile>
-  <mat-grid-tile colspan="3" class="property">{{incident?.location?.description?.street}}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.street}}</mat-grid-tile>
   <mat-grid-tile colspan="2" rowspan="2" class="key">Zusätzliche Standortinformationen</mat-grid-tile>
-  <mat-grid-tile colspan="3" rowspan="2" class="property">{{incident?.location?.description?.additionalInformation}}</mat-grid-tile>
+  <mat-grid-tile colspan="3" rowspan="2" class="property">{{incident?.location?.address?.additionalInformation}}</mat-grid-tile>
   <mat-grid-tile colspan="2" class="key">Dispatch Status</mat-grid-tile>
-  <mat-grid-tile colspan="3" class="property">{{incident?.status}}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.state}}</mat-grid-tile>
 </mat-grid-list>
 
-<h3>Klassifizierung: {{incident?.categorization?.code}}</h3>
+<h3>Klassifizierung: {{incident?.code}}</h3>
 
 <h4>Personen</h4>
 

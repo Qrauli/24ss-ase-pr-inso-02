@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -21,10 +22,22 @@ public class IncidentServiceImpl implements IncidentService {
 
     private final MessageSender sender;
 
+    private final IncidentMapper incidentMapper;
+
     public UUID create(IncidentDTO incident) {
-        Incident saved = repository.save(IncidentMapper.toEntity(incident));
-        sender.publish(IncidentMapper.toEvent(saved));
+        Incident saved = repository.save(incidentMapper.toEntity(incident));
+        sender.publish(incidentMapper.toEvent(saved));
         return saved.getId();
+    }
+
+    @Override
+    public List<Incident> findIncidents(UUID[] ids) {
+        return repository.findByIdIn(ids);
+    }
+
+    @Override
+    public Incident findById(UUID id) {
+        return repository.findById(id).orElse(null);
     }
 
 }

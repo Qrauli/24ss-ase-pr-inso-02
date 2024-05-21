@@ -29,6 +29,17 @@ publish-common-lib:
     - cd common
     - ./gradlew publish
 
+test-data-feeder:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: datafeeder/build/test-results/test/**/TEST-*.xml
+  script:
+    - cd datafeeder
+    - ./gradlew check
+
 test-incident-service:
   stage: test
   image: gradle:8.7-jdk21

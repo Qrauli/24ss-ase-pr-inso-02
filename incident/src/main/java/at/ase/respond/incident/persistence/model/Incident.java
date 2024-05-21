@@ -45,6 +45,6 @@ public class Incident {
 
     private Integer numberOfPatients;
 
-    // TODO: Reference questionary
+    private UUID questionaryId;
 
 }

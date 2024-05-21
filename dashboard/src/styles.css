@@ -9,9 +9,9 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --mdc-snackbar-supporting-text-color: white;
   }
 .alert-default{
-    --mdc-snackbar-container-color: black;
+    --mdc-snackbar-container-color: white;
     --mat-mdc-snack-bar-button-color: #fff;
-    --mdc-snackbar-supporting-text-color: white;
+    --mdc-snackbar-supporting-text-color: black;
   }
   .alert-red button {
     color: white !important;

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, switchMap, map } from 'rxjs';
 import { Incident } from './dto/incident';
 import { environment } from '../environments/environment';
 
@@ -12,11 +12,25 @@ export class IncidentService {
   constructor(private httpClient: HttpClient) { }
 
   getIncidentsOngoing(): Observable<Incident[]> {
-    return this.httpClient.get<Incident[]>( environment.incidentUrl + 'incidents');
+    return this.httpClient.get<Incident[]>(environment.resourceUrl + 'incidents');
   }
 
   getIncidentById(id: string): Observable<Incident> {
-    return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`);
+    //return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`);
+    return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`)
+    .pipe(
+      switchMap(
+        incident =>{
+          return this.httpClient.get<Incident>(environment.resourceUrl + `incidents/${id}`)
+          .pipe(
+            map(incidentState => {
+              incident.state = incidentState.state;
+              //TODO: add categorization questions
+              return incident;
+            })
+          )   
+        }
+      ));
   }
 
   saveIncident(incident: Incident): Observable<Incident> {

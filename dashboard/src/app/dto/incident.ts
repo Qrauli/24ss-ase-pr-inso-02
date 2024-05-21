@@ -16,18 +16,15 @@ export interface Incident {
   id: string;
   patients: Patient[];
   numberOfPatients: number;
-  categorization: Categorization;
+  code: String;
   location: Location;
-  status: Status;
+  state: State;
+  questionaryId: string;
 }
 
 // TODO define status
-export enum Status {
-  OPEN = "OPEN",
-  CREATED = "CREATED",
-  DISPATCHED = "DISPATCHED",
-  ACCEPTED = "ACCEPTED",
-  APPROACHING = "APPROACHING",
-  ONGOING = "ONGOING",
-  RESOLVED = "RESOLVED"
+export enum State {
+  READY="READY", 
+  DISPATCHED="DISPATCHED", 
+  COMPLETED="COMPLETED"
 }

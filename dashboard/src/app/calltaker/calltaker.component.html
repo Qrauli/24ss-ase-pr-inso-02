@@ -16,21 +16,21 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Dispatch Status </th>
       <td mat-cell *matCellDef="let element">
-        <mat-icon *ngIf="element.status == 'DISPATCHED'" class="check" fontIcon="check"></mat-icon>
-        <mat-icon *ngIf="element.status != 'DISPATCHED'" class="notcheck" fontIcon="close"></mat-icon>
+        <mat-icon *ngIf="element.state == 'DISPATCHED'" class="check" fontIcon="check"></mat-icon>
+        <mat-icon *ngIf="element.state != 'DISPATCHED'" class="notcheck" fontIcon="close"></mat-icon>
       </td>
     </ng-container>
 
     <!-- Location Column -->
     <ng-container matColumnDef="location" >
       <th mat-header-cell *matHeaderCellDef> Standort </th>
-      <td mat-cell *matCellDef="let element"> {{element.location.description.street}}, {{element.location.description.postalCode}} {{element.location.description.city}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.location.address.street}}, {{element.location.address.postalCode}} {{element.location.address.city}} </td>
     </ng-container>
 
     <!-- Classification Column -->
     <ng-container matColumnDef="class">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Klassifikation </th>
-      <td mat-cell *matCellDef="let element"> {{element.categorization.code}} </td>
+      <td mat-cell *matCellDef="let element"> {{element.code}} </td>
     </ng-container>
 
     <!-- Time Column -->

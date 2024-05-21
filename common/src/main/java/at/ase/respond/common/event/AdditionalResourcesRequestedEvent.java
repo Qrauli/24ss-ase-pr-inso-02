@@ -15,7 +15,7 @@ import java.time.ZonedDateTime;
  * @param timestamp             the timestamp of the request
  */
 public record AdditionalResourcesRequestedEvent(
-        String resourceId,
+        String resourceId, 
         ResourceType requestedResourceType,
         ZonedDateTime timestamp
 ) implements Serializable {
