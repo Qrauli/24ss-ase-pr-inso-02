@@ -1,5 +1,9 @@
 FROM gradle:8.7-jdk21 AS builder
 
+ARG CI
+ARG CI_JOB_TOKEN
+ARG CI_PROJECT_ID
+
 WORKDIR /app
 
 COPY build.gradle.kts .

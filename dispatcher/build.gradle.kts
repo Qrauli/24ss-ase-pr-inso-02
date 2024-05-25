@@ -24,7 +24,7 @@ repositories {
 		url = uri("https://reset.inso.tuwien.ac.at/repo/api/v4/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
 		name = "GitLab"
 		credentials(HttpHeaderCredentials::class) {
-			name = "Job-Token"
+			name = if(System.getenv("CI") != null) "Job-Token" else "Private-Token"
 			value = System.getenv("CI_JOB_TOKEN")
 		}
 		authentication {
