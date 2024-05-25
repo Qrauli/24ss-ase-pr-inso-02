@@ -210,7 +210,7 @@ deploy-dispatcher-service:
   variables:
     DEPLOYMENT_NAME: "dispatcher-service"
 
-.deploy-dashboard:
+deploy-dashboard:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "dashboard"
