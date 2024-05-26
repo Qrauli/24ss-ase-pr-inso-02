@@ -34,6 +34,9 @@ publish-common-lib:
   script:
     - cd common
     - ./gradlew publish
+  variables:
+    KUBERNETES_CPU_REQUEST: "1"
+    KUBERNETES_CPU_LIMIT: "0.5"
 
 test-data-feeder:
   stage: test
