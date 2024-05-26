@@ -35,7 +35,9 @@ publish-common-lib:
     - cd common
     - ./gradlew publish
   variables:
-    KUBERNETES_CPU_REQUEST: "1"
+    KUBERNETES_CPU_REQUEST_OVERWRITE_MAX_ALLOWED: "1"
+    KUBERNETES_CPU_LIMIT_OVERWRITE_MAX_ALLOWED: "1"
+    KUBERNETES_CPU_REQUEST: "0.5"
     KUBERNETES_CPU_LIMIT: "0.5"
 
 test-data-feeder:
