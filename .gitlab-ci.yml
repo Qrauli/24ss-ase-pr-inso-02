@@ -1,5 +1,7 @@
 variables:
   FF_PRINT_POD_EVENTS: "true"
+  KUBERNETES_CPU_LIMIT: "200m"
+  KUBERNETES_CPU_REQUEST: "100m"
 
 stages:
   - publish
