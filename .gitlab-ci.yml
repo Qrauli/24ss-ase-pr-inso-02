@@ -31,8 +31,8 @@ publish-common-lib:
     - cd common
     - ./gradlew publish
   variables:
-    KUBERNETES_CPU_REQUEST: "1"
-    KUBERNETES_CPU_LIMIT: "200"
+    KUBERNETES_HELPER_CPU_REQUEST: "1"
+    KUBERNETES_HELPER_CPU_LIMIT: "2"
     KUBERNETES_MEMORY_REQUEST: "512Mi"
     KUBERNETES_MEMORY_LIMIT: "1024Mi"
 
