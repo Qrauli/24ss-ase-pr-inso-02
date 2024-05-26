@@ -30,6 +30,8 @@ stages:
 
 publish-common-lib:
   stage: publish
+  before_script:
+    - env
   image: gradle:8.7-jdk21
   script:
     - cd common
