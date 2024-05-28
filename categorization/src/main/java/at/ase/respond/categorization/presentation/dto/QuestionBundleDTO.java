@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-@Schema(name = "QuestionBundleDTO", description = "Data Transfer Object for an categorization")
+@Schema(name = "QuestionBundleDTO", description = "Data Transfer Object for a categorization")
 public class QuestionBundleDTO {
 
     private BaseQuestionDTO baseQuestion;

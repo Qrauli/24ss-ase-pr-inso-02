@@ -18,4 +18,9 @@ public class ProtocolQuestionField {
 
     private List<ProtocolQuestionOption> options = new ArrayList<>();
 
+
+    public boolean containsOptionText(String optionText) {
+        return options.stream().anyMatch(option -> option.getText().equals(optionText));
+    }
+
 }
