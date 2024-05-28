@@ -29,6 +29,7 @@ publish-common-lib:
   image: gradle:8.7-jdk21
   script:
     - cd common
+    - echo $GRADLE_USER_HOME
     - ./gradlew publish
   variables:
     KUBERNETES_HELPER_CPU_REQUEST: "1"
