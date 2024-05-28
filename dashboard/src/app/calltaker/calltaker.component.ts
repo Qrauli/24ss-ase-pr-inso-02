@@ -17,6 +17,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {IncidentService} from '../incidents.service';
 import {geocoderAddressConverter, prettyLocationAddress} from "../dto/location-address";
+import {NotificationService} from "../notification.service";
 
 
 @Component({
@@ -49,19 +50,28 @@ export class CalltakerComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
 
-  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService) { }
+  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private notificationService: NotificationService) { }
 
   ngOnInit(): void {
-    this.incidentService.getIncidentsOngoing().subscribe(data => {
-      this.dataSource = new MatTableDataSource(data);
-      this.dataSource.sort = this.sort;
-      this.dataSource.data.sort((a, b) => {
-        // move created to the top and everything else to the bottom
-        if (a.state == State.READY) return -1;
-        if (b.state == State.READY) return 1;
-        return 0;
-      });
-      console.log(data);
+    this.incidentService.getIncidentsOngoing().subscribe({
+      next: data => {
+        this.dataSource = new MatTableDataSource(data);
+        this.dataSource.sort = this.sort;
+        this.dataSource.data.sort((a, b) => {
+          // move created to the top and everything else to the bottom
+          if (a.state == State.READY) return -1;
+          if (b.state == State.READY) return 1;
+          return 0;
+        });
+        console.log(data);
+      },
+      error: (err) => {
+        this.notificationService.showErrorNotification(
+          'Es ist Fehler beim Abfragen der Einsätze aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          'OK',
+          7000
+        );
+      }
     });
   }
 
