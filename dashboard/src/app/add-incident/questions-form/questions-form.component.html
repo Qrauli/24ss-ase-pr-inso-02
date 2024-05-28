@@ -1,0 +1,55 @@
+<mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="changeIndex($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="check">check</mat-icon>
+      First
+    </ng-template>
+    <div class="tab-center">
+      <h3>Frage 1:</h3>
+      <mat-radio-group class="radio-group">
+
+        <mat-radio-button class="radio-button" color="primary">Option 1</mat-radio-button>
+        <mat-radio-button class="radio-button" color="primary">Option 2</mat-radio-button>
+        <mat-radio-button class="radio-button" color="primary">Option 3</mat-radio-button>
+
+      </mat-radio-group>
+      <button mat-flat-button color="primary" (click)="changeIndex(1)">Bestätigen</button>
+    </div>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="check">check</mat-icon>
+      Second
+    </ng-template>
+    <div class="tab-center">
+      <h3>Frage 2:</h3>
+      <mat-form-field>
+        <mat-label>Select</mat-label>
+        <mat-select>
+          <mat-option value="one">First option</mat-option>
+          <mat-option value="two">Second option</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary" (click)="changeIndex(2)">Bestätigen</button>
+    </div>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon class="notcheck">close</mat-icon>
+      Third
+    </ng-template>
+    <div class="tab-center">
+      <h3>Frage 3:</h3>
+      <mat-form-field>
+        <mat-label>Select</mat-label>
+        <mat-select>
+          <mat-option value="one">First option</mat-option>
+          <mat-option value="two">Second option</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <button mat-flat-button color="primary">Bestätigen</button>
+    </div>
+  </mat-tab>
+</mat-tab-group>
