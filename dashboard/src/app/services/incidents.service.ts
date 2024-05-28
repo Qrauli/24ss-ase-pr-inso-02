@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, switchMap, map } from 'rxjs';
-import { Incident } from './dto/incident';
-import { environment } from '../environments/environment';
+import { Incident } from '../dtos/incident';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,7 @@ export class IncidentService {
               //TODO: add categorization questions
               return incident;
             })
-          )   
+          )
         }
       ));
   }

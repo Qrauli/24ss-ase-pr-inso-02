@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {HeaderComponent} from '../header/header.component';
+import {HeaderComponent} from '../../components/header/header.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -18,14 +18,14 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatTableModule} from '@angular/material/table';
 import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import {MatDividerModule} from '@angular/material/divider';
-import {Incident, State} from "../dto/incident";
-import {IncidentService} from "../incidents.service";
+import {Incident, State} from "../../dtos/incident";
+import {IncidentService} from "../../services/incidents.service";
 import {LocationFormComponent} from "./location-form/location-form.component";
 import {PersonsFormComponent} from "./persons-form/persons-form.component";
 import {QuestionsFormComponent} from "./questions-form/questions-form.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {NotificationService} from "../notification.service";
+import {NotificationService} from "../../services/notification.service";
 
 @Component({
   selector: 'app-add-incident',

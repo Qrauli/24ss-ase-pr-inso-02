@@ -5,7 +5,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import {environment} from "../../environments/environment";
+import {environment} from "../../../environments/environment";
 
 
 @Component({

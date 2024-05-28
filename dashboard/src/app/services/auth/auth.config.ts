@@ -1,6 +1,6 @@
 import { AuthConfig } from "angular-oauth2-oidc";
-import { environment } from "../environments/environment";
-import * as jwksData from "../assets/jwks.json";
+import { environment } from "../../../environments/environment";
+import * as jwksData from "../../../assets/jwks.json";
 
 export const authConfig: AuthConfig = {
   loginUrl : environment.idpLoginUrl,

@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import * as Leaflet from 'leaflet';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { IncidentService } from '../incidents.service';
-import { Incident } from '../dto/incident';
+import { IncidentService } from '../../services/incidents.service';
+import { Incident } from '../../dtos/incident';
 import { NgFor } from '@angular/common';
 
 

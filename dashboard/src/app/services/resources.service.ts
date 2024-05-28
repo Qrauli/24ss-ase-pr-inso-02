@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Resource } from './dto/resource';
-import { environment } from '../environments/environment';
-import { RequestState, ResourceRequest } from './dto/resource-request';
+import { Resource } from '../dtos/resource';
+import { environment } from '../../environments/environment';
+import { RequestState, ResourceRequest } from '../dtos/resource-request';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class ResourceService {
         .subscribe()
     );
   }
-  
+
   getOpenResourceRequests(): Observable<ResourceRequest[]> {
     return this.httpClient.get<ResourceRequest[]>(environment.resourceUrl + 'requests');
   }

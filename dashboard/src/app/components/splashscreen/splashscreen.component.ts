@@ -3,7 +3,7 @@ import {MatButton, MatFabButton} from "@angular/material/button";
 import {MatCard, MatCardContent} from "@angular/material/card";
 import {Router} from "@angular/router";
 import {AsyncPipe, NgIf} from "@angular/common";
-import {AuthService} from "../auth/auth.service";
+import {AuthService} from "../../services/auth/auth.service";
 
 @Component({
   selector: 'app-splashscreen',

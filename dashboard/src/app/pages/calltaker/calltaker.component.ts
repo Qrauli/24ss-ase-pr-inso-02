@@ -6,18 +6,18 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {FormsModule} from '@angular/forms';
 import {MatIconModule} from '@angular/material/icon';
 import {Router} from '@angular/router';
-import {AuthService} from '../auth/auth.service';
-import {HeaderComponent} from '../header/header.component';
+import {AuthService} from '../../services/auth/auth.service';
+import {HeaderComponent} from '../../components/header/header.component';
 import {MatListModule} from '@angular/material/list';
 import {NgFor, NgIf} from '@angular/common';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-import {Incident, State} from '../dto/incident';
+import {Incident, State} from '../../dtos/incident';
 import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {IncidentService} from '../incidents.service';
-import {geocoderAddressConverter, prettyLocationAddress} from "../dto/location-address";
-import {NotificationService} from "../notification.service";
+import {IncidentService} from '../../services/incidents.service';
+import {geocoderAddressConverter, prettyLocationAddress} from "../../dtos/location-address";
+import {NotificationService} from "../../services/notification.service";
 
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { HeaderComponent } from '../header/header.component';
+import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,7 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as Leaflet from 'leaflet';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatMenuModule} from '@angular/material/menu';
-import { Person } from '../dto/person';
+import { Person } from '../../dtos/person';
 import { MatTable, MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Component({
@@ -72,7 +72,7 @@ export class EditIncidentComponent {
   marker: Leaflet.Marker;
   persons: Person[] = [];
   selectedCategory = 'Atemnot';
-  
+
   ngOnInit(): void {
   }
 

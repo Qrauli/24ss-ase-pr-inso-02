@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {OAuthService} from "angular-oauth2-oidc";
-import {authConfig} from "../auth.config";
+import {authConfig} from "./auth.config";
 import {JwksValidationHandler} from "angular-oauth2-oidc-jwks";
 
 @Injectable({

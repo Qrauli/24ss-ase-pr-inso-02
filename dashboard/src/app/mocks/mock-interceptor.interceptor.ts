@@ -1,11 +1,11 @@
 import {HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse} from '@angular/common/http';
 import { of } from 'rxjs';
-import { Incident, State } from "./dto/incident";
-import { Patient, Sex } from "./dto/patient";
+import { Incident, State } from "../dtos/incident";
+import { Patient, Sex } from "../dtos/patient";
 import { v4 as uuidv4 } from 'uuid';
-import { Resource, ResourceState, ResourceType } from './dto/resource';
-import { RequestState, ResourceRequest } from './dto/resource-request';
-import {environment} from "../environments/environment";
+import { Resource, ResourceState, ResourceType } from '../dtos/resource';
+import { RequestState, ResourceRequest } from '../dtos/resource-request';
+import {environment} from "../../environments/environment";
 
 let incidents: Incident[] = [];
 let resources: Resource[] = [];

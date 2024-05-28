@@ -6,22 +6,22 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
-import { HeaderComponent } from '../header/header.component';
+import { AuthService } from '../../services/auth/auth.service';
+import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
-import { Incident } from '../dto/incident';
+import { Incident } from '../../dtos/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import {Resource, ResourceState} from '../dto/resource';
+import {Resource, ResourceState} from '../../dtos/resource';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import * as Leaflet from 'leaflet';
-import { IncidentService } from '../incidents.service';
+import { IncidentService } from '../../services/incidents.service';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent, ConfirmDialogModel } from '../confirm-dialog/confirm-dialog.component';
-import { ResourceService } from '../resources.service';
+import { ConfirmDialogComponent, ConfirmDialogModel } from '../../components/confirm-dialog/confirm-dialog.component';
+import { ResourceService } from '../../services/resources.service';
 import { interval, switchMap } from "rxjs";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -32,7 +32,7 @@ import {
   MatSnackBarRef,
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
-import { ResourceRequest } from '../dto/resource-request';
+import { ResourceRequest } from '../../dtos/resource-request';
 
 
 @Component({
@@ -184,7 +184,7 @@ export class DispatcherComponent implements OnInit {
     }
   }
 
-  
+
   /**
    * displays the notifications in the snackbar
    */
