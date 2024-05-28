@@ -32,6 +32,8 @@ spec:
                 name: 24ss-ase-pr-inso-02-postgres-config
             - secretRef:
                 name: 24ss-ase-pr-inso-02-postgres-secret
+      securityContext:
+        runAsUser: 999
   strategy:
     type: Recreate
 ---
