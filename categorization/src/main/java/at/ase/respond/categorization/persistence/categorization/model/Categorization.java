@@ -1,5 +1,7 @@
 package at.ase.respond.categorization.persistence.categorization.model;
 
+import at.ase.respond.categorization.exception.BadRequestException;
+import at.ase.respond.categorization.exception.InvalidQuestionTypeException;
 import at.ase.respond.categorization.exception.NotFoundException;
 import at.ase.respond.categorization.persistence.questionschema.model.ProtocolQuestion;
 import at.ase.respond.categorization.persistence.questionschema.model.QuestionType;
@@ -31,6 +33,19 @@ public class Categorization {
 
     private String recommendedDispatchCode;
 
+    // Copy constructor
+    public Categorization(Categorization other) {
+        this.sessionId = other.sessionId;
+        this.createdBy = other.createdBy;
+        this.createdAt = other.createdAt;
+        this.recommendedDispatchCode = other.recommendedDispatchCode;
+
+        this.questionBundles = new ArrayList<>();
+        for (QuestionBundle bundle : other.questionBundles) {
+            this.questionBundles.add(new QuestionBundle(bundle));
+        }
+    }
+
     /**
      * Adds a question bundle to the list of question bundles.
      *
@@ -38,15 +53,6 @@ public class Categorization {
      */
     public void addQuestionBundle(QuestionBundle questionBundle) {
         questionBundles.add(questionBundle);
-    }
-
-    /**
-     * Removes a question bundle from the list of question bundles.
-     *
-     * @param questionBundle the question bundle to remove
-     */
-    public void removeQuestionBundle(QuestionBundle questionBundle) {
-        questionBundles.remove(questionBundle);
     }
 
     /**
@@ -65,9 +71,33 @@ public class Categorization {
                     if (((ProtocolQuestion) bundle.getQuestion()).getProtocolId() == protocolId) {
                         return bundle;
                     }
+                } else {
+                    throw new InvalidQuestionTypeException("Invalid question type");
                 }
             }
         }
         throw new NotFoundException("Question bundle not found");
+    }
+
+    /**
+     * Checks if a question bundle with the given question type and id (and protocol id for a protocol question) exists.
+     *
+     * @param type the type of the question
+     * @param id   the id of the question
+     * @return true if the question bundle exists, false otherwise
+     */
+    public boolean containsQuestionBundleByTypeAndId(QuestionType type, int id, Integer protocolId) {
+        for (QuestionBundle bundle : questionBundles) {
+            if (bundle.getQuestion().getQuestionType().equals(type) && bundle.getQuestion().getId() == id) {
+                if (type == QuestionType.BASE) {
+                    return true;
+                } else if (type == QuestionType.PROTOCOL) {
+                    if (((ProtocolQuestion) bundle.getQuestion()).getProtocolId() == protocolId) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

@@ -14,4 +14,37 @@ public class ProtocolQuestion extends Question {
 
     private List<ProtocolQuestionField> fields = new ArrayList<>();
 
+
+    public boolean containsFieldId(String fieldId) {
+        return fields.stream().anyMatch(field -> field.getFieldId().equals(fieldId));
+    }
+
+    public ProtocolQuestionField getFieldByFieldId(String fieldId) {
+        return fields.stream().filter(field -> field.getFieldId().equals(fieldId)).findFirst().orElse(null);
+    }
+
+    public boolean answerLeadsToDispatchCode(String answer) {
+        return fields.stream()
+                .flatMap(field -> field.getOptions().stream())
+                .anyMatch(option -> option.getText().equals(answer) && option.getDispatchCode() != null);
+    }
+
+    public String getDispatchCodeForAnswer(String answer) {
+        return fields.stream()
+                .flatMap(field -> field.getOptions().stream())
+                .filter(option -> option.getText().equals(answer) && option.getDispatchCode() != null)
+                .findFirst()
+                .map(ProtocolQuestionOption::getDispatchCode)
+                .orElse(null);
+    }
+
+    public NextProtocolQuestion getNextProtocolQuestionForAnswer(String answer) {
+        return fields.stream()
+                .flatMap(field -> field.getOptions().stream())
+                .filter(option -> option.getText().equals(answer) && option.getNextProtocolQuestion() != null)
+                .findFirst()
+                .map(ProtocolQuestionOption::getNextProtocolQuestion)
+                .orElse(null);
+    }
+
 }
