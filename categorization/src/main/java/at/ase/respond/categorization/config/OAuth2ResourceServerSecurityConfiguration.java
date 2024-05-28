@@ -57,8 +57,8 @@ public class OAuth2ResourceServerSecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize
-            .requestMatchers(HttpMethod.GET, "/categorization/**").hasRole("calltaker")
             .requestMatchers(HttpMethod.POST, "/categorization").hasRole("calltaker")
+            .requestMatchers(HttpMethod.GET, "/categorization/**").hasRole("calltaker")
             .requestMatchers(HttpMethod.PUT, "/categorization/**").hasRole("calltaker")
 
             // Swagger UI

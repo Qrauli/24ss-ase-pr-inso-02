@@ -97,38 +97,38 @@ export class AddIncidentComponent implements AfterViewInit {
           coordinates: this.locationFormComponent.coordinates
         }
 
-        // if (this.categorization?.sessionID) {
-        //
-        //   const answerMap = new Map<string, string>();
-        //
-        //   answerMap.set('street', locationFormValues.street!);
-        //   // TODO number?
-        //   // TODO City missing
-        //   answerMap.set('district', locationFormValues.postalCode!);
-        //   answerMap.set('lat', this.locationFormComponent.coordinates.latitude.toString());
-        //   answerMap.set('lng', this.locationFormComponent.coordinates.longitude.toString());
-        //   answerMap.set('additionalData', locationFormValues.additionalInformation!);
-        //
-        //   const answer: Answer = {
-        //     questionId: "1",
-        //     questionType: QuestionType.BASE,
-        //     protocolId: "null",
-        //     answers: answerMap
-        //   };
-        //
-        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-        //     next: (value) => {
-        //       this.categorization = value;
-        //     },
-        //     error: (err) => {
-        //       this.notificationService.showErrorNotification(
-        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-        //         'OK',
-        //         7000
-        //       );
-        //     }
-        //   });
-        // }
+        if (this.categorization?.sessionID) {
+
+          const answerMap = new Map<string, string>();
+
+          answerMap.set('street', locationFormValues.street!);
+          // TODO number?
+          // TODO City missing
+          answerMap.set('district', locationFormValues.postalCode!);
+          answerMap.set('lat', this.locationFormComponent.coordinates.latitude.toString());
+          answerMap.set('lng', this.locationFormComponent.coordinates.longitude.toString());
+          answerMap.set('additionalData', locationFormValues.additionalInformation!);
+
+          const answer: Answer = {
+            questionId: "1",
+            questionType: QuestionType.BASE,
+            protocolId: "null",
+            answers: answerMap
+          };
+
+          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+            next: (value) => {
+              this.categorization = value;
+            },
+            error: (err) => {
+              this.notificationService.showErrorNotification(
+                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+                'OK',
+                7000
+              );
+            }
+          });
+        }
 
         break;
       }
@@ -141,62 +141,62 @@ export class AddIncidentComponent implements AfterViewInit {
         this.incident.patients = this.personFormComponent.patients;
         this.incident.numberOfPatients = numberOfPatients;
 
-        // if (this.categorization?.sessionID) {
-        //
-        //   var answerMap = new Map<string, string>();
-        //
-        //   answerMap.set('number', locationFormValues.caller?.number!);
-        //   answerMap.set('name', locationFormValues.caller?.name!);
-        //
-        //   var answer: Answer = {
-        //     questionId: "2",
-        //     questionType: QuestionType.BASE,
-        //     protocolId: "null",
-        //     answers: answerMap
-        //   };
-        //
-        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-        //     next: (value) => {
-        //       this.categorization = value;
-        //     },
-        //     error: (err) => {
-        //       this.notificationService.showErrorNotification(
-        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-        //         'OK',
-        //         7000
-        //       );
-        //     }
-        //   });
-        //
-        //   answerMap = new Map<string, string>();
-        //
-        //   answerMap.set('numberOfPeople', numberOfPatients.toString());
-        //
-        //   if (numberOfPatients == 1) {
-        //     answerMap.set('age', this.personFormComponent.patients[0].age.toString());
-        //     answerMap.set('gender', this.personFormComponent.patients[0].sex);
-        //   }
-        //
-        //   answer = {
-        //     questionId: "3",
-        //     questionType: QuestionType.BASE,
-        //     protocolId: "null",
-        //     answers: answerMap
-        //   };
-        //
-        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-        //     next: (value) => {
-        //       this.categorization = value;
-        //     },
-        //     error: (err) => {
-        //       this.notificationService.showErrorNotification(
-        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-        //         'OK',
-        //         7000
-        //       );
-        //     }
-        //   });
-        // }
+        if (this.categorization?.sessionID) {
+
+          var answerMap = new Map<string, string>();
+
+          answerMap.set('number', locationFormValues.caller?.number!);
+          answerMap.set('name', locationFormValues.caller?.name!);
+
+          var answer: Answer = {
+            questionId: "2",
+            questionType: QuestionType.BASE,
+            protocolId: "null",
+            answers: answerMap
+          };
+
+          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+            next: (value) => {
+              this.categorization = value;
+            },
+            error: (err) => {
+              this.notificationService.showErrorNotification(
+                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+                'OK',
+                7000
+              );
+            }
+          });
+
+          answerMap = new Map<string, string>();
+
+          answerMap.set('numberOfPeople', numberOfPatients.toString());
+
+          if (numberOfPatients == 1) {
+            answerMap.set('age', this.personFormComponent.patients[0].age.toString());
+            answerMap.set('gender', this.personFormComponent.patients[0].sex);
+          }
+
+          answer = {
+            questionId: "3",
+            questionType: QuestionType.BASE,
+            protocolId: "null",
+            answers: answerMap
+          };
+
+          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+            next: (value) => {
+              this.categorization = value;
+            },
+            error: (err) => {
+              this.notificationService.showErrorNotification(
+                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+                'OK',
+                7000
+              );
+            }
+          });
+        }
 
         break;
       }
