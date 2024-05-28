@@ -31,6 +31,7 @@
           <span style="font-size: 20px;">{{ selectedCategory ? selectedCategory : "Kategorie auswählen" }}</span>
         </button>
         <mat-menu #categories="matMenu">
+          <button mat-menu-item (click)="changeCategory('01A01')">01A01 - Bauchschmerzen</button>
           <button mat-menu-item [matMenuTriggerFor]="C0T">Kategorie 0</button>
           <button mat-menu-item [matMenuTriggerFor]="C1C">Kategorie 1</button>
         </mat-menu>
