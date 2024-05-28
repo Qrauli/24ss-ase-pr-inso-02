@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {OAuthModule} from "angular-oauth2-oidc";
 
 
 describe('ConfirmDialogComponent', () => {
@@ -17,7 +18,7 @@ describe('ConfirmDialogComponent', () => {
     ]
     })
     .compileComponents();
-    
+
     fixture = TestBed.createComponent(ConfirmDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

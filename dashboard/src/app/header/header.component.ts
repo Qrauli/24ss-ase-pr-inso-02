@@ -15,7 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [  
+  imports: [
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
@@ -29,7 +29,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class HeaderComponent {
 
-  @Input() backButton: boolean = false; 
+  @Input() backButton: boolean = false;
   @Input() backRoute: string = '/';
   @Input() title: string = '';
   @Input() backCheck: boolean = true;

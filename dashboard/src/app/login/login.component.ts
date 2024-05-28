@@ -5,14 +5,13 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import {environment} from "../../environments/environment";
 
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [    
+  imports: [
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
@@ -25,14 +24,11 @@ import { AuthService } from '../auth/auth.service';
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-
-
+  private dispatcherToken = environment.mockDispatcherToken;
+  private calltakerToken = environment.mockCalltakerToken;
 
   constructor(
     private fb: FormBuilder,         // {3}
-    private authService: AuthService // {4}
   ) {
     this.form = this.fb.group({     // {5}
       userName: ['', Validators.required],
@@ -41,16 +37,20 @@ export class LoginComponent {
   }
 
   form: FormGroup;                    // {1}
-  private formSubmitAttempt: boolean | undefined; // {2}
 
   /**
-   * Login the user
+   * Login the user by completing OIDC flow
    */
-  login() {
-    if (this.form.valid) {
-      this.authService.login(this.form.value); // {7}
+  loginOauth() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectUri = urlParams.get('redirect_uri');
+    const state = urlParams.get('state');
+
+    if (this.form.value.userName === 'dispatcher') {
+      window.location.href = `${redirectUri}#token_type=Bearer&id_token=${this.dispatcherToken}&access_token=${this.dispatcherToken}&state=${state}&expires_in=3600`;
+    } else if (this.form.value.userName === 'calltaker') {
+      window.location.href = `${redirectUri}#token_type=Bearer&id_token=${this.calltakerToken}&access_token=${this.calltakerToken}&state=${state}&expires_in=3600`;
     }
-    this.formSubmitAttempt = true;             // {8}
   }
 
 }

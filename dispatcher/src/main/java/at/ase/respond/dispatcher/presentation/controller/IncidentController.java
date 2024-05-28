@@ -4,6 +4,7 @@ import at.ase.respond.common.dto.IncidentDTO;
 import at.ase.respond.dispatcher.presentation.mapper.IncidentMapper;
 import at.ase.respond.dispatcher.service.IncidentService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -27,14 +28,14 @@ public class IncidentController {
     private final IncidentMapper incidentMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns a list of all incidents")
+    @Operation(summary = "Returns a list of all incidents", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<IncidentDTO>> findAll(
             @RequestParam(value = "running", required = false, defaultValue = "true") boolean running) {
         return ResponseEntity.ok(service.findAll(running).stream().map(incidentMapper::toDTO).toList());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns an incident by id")
+    @Operation(summary = "Returns an incident by id", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<IncidentDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(incidentMapper.toDTO(service.findById(id)));
     }

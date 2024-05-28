@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HeaderComponent } from './header.component';
+import { SplashscreenComponent } from './splashscreen.component';
 import {OAuthModule} from "angular-oauth2-oidc";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
-describe('HeaderComponent', () => {
-  let component: HeaderComponent;
-  let fixture: ComponentFixture<HeaderComponent>;
+describe('SplashscreenComponent', () => {
+  let component: SplashscreenComponent;
+  let fixture: ComponentFixture<SplashscreenComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [SplashscreenComponent, HttpClientTestingModule, OAuthModule.forRoot()]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HeaderComponent);
+    fixture = TestBed.createComponent(SplashscreenComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
