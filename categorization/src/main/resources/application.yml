@@ -16,6 +16,15 @@ spring:
       host: 'localhost'
       port: 27017
       database: 'db'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:oauth2.pub
+          jws-algorithms:
+            - RS256
+          audiences:
+            - 'at.ase.respond'
 
 custom:
   questionschema:

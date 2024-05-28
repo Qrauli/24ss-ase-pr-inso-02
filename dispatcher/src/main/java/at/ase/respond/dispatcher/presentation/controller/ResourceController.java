@@ -4,6 +4,7 @@ import at.ase.respond.common.dto.ResourceDTO;
 import at.ase.respond.dispatcher.presentation.mapper.ResourceMapper;
 import at.ase.respond.dispatcher.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ResourceController {
     private final ResourceMapper mapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns a list of all resources")
+    @Operation(summary = "Returns a list of all resources", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<List<ResourceDTO>> findAll(
             @RequestParam(value = "additional", required = false, defaultValue = "false") boolean additional
     ) {
@@ -30,7 +31,7 @@ public class ResourceController {
     }
 
     @PostMapping(value = "/{resourceId}/assign/{incidentId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Assigns a resource to an incident")
+    @Operation(summary = "Assigns a resource to an incident", security = @SecurityRequirement(name = "bearerAuth"))
     public ResponseEntity<ResourceDTO> assignToIncident(
             @PathVariable String resourceId,
             @PathVariable UUID incidentId

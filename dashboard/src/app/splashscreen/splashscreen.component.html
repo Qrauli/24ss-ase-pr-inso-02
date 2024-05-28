@@ -1,0 +1,8 @@
+<div *ngIf="!isLoggedIn" class="splashscreen-content">
+  <mat-card>
+    <mat-card-content>
+      <p>Login via Identity Provider</p>
+      <button mat-raised-button color="primary" (click)="triggerLogin()">Login</button>
+    </mat-card-content>
+  </mat-card>
+</div>
