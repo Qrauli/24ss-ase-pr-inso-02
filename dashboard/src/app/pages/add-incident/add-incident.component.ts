@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {HeaderComponent} from '../../components/header/header.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
@@ -24,8 +24,9 @@ import {LocationFormComponent} from "./location-form/location-form.component";
 import {PersonsFormComponent} from "./persons-form/persons-form.component";
 import {QuestionsFormComponent} from "./questions-form/questions-form.component";
 import {NgForOf, NgIf} from "@angular/common";
-import {MatSnackBar} from "@angular/material/snack-bar";
 import {NotificationService} from "../../services/notification.service";
+import {CategorizationService} from "../../services/categorization.service";
+import {Answer, Categorization, QuestionType} from "../../dtos/categorization";
 
 @Component({
   selector: 'app-add-incident',
@@ -53,7 +54,7 @@ import {NotificationService} from "../../services/notification.service";
   templateUrl: './add-incident.component.html',
   styleUrl: './add-incident.component.css'
 })
-export class AddIncidentComponent {
+export class AddIncidentComponent implements AfterViewInit {
 
   incident: Incident;
 
@@ -61,7 +62,7 @@ export class AddIncidentComponent {
   personsFormLabel = "persons";
   questionsFormLabel = "questions";
 
-  constructor(private router: Router, private incidentService: IncidentService, private _snackBar: MatSnackBar, private notificationService: NotificationService) {
+  constructor(private router: Router, private incidentService: IncidentService, private categorizationService: CategorizationService, private notificationService: NotificationService) {
     this.incident = {
       id: '',
       patients: [],
@@ -95,14 +96,114 @@ export class AddIncidentComponent {
           },
           coordinates: this.locationFormComponent.coordinates
         }
+
+        // if (this.categorization?.sessionID) {
+        //
+        //   const answerMap = new Map<string, string>();
+        //
+        //   answerMap.set('street', locationFormValues.street!);
+        //   // TODO number?
+        //   // TODO City missing
+        //   answerMap.set('district', locationFormValues.postalCode!);
+        //   answerMap.set('lat', this.locationFormComponent.coordinates.latitude.toString());
+        //   answerMap.set('lng', this.locationFormComponent.coordinates.longitude.toString());
+        //   answerMap.set('additionalData', locationFormValues.additionalInformation!);
+        //
+        //   const answer: Answer = {
+        //     questionId: "1",
+        //     questionType: QuestionType.BASE,
+        //     protocolId: "null",
+        //     answers: answerMap
+        //   };
+        //
+        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+        //     next: (value) => {
+        //       this.categorization = value;
+        //     },
+        //     error: (err) => {
+        //       this.notificationService.showErrorNotification(
+        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+        //         'OK',
+        //         7000
+        //       );
+        //     }
+        //   });
+        // }
+
         break;
       }
       case this.personsFormLabel: {
+
+        const locationFormValues = this.personFormComponent.form.value;
+
+        const numberOfPatients = this.personFormComponent.patients.length;
+
         this.incident.patients = this.personFormComponent.patients;
-        this.incident.numberOfPatients = this.personFormComponent.patients.length;
+        this.incident.numberOfPatients = numberOfPatients;
+
+        // if (this.categorization?.sessionID) {
+        //
+        //   var answerMap = new Map<string, string>();
+        //
+        //   answerMap.set('number', locationFormValues.caller?.number!);
+        //   answerMap.set('name', locationFormValues.caller?.name!);
+        //
+        //   var answer: Answer = {
+        //     questionId: "2",
+        //     questionType: QuestionType.BASE,
+        //     protocolId: "null",
+        //     answers: answerMap
+        //   };
+        //
+        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+        //     next: (value) => {
+        //       this.categorization = value;
+        //     },
+        //     error: (err) => {
+        //       this.notificationService.showErrorNotification(
+        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+        //         'OK',
+        //         7000
+        //       );
+        //     }
+        //   });
+        //
+        //   answerMap = new Map<string, string>();
+        //
+        //   answerMap.set('numberOfPeople', numberOfPatients.toString());
+        //
+        //   if (numberOfPatients == 1) {
+        //     answerMap.set('age', this.personFormComponent.patients[0].age.toString());
+        //     answerMap.set('gender', this.personFormComponent.patients[0].sex);
+        //   }
+        //
+        //   answer = {
+        //     questionId: "3",
+        //     questionType: QuestionType.BASE,
+        //     protocolId: "null",
+        //     answers: answerMap
+        //   };
+        //
+        //   this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
+        //     next: (value) => {
+        //       this.categorization = value;
+        //     },
+        //     error: (err) => {
+        //       this.notificationService.showErrorNotification(
+        //         'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
+        //         'OK',
+        //         7000
+        //       );
+        //     }
+        //   });
+        // }
+
         break;
       }
       case this.questionsFormLabel: {
+
+        console.log(this.categorization);
+
         this.recommendedCategory = this.questionsFormComponent.recommendation;
         this.incident.questionaryId = this.questionsFormComponent.questionaryId;
         break;
@@ -121,7 +222,23 @@ export class AddIncidentComponent {
 
   // ####################### Categorization ####################### //
 
-  // TODO service interaction
+  categorization: Categorization;
+
+  ngAfterViewInit(): void {
+    this.categorizationService.createSession().subscribe({
+      next: (value) => {
+        this.categorization = value;
+        console.log("Generated categorization session with id " + this.categorization.sessionID);
+      },
+      error: (err) => {
+        this.notificationService.showErrorNotification(
+          'Es konnte keine Session für die Kategorisierung erstellt werden: \n\n' + JSON.stringify(err, null, 2),
+          'OK',
+          7000
+        );
+      }
+    });
+  }
 
   recommendedCategory = '';
   selectedCategory = '';

@@ -16,6 +16,9 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
+import {environment} from "../../../../environments/environment";
+import {CategorizationService} from "../../../services/categorization.service";
+import {NotificationService} from "../../../services/notification.service";
 
 
 @Component({
@@ -42,17 +45,35 @@ import {MatDividerModule} from "@angular/material/divider";
   templateUrl: './questions-form.component.html',
   styleUrl: '../add-incident.component.css'
 })
-export class QuestionsFormComponent implements AfterViewInit {
+export class QuestionsFormComponent {
 
-  constructor() {
+  // implements AfterViewInit
+
+  constructor( private categorizationService: CategorizationService, private notificationService: NotificationService) {
   }
 
-  recommendation = 'C1C0';
+  recommendation = '';
   questionaryId = '';
 
-  ngAfterViewInit(): void {
-    // TODO service interaction (set recommendation and questionaryId)
-  }
+  // ngAfterViewInit(): void {
+  //   this.categorizationService.createSession().subscribe({
+  //     next: (value) => {
+  //       this.notificationService.showDefaultNotification(
+  //         'Session für die Kategorisierung erfolgreich erstellt: \n\n' + JSON.stringify(value, null, 2),
+  //         'OK',
+  //         7000
+  //       );
+  //     },
+  //     error: (err) => {
+  //       this.notificationService.showErrorNotification(
+  //         'Es konnte keine Session für die Kategorisierung erstellt werden: \n\n' + JSON.stringify(err, null, 2),
+  //         'OK',
+  //         7000
+  //       );
+  //     }
+  //   });
+  //   // TODO service interaction (set recommendation and questionaryId)
+  // }
 
   // ####################### Questions ####################### //
 

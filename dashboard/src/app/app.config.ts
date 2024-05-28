@@ -9,6 +9,7 @@ import { IncidentService } from './services/incidents.service';
 import { ResourceService } from './services/resources.service';
 import { provideOAuthClient } from "angular-oauth2-oidc";
 import {environment} from "../environments/environment";
+import {CategorizationService} from "./services/categorization.service";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,6 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     IncidentService,
     ResourceService,
+    CategorizationService,
     provideOAuthClient(
       {
         resourceServer: {

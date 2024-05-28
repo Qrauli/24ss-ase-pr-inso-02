@@ -4,6 +4,7 @@ import at.ase.respond.categorization.presentation.dto.AnswerDTO;
 import at.ase.respond.categorization.presentation.dto.CategorizationDTO;
 import at.ase.respond.categorization.service.CategorizationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -20,7 +21,10 @@ public class QuestionnaireController {
     private final CategorizationService service;
 
     @PostMapping(value = "/categorization", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Creates a new session in the categorization service and returns the an initialized categorization object with the first base question and the sessionId.")
+    @Operation(
+            summary = "Creates a new session in the categorization service and returns the an initialized categorization object with the first base question and the sessionId.",
+            security = @SecurityRequirement(name = "bearer")
+    )
     public ResponseEntity<CategorizationDTO> createSession() {
         log.info("Creating a new categorization session.");
         CategorizationDTO categorization = service.createSession();
@@ -29,7 +33,10 @@ public class QuestionnaireController {
     }
 
     @PutMapping(value = "/categorization/{sessionId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Saves an answer to a question and returns the updated categorization object.")
+    @Operation(
+            summary = "Saves an answer to a question and returns the updated categorization object.",
+            security = @SecurityRequirement(name = "bearer")
+    )
     public ResponseEntity<CategorizationDTO> saveAnswer(@PathVariable UUID sessionId, @RequestBody AnswerDTO answer) {
         log.info("Saving answer for session with sessionId: {}", sessionId);
         CategorizationDTO categorization = service.save(sessionId, answer);
@@ -38,7 +45,10 @@ public class QuestionnaireController {
     }
 
     @GetMapping(value = "/categorization/{sessionId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns the categorization object with the given categorization sessionId.")
+    @Operation(
+            summary = "Returns the categorization object with the given categorization sessionId.",
+            security = @SecurityRequirement(name = "bearer")
+    )
     public ResponseEntity<CategorizationDTO> findById(@PathVariable UUID sessionId) {
         log.info("Finding categorization session with sessionId: {}", sessionId);
         return ResponseEntity.ok(service.findById(sessionId));
