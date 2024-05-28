@@ -11,16 +11,19 @@ import { provideOAuthClient } from "angular-oauth2-oidc";
 import {environment} from "../environments/environment";
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideAnimationsAsync(), IncidentService, ResourceService, provideOAuthClient(
-    {
-      resourceServer: {
-        allowedUrls: [ environment.incidentUrl, environment.resourceUrl, environment.categorizationUrl ],
-        sendAccessToken: true,
+  providers: [
+    provideRouter(routes),
+    provideAnimationsAsync(),
+    IncidentService,
+    ResourceService,
+    provideOAuthClient(
+      {
+        resourceServer: {
+          allowedUrls: [ environment.incidentUrl, environment.resourceUrl, environment.categorizationUrl ],
+          sendAccessToken: true,
+        }
       }
-    }
-  ), provideHttpClient(
-    withInterceptors(
-    [mockInterceptor]),
-    withInterceptorsFromDi()
-  )]
+    ),
+    environment.mock ? provideHttpClient(withInterceptors([mockInterceptor]), withInterceptorsFromDi()) : provideHttpClient()
+  ]
 };

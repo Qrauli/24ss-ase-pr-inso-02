@@ -1,14 +1,19 @@
-import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import {HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse} from '@angular/common/http';
 import { of } from 'rxjs';
 import { Incident, State } from "./dto/incident";
 import { Patient, Sex } from "./dto/patient";
 import { v4 as uuidv4 } from 'uuid';
 import { Resource, ResourceState, ResourceType } from './dto/resource';
 import { RequestState, ResourceRequest } from './dto/resource-request';
+import {environment} from "../environments/environment";
 
 let incidents: Incident[] = [];
 let resources: Resource[] = [];
 let resourceRequests: ResourceRequest[] = [];
+
+const incidentIncidentUrl = environment.incidentUrl;
+const incidentResourceUrl = environment.resourceUrl;
+const incidentCategorizationUrl = environment.categorizationUrl;
 
 function mockIncidents(entries: number) {
   if (incidents.length >= entries) return;
@@ -141,64 +146,81 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
   mockResourceRequests(3);
 
   if (req.method === "GET") {
-    if (req.url === "http://localhost:4200/incidents") {
-      if (Math.random() < 0.5 && incidents.length < 10) {
-        mockIncidents(incidents.length + 1);
-      }
-      return of(new HttpResponse({ status: 200, body: incidents }));
-    }
-    else if (req.url.startsWith("http://localhost:4200/incidents/")) {
-      const parts = req.url.split("/");
-      const id = parts[parts.length - 1];
-      const incident = incidents.find(incident => incident.id === id);
-      if (incident) {
-        return of(new HttpResponse({ status: 200, body: incident }));
-      } else {
-        return of(new HttpResponse({ status: 404 }));
-      }
-    } else if (req.url === "http://localhost:4200/resources?additional=false") {
-      return of(new HttpResponse({ status: 200, body: resourceData }));
-    } else if (req.url === "http://localhost:4200/resources?additional=true") {
-      return of(new HttpResponse({ status: 200, body: resourceDataAdditional }));
-    } else if (req.url === "http://localhost:4200/requests") {
-      return of(new HttpResponse({ status: 200, body: resourceRequests }));
-    }
+    return interceptGetRequests(req, next);
   }
 
   if (req.method === "POST") {
-    if (req.url === "http://localhost:4200/incidents") {
-      const incident = req.body as Incident;
-      incident.id = incidents.length.toString();
-      incidents.push(incident);
-      return of(new HttpResponse({ status: 200, body: incident }));
-    }
+    return interceptPostRequests(req, next);
   }
 
   if (req.method === "PUT") {
-    if (req.url === "http://localhost:4200/incidents") {
-      // TODO not tested yet
-      const updated = req.body as Incident;
-      const index = incidents.findIndex(incident => incident.id === updated.id);
-      if (index == -1) {
-        return of(new HttpResponse({ status: 404 }));
-      } else {
-        incidents[index] = updated;
-        return of(new HttpResponse({ status: 200, body: incidents[index] }));
-      }
-    }
-    if (req.url.startsWith("http://localhost:4200/requests/")) {
-      const parts = req.url.split("/");
-      const id = parts[parts.length - 2];
-      const index = resourceRequests.findIndex(request => request.id === id);
-      if (index) {
-        resourceRequests.splice(index, 1);
-        const updated = req.body as ResourceRequest;
-        return of(new HttpResponse({ status: 200, body: updated }));
-      } else {
-        return of(new HttpResponse({ status: 404 }));
-      }
-    }
+    return interceptPutRequests(req, next);
   }
 
   return next(req);
 };
+
+function interceptGetRequests(req: HttpRequest<any>, next: HttpHandlerFn)  {
+  if (req.url === incidentIncidentUrl + "incidents") {
+    if (Math.random() < 0.5 && incidents.length < 10) {
+      mockIncidents(incidents.length + 1);
+    }
+    return of(new HttpResponse({ status: 200, body: incidents }));
+  } else if (req.url.startsWith(incidentIncidentUrl + "incidents/")) {
+    const parts = req.url.split("/");
+    const id = parts[parts.length - 1];
+    const incident = incidents.find(incident => incident.id === id);
+    if (incident) {
+      return of(new HttpResponse({ status: 200, body: incident }));
+    } else {
+      return of(new HttpResponse({ status: 404 }));
+    }
+  } else if (req.url === incidentResourceUrl + "resources?additional=false") {
+    return of(new HttpResponse({ status: 200, body: resourceData }));
+  } else if (req.url === incidentResourceUrl + "resources?additional=true") {
+    return of(new HttpResponse({ status: 200, body: resourceDataAdditional }));
+  } else if (req.url === incidentResourceUrl + "requests") {
+    return of(new HttpResponse({ status: 200, body: resourceRequests }));
+  }
+
+  return next(req);
+}
+
+function interceptPostRequests(req: HttpRequest<any>, next: HttpHandlerFn)  {
+  if (req.url === incidentIncidentUrl + "incidents") {
+    const incident = req.body as Incident;
+    incident.id = incidents.length.toString();
+    incidents.push(incident);
+    return of(new HttpResponse({ status: 200, body: incident }));
+  }
+
+  return next(req);
+}
+
+function interceptPutRequests(req: HttpRequest<any>, next: HttpHandlerFn)  {
+  if (req.url === incidentIncidentUrl + "incidents") {
+    // TODO not tested yet
+    const updated = req.body as Incident;
+    const index = incidents.findIndex(incident => incident.id === updated.id);
+    if (index == -1) {
+      return of(new HttpResponse({ status: 404 }));
+    } else {
+      incidents[index] = updated;
+      return of(new HttpResponse({ status: 200, body: incidents[index] }));
+    }
+  }
+  if (req.url.startsWith(incidentResourceUrl + "requests/")) {
+    const parts = req.url.split("/");
+    const id = parts[parts.length - 2];
+    const index = resourceRequests.findIndex(request => request.id === id);
+    if (index) {
+      resourceRequests.splice(index, 1);
+      const updated = req.body as ResourceRequest;
+      return of(new HttpResponse({ status: 200, body: updated }));
+    } else {
+      return of(new HttpResponse({ status: 404 }));
+    }
+  }
+
+  return next(req);
+}
