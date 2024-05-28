@@ -36,6 +36,11 @@ public class IncidentServiceImpl implements IncidentService {
     }
 
     @Override
+    public List<Incident> findAllIncidents() {
+        return repository.findAll();
+    }
+
+    @Override
     public Incident findById(UUID id) {
         return repository.findById(id).orElse(null);
     }

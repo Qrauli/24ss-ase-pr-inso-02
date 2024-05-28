@@ -39,7 +39,10 @@ public class IncidentController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Returns a list of incidents", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<List<IncidentDTO>> findIncidents(@RequestParam UUID[] ids) {
+    public ResponseEntity<List<IncidentDTO>> findIncidents(@RequestParam(required = false) UUID[] ids) {
+        if (ids == null) {
+            return ResponseEntity.ok(service.findAllIncidents().stream().map(incidentMapper::toDTO).toList());
+        }
         return ResponseEntity.ok(service.findIncidents(ids).stream().map(incidentMapper::toDTO).toList());
     }
 

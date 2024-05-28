@@ -24,6 +24,12 @@ public interface IncidentService {
     List<Incident> findIncidents(UUID[] ids);
 
     /**
+     * Finds all incidents.
+     * @return a list of incidents
+     */
+    List<Incident> findAllIncidents();
+
+    /**
      * Finds an incident by its ID.
      * @param id the ID of the incident to be found
      * @return the incident
