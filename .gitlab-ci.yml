@@ -25,11 +25,10 @@ stages:
 publish-common-lib:
   stage: publish
   before_script:
-    - env
+    - mkdir -p $GRADLE_USER_HOME
   image: gradle:8.7-jdk21
   script:
     - namei -l $GRADLE_USER_HOME
-    - echo $GRADLE_USER_HOME
     - cd common
     - ./gradlew publish
   variables:
