@@ -1,7 +1,6 @@
 import {HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse} from '@angular/common/http';
 import { of } from 'rxjs';
-import { Incident, State } from "../dtos/incident";
-import { Patient, Sex } from "../dtos/patient";
+import { Incident, State, Patient, Sex  } from "../dtos/incident";
 import { v4 as uuidv4 } from 'uuid';
 import { Resource, ResourceState, ResourceType } from '../dtos/resource';
 import { RequestState, ResourceRequest } from '../dtos/resource-request';
@@ -137,6 +136,8 @@ const resourceDataAdditional = [
   { id: 'RKK-19', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
   { id: 'RKK-20', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
 ];
+
+// TODO categorization mocks
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
 

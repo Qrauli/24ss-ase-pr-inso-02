@@ -34,7 +34,7 @@ export class DetailIncidentComponent implements OnInit {
     this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']).subscribe(data => {
       this.incident = data;
       if(this.map){
-        Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates.latitude, this.incident.location.coordinates.longitude), {icon: Leaflet.icon({
+        Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {icon: Leaflet.icon({
           iconSize: [ 25, 41 ],
           iconAnchor: [ 13, 41 ],
           iconUrl: 'leaflet/marker-icon.png',
@@ -65,7 +65,7 @@ export class DetailIncidentComponent implements OnInit {
   onMapReady(map: Leaflet.Map) {
     this.map = map;
     if (this.incident) {
-      Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates.latitude, this.incident.location.coordinates.longitude), {
+      Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
         icon: Leaflet.icon({
           iconSize: [25, 41],
           iconAnchor: [13, 41],

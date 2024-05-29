@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Output} from "@angular/core";
 import * as Leaflet from "leaflet";
 import {Geocoder} from "leaflet-control-geocoder";
-import {LocationCoordinates} from "../../../dtos/location-coordinates";
 import {Observable} from "rxjs";
 import {GeocodingResult} from "leaflet-control-geocoder/src/geocoders/api";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -21,7 +20,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
-import {geocoderAddressConverter, LocationAddress, prettyLocationAddress} from "../../../dtos/location-address";
+import {geocoderAddressConverter, LocationAddress, LocationCoordinates, prettyLocationAddress} from "../../../dtos/incident";
 import {NgIf} from "@angular/common";
 
 

@@ -16,7 +16,7 @@ import {MatRadioModule} from "@angular/material/radio";
 import {MatMenuModule} from "@angular/material/menu";
 import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
-import {Patient, Sex} from "../../../dtos/patient";
+import {Patient, Sex} from "../../../dtos/incident";
 
 
 @Component({

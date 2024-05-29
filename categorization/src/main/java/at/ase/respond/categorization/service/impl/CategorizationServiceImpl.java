@@ -412,7 +412,7 @@ public class CategorizationServiceImpl implements CategorizationService {
     private void validateBaseField(BaseQuestionField field, String answerValue) throws NotFoundException, ValidationException {
         switch (field.getType()) {
             case SINGLE_CHOICE:
-                if (!field.getOptions().contains(answerValue)) {
+                if (field.getOptions().stream().noneMatch(option -> option.equalsIgnoreCase(answerValue))) {
                     log.error("Invalid answer for field: {}. Answer: {}", field.getFieldId(), answerValue);
                     throw new NotFoundException("Invalid answer for field: " + field.getFieldId() + ". Answer: " + answerValue);
                 }

@@ -16,7 +16,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {IncidentService} from '../../services/incidents.service';
-import {geocoderAddressConverter, prettyLocationAddress} from "../../dtos/location-address";
+import {geocoderAddressConverter, prettyLocationAddress} from "../../dtos/incident";
 import {NotificationService} from "../../services/notification.service";
 
 
