@@ -30,14 +30,11 @@ publish-common-lib:
   script:
     - ls -ld ~/.gradle
     - namei -l ~/.gradle
+    - who
     - cd common
     - echo $GRADLE_USER_HOME
     - ./gradlew publish
-  variables:
-    KUBERNETES_HELPER_CPU_REQUEST: "1"
-    KUBERNETES_HELPER_CPU_LIMIT: "2"
-    KUBERNETES_MEMORY_REQUEST: "512Mi"
-    KUBERNETES_MEMORY_LIMIT: "1024Mi"
+#  variables:
 #    GRADLE_USER_HOME: "/home/www-data/.gradle"
 
 test-data-feeder:
