@@ -31,6 +31,7 @@ publish-common-lib:
     - ls -ld ~/.gradle
     - namei -l ~/.gradle
     - cd common
+    - echo $GRADLE_USER_HOME
     - ./gradlew publish
   variables:
     KUBERNETES_HELPER_CPU_REQUEST: "1"
