@@ -28,15 +28,10 @@ publish-common-lib:
     - env
   image: gradle:8.7-jdk21
   script:
-    - ls -ld ~/.gradle
     - namei -l ~/.gradle
-    - who
-    - whoami
-    - echo $USER
-    - w
     - cd common
     - echo $GRADLE_USER_HOME
-    - ./gradlew publish
+    - ./gradlew publish -g gradle-user-home ~/.gradle
 #  variables:
 #    GRADLE_USER_HOME: "/home/www-data/.gradle"
 
