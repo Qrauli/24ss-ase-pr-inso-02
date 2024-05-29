@@ -65,5 +65,5 @@ export interface Answer {
   questionType: QuestionType;
   questionId: string;
   protocolId: string;
-  answers: Map<string, string>;
+  answers: { [key: string]: string };
 }

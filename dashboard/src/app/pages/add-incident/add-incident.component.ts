@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {HeaderComponent} from '../../components/header/header.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
@@ -26,7 +26,7 @@ import {QuestionsFormComponent} from "./questions-form/questions-form.component"
 import {NgForOf, NgIf} from "@angular/common";
 import {NotificationService} from "../../services/notification.service";
 import {CategorizationService} from "../../services/categorization.service";
-import {Answer, Categorization, QuestionType} from "../../dtos/categorization";
+import {StepperSelectionEvent} from "@angular/cdk/stepper";
 
 @Component({
   selector: 'app-add-incident',
@@ -54,7 +54,7 @@ import {Answer, Categorization, QuestionType} from "../../dtos/categorization";
   templateUrl: './add-incident.component.html',
   styleUrl: './add-incident.component.css'
 })
-export class AddIncidentComponent implements AfterViewInit {
+export class AddIncidentComponent {
 
   incident: Incident;
 
@@ -82,7 +82,10 @@ export class AddIncidentComponent implements AfterViewInit {
     };
   }
 
-  handleSelectionChange(previous: string) {
+  // TODO check if we have the bundle available
+
+  handleSelectionChange(event: StepperSelectionEvent) {
+    const previous = event.previouslySelectedStep.label;
     switch (previous) {
       case this.locationFormLabel: {
         const locationFormValues = this.locationFormComponent.form.value;
@@ -97,120 +100,28 @@ export class AddIncidentComponent implements AfterViewInit {
           coordinates: this.locationFormComponent.coordinates
         }
 
-        if (this.categorization?.sessionID) {
-
-          const answerMap = new Map<string, string>();
-
-          answerMap.set('street', locationFormValues.street!);
-          // TODO number?
-          // TODO City missing
-          answerMap.set('district', locationFormValues.postalCode!);
-          answerMap.set('lat', this.locationFormComponent.coordinates.latitude.toString());
-          answerMap.set('lng', this.locationFormComponent.coordinates.longitude.toString());
-          answerMap.set('additionalData', locationFormValues.additionalInformation!);
-
-          const answer: Answer = {
-            questionId: "1",
-            questionType: QuestionType.BASE,
-            protocolId: "null",
-            answers: answerMap
-          };
-
-          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-            next: (value) => {
-              this.categorization = value;
-            },
-            error: (err) => {
-              this.notificationService.showErrorNotification(
-                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-                'OK',
-                7000
-              );
-            }
-          });
-        }
-
         break;
       }
       case this.personsFormLabel: {
-
-        const locationFormValues = this.personFormComponent.form.value;
-
         const numberOfPatients = this.personFormComponent.patients.length;
 
         this.incident.patients = this.personFormComponent.patients;
         this.incident.numberOfPatients = numberOfPatients;
 
-        if (this.categorization?.sessionID) {
-
-          var answerMap = new Map<string, string>();
-
-          answerMap.set('number', locationFormValues.caller?.number!);
-          answerMap.set('name', locationFormValues.caller?.name!);
-
-          var answer: Answer = {
-            questionId: "2",
-            questionType: QuestionType.BASE,
-            protocolId: "null",
-            answers: answerMap
-          };
-
-          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-            next: (value) => {
-              this.categorization = value;
-            },
-            error: (err) => {
-              this.notificationService.showErrorNotification(
-                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-                'OK',
-                7000
-              );
-            }
-          });
-
-          answerMap = new Map<string, string>();
-
-          answerMap.set('numberOfPeople', numberOfPatients.toString());
-
-          if (numberOfPatients == 1) {
-            answerMap.set('age', this.personFormComponent.patients[0].age.toString());
-            answerMap.set('gender', this.personFormComponent.patients[0].sex);
-          }
-
-          answer = {
-            questionId: "3",
-            questionType: QuestionType.BASE,
-            protocolId: "null",
-            answers: answerMap
-          };
-
-          this.categorizationService.saveAnswer(this.categorization.sessionID, answer).subscribe({
-            next: (value) => {
-              this.categorization = value;
-            },
-            error: (err) => {
-              this.notificationService.showErrorNotification(
-                'Fehler in der Kommunikation mit dem Kategorisierungs Service: \n\n' + JSON.stringify(err, null, 2),
-                'OK',
-                7000
-              );
-            }
-          });
-        }
-
         break;
       }
       case this.questionsFormLabel: {
 
-        console.log(this.categorization);
+        this.summaryTags.concat(this.questionsFormComponent.summaryTags);
 
         this.recommendedCategory = this.questionsFormComponent.recommendation;
         this.incident.questionaryId = this.questionsFormComponent.questionaryId;
         break;
       }
-      // default: {
-      //   alert(JSON.stringify(this.incident, null, 2));
-      // }
+    }
+
+    if (event.selectedStep.label == this.questionsFormLabel) {
+      this.questionsFormComponent.readIncidentBaseInformation(this.incident);
     }
   }
 
@@ -221,24 +132,6 @@ export class AddIncidentComponent implements AfterViewInit {
   @ViewChild(QuestionsFormComponent) questionsFormComponent: QuestionsFormComponent;
 
   // ####################### Categorization ####################### //
-
-  categorization: Categorization;
-
-  ngAfterViewInit(): void {
-    this.categorizationService.createSession().subscribe({
-      next: (value) => {
-        this.categorization = value;
-        console.log("Generated categorization session with id " + this.categorization.sessionID);
-      },
-      error: (err) => {
-        this.notificationService.showErrorNotification(
-          'Es konnte keine Session für die Kategorisierung erstellt werden: \n\n' + JSON.stringify(err, null, 2),
-          'OK',
-          7000
-        );
-      }
-    });
-  }
 
   recommendedCategory = '';
   selectedCategory = '';
@@ -259,9 +152,6 @@ export class AddIncidentComponent implements AfterViewInit {
     if (this.incident.numberOfPatients > 1) {
       this.summaryTags.push(this.incident.numberOfPatients + " verletzte Personen");
     }
-
-    // TODO get summaryTags from Form Component
-    this.summaryTags.push("Bewusstlos", "Schnittwunde", "schwer zugänglich");
 
     return this.summaryTags.length > 0;
   }

@@ -1,6 +1,6 @@
 <app-header [backButton]="true" backRoute="/calltaker" title="Neuer Einsatz"></app-header>
 <div class="container">
-  <mat-stepper #stepper (selectionChange)="handleSelectionChange($event.previouslySelectedStep.label)">
+  <mat-stepper #stepper (selectionChange)="handleSelectionChange($event)">
     <mat-step label="{{ locationFormLabel }}">
         <ng-template matStepLabel>Standort</ng-template>
         <location-form> </location-form>
