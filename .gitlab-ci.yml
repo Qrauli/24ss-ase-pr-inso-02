@@ -31,6 +31,9 @@ publish-common-lib:
     - ls -ld ~/.gradle
     - namei -l ~/.gradle
     - who
+    - whoami
+    - echo $USER
+    - w
     - cd common
     - echo $GRADLE_USER_HOME
     - ./gradlew publish
