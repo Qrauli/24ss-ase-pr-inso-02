@@ -28,6 +28,8 @@ publish-common-lib:
     - env
   image: gradle:8.7-jdk21
   script:
+    - ls -ld ~/.gradle
+    - namei -l ~/.gradle
     - cd common
     - ./gradlew publish
   variables:
@@ -35,6 +37,7 @@ publish-common-lib:
     KUBERNETES_HELPER_CPU_LIMIT: "2"
     KUBERNETES_MEMORY_REQUEST: "512Mi"
     KUBERNETES_MEMORY_LIMIT: "1024Mi"
+#    GRADLE_USER_HOME: "/home/www-data/.gradle"
 
 test-data-feeder:
   stage: test
