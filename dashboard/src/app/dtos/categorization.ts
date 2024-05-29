@@ -6,7 +6,7 @@
  */
 export interface Categorization {
   sessionID: string;
-  questionBundles?: QuestionBundle[];
+  questionBundles: QuestionBundle[];
   createdBy?: string;
   createdAt?: string;
   dispatchCode?: string;

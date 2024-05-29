@@ -2,7 +2,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {environment} from "../../environments/environment";
-import {Answer, Categorization} from "../dtos/categorization";
+import {Answer, Categorization } from "../dtos/categorization";
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,34 @@ export class CategorizationService {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
+  }
+
+  getBaseQuestionBundles(categorization: Categorization) {
+    return categorization.questionBundles
+      .filter(bundle => bundle.baseQuestion != undefined);
+  }
+
+  getBaseQuestionBundle(categorization: Categorization, id: string) {
+    return this.getBaseQuestionBundles(categorization)
+      .find(bundle => bundle.baseQuestion!.id == id);
+  }
+
+  isBaseQuestionAnswered(categorization: Categorization, id: string) {
+    return this.getBaseQuestionBundle(categorization, id)?.answer != undefined;
+  }
+
+  getProtocolQuestionBundles(categorization: Categorization) {
+    return categorization.questionBundles
+      .filter(bundle => bundle.protocolQuestion != undefined);
+  }
+
+  getProtocolQuestionBundle(categorization: Categorization, id: string) {
+    return this.getProtocolQuestionBundles(categorization)
+      .find(bundle => bundle.protocolQuestion!.id == id);
+  }
+
+  isProtocolQuestionAnswered(categorization: Categorization, id: string) {
+    return this.getProtocolQuestionBundle(categorization, id)?.answer != undefined;
   }
 
 }

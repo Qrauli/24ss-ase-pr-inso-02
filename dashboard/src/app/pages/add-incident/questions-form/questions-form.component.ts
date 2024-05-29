@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from "@angular/core";
+import {AfterViewInit, Component} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from "../../../components/header/header.component";
 import {MatButtonModule} from "@angular/material/button";
@@ -20,6 +20,7 @@ import {CategorizationService} from "../../../services/categorization.service";
 import {NotificationService} from "../../../services/notification.service";
 import {Answer, Categorization, QuestionType} from "../../../dtos/categorization";
 import {Incident, Sex} from "../../../dtos/incident";
+import {NgForOf, NgIf} from "@angular/common";
 
 @Component({
   selector: 'questions-form',
@@ -41,7 +42,7 @@ import {Incident, Sex} from "../../../dtos/incident";
     MatRadioModule,
     MatMenuModule,
     MatTableModule,
-    MatDividerModule],
+    MatDividerModule, NgIf, NgForOf],
   templateUrl: './questions-form.component.html',
   styleUrl: '../add-incident.component.css'
 })
@@ -94,13 +95,10 @@ export class QuestionsFormComponent implements AfterViewInit {
       }
     }
 
-    console.log("Answers after loading incident information: " + answer.answers);
-
     this.categorizationService.saveAnswer(this.questionaryId, answer).subscribe({
       next: (value) => {
         this.categorization = value;
         console.log("Successfull sent base incident information");
-        console.log("Answers after sending incident information: " + answer.answers);
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
@@ -112,14 +110,68 @@ export class QuestionsFormComponent implements AfterViewInit {
     });
 
     // TODO get summaryTags from Form Component
-    this.summaryTags.push("Bewusstlos", "Schnittwunde", "schwer zugänglich");
-
-    console.log("Summary tags in questiosn form" + this.summaryTags);
   }
 
   // ####################### Questions ####################### //
 
   selectedIndex = 0;
+
+  getSelectionQuestion() {
+    if (!this.categorization) {
+      return undefined;
+    }
+    return this.categorizationService.getBaseQuestionBundle(this.categorization, "2");
+  }
+
+  isSelectionQuestionDefined() {
+    if (!this.categorization) {
+      return false;
+    }
+    return this.getSelectionQuestion() != undefined;
+  }
+
+  isSelectionQuestionAnswered() {
+    if (!this.categorization) {
+      return false;
+    }
+    return this.categorizationService.isBaseQuestionAnswered(this.categorization, "2");
+  }
+
+  answerSelectionQuestion(answer: string) {
+    this.categorizationService.saveAnswer(this.questionaryId, {
+      questionType: QuestionType.BASE,
+      questionId: "2",
+      protocolId: "",
+      answers: {
+        mpdsProtocolId: answer
+      }
+    }).subscribe({
+      next: (value) => {
+        this.categorization = value;
+        console.log("Successfull sent selection question");
+        this.changeIndex(2);
+      },
+      error: (err) => {
+        this.notificationService.showErrorNotification(
+          'Fehler in der Kommunikation mit dem Kategorisierungs-Service: \n\n' + JSON.stringify(err, null, 2),
+          'OK',
+          7000
+        );
+      }
+    });
+  }
+
+  getProtocolQuestions() {
+    return this.categorizationService.getProtocolQuestionBundles(this.categorization)
+      .map(bundle => bundle.protocolQuestion!);
+  }
+
+  isProtocolQuestionAnswerd(id: string) {
+    if (!this.categorization) {
+      return false;
+    }
+    return this.categorizationService.isProtocolQuestionAnswered(this.categorization, id);
+  }
 
   changeIndex(index: number): void {
     this.selectedIndex = index;
