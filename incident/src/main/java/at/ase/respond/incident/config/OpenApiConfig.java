@@ -16,7 +16,7 @@ public class OpenApiConfig {
             .info(new Info().title("Incident Service API")
                 .description("This is the RESPOND incident service API.")
                 .version("v1.0.0"))
-            .components(new Components().addSecuritySchemes("bearerAuth",
+            .components(new Components().addSecuritySchemes("bearer",
                     new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 

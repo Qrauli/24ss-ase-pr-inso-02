@@ -16,7 +16,7 @@ public class OpenApiConfig {
             .info(new Info().title("Dispatcher Service API")
                 .description("This is the RESPOND dispatcher service API.")
                 .version("v1.0.0"))
-            .components(new Components().addSecuritySchemes("bearerAuth",
+            .components(new Components().addSecuritySchemes("bearer",
                     new SecurityScheme().type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
                         .scheme("bearer")
                         .bearerFormat("JWT")));
