@@ -29,4 +29,4 @@ spring:
 custom:
   questionschema:
     path: "/data/question_schema.json"
-    protocolSelectorQuestionId: 4
+    protocolSelectorQuestionId: 2

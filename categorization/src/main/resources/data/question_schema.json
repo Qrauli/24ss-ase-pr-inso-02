@@ -62,15 +62,7 @@
                         "fieldId": "additionalData",
                         "text": "Zusatzinformationen",
                         "type": "TEXT"
-                    }
-                ]
-            },
-            {
-                "id": 2,
-                "questionType": "BASE",
-                "text": "Wer ruft an?",
-                "nextBaseQuestionId": 3,
-                "fields": [
+                    },
                     {
                         "fieldId": "name",
                         "text": "Name",
@@ -80,15 +72,7 @@
                         "fieldId": "phone",
                         "text": "Telefonnummer",
                         "type": "TEXT"
-                    }
-                ]
-            },
-            {
-                "id": 3,
-                "questionType": "BASE",
-                "text": "Patientendaten",
-                "nextBaseQuestionId": 4,
-                "fields": [
+                    },
                     {
                         "fieldId": "numberOfPeople",
                         "text": "Anzahl",
@@ -112,7 +96,7 @@
                 ]
             },
             {
-                "id": 4,
+                "id": 2,
                 "text": "Was ist passiert?",
                 "questionType": "BASE",
                 "fields": [
