@@ -17,7 +17,7 @@ spec:
         - name: 24ss-ase-pr-inso-02-dashboard-container
           image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dashboard:latest
           ports:
-            - containerPort: 8081
+            - containerPort: 80
           resources:
             limits:
               memory: "512Mi"
@@ -37,8 +37,8 @@ spec:
     app: 24ss-ase-pr-inso-02-dashboard
   ports:
     - protocol: TCP
-      port: 8080
-      targetPort: 8080
+      port: 80
+      targetPort: 80
   type: ClusterIP
   clusterIP: None
 ---
@@ -60,4 +60,4 @@ spec:
               service:
                 name: s-24ss-ase-pr-inso-02-dashboard-service
                 port:
-                  number: 8080
+                  number: 80
