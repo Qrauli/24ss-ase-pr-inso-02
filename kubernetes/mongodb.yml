@@ -27,6 +27,8 @@ spec:
               memory: "512Mi"
               cpu: "400m"
               ephemeral-storage: "300Mi"
+      securityContext:
+        runAsUser: 999
   strategy:
     type: Recreate
 ---

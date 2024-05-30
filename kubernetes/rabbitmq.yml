@@ -33,6 +33,8 @@ spec:
                 name: 24ss-ase-pr-inso-02-rabbitmq-config
             - secretRef:
                 name: 24ss-ase-pr-inso-02-rabbitmq-secret
+      securityContext:
+        runAsUser: 999
   strategy:
     type: Recreate
 ---
