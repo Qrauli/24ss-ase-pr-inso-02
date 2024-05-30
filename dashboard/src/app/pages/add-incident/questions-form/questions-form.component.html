@@ -34,7 +34,8 @@
     <div class="tab-center">
       <h3>{{ protocolQuestion.text }}</h3>
       <div *ngFor="let field of protocolQuestion.fields!">
-        <mat-form-field *ngIf="field.type == FieldType.SINGLE_CHOICE">
+        <!-- TODO other field types -->
+        <mat-form-field *ngIf="field.type == FieldType.SINGLE_CHOICE" style="width: 400px">
           <mat-label>Auswählen</mat-label>
           <mat-select [(ngModel)]="selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id][field.fieldId]">
             <mat-option *ngFor="let option of field.options" [value]="option.text">{{ option.text }}</mat-option>
@@ -44,11 +45,22 @@
 
       <button mat-flat-button color="primary"
               (click)="answerProtocolQuestion(
-              protocolQuestion,
-              selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id],
-              selectedIndex + 1)">
+                protocolQuestion,
+                selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id],
+                selectedIndex + 1)
+              ">
         Bestätigen
       </button>
+    </div>
+  </mat-tab>
+  <mat-tab *ngIf="recommendation != ''">
+    <ng-template mat-tab-label>
+      <mat-icon class="done">cloud_done</mat-icon>
+      Vorschlag des Systems
+    </ng-template>
+    <div class="tab-center">
+      <h3>Vorschlag des Kategorisierungs-Systems</h3>
+        <span style="font-size: 20px; margin: 0 0 5px 0;"><b>{{ recommendation }}</b></span>
     </div>
   </mat-tab>
 

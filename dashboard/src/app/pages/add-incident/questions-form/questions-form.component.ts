@@ -23,7 +23,6 @@ import {
   Categorization,
   FieldType,
   ProtocolQuestion,
-  ProtocolQuestionField,
   QuestionType
 } from "../../../dtos/categorization";
 import {Incident, Sex} from "../../../dtos/incident";
@@ -125,6 +124,11 @@ export class QuestionsFormComponent implements AfterViewInit {
           default:
             console.log("Antwort erfolgreich gespeichert");
         }
+
+        if (this.categorization.dispatchCode && this.categorization.dispatchCode != ''){
+          this.recommendation = this.categorization.dispatchCode;
+        }
+
         this.changeIndex(index);
       },
       error: (err) => {
@@ -180,6 +184,8 @@ export class QuestionsFormComponent implements AfterViewInit {
       }
     }
 
+    this.recommendation = '';
+
     this.saveAnswerWithIndexChange(answer, 1);
   }
 
@@ -227,6 +233,8 @@ export class QuestionsFormComponent implements AfterViewInit {
       protocolId: question.protocolId,
       answers: answers
     }
+
+    this.recommendation = '';
 
     this.saveAnswerWithIndexChange(answer, index);
 
