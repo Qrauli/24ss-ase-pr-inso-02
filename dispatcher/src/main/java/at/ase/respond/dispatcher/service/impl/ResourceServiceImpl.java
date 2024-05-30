@@ -47,10 +47,6 @@ public class ResourceServiceImpl implements ResourceService {
         Incident incident = incidentService.findById(incidentId);
         Resource resource = this.findById(resourceId);
 
-        if (resource.getState() != ResourceState.AVAILABLE) {
-            throw new ValidationException("Resource is not available");
-        }
-
         resource.setState(ResourceState.DISPATCHED);
         resource.setAssignedIncident(incident);
         resourceRepository.save(resource);
