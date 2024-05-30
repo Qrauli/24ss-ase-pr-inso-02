@@ -6,6 +6,7 @@ import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.persistence.model.Location;
 import at.ase.respond.incident.persistence.model.Patient;
+import at.ase.respond.incident.persistence.model.State;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
 
 import java.time.ZonedDateTime;
@@ -24,6 +25,8 @@ public interface IncidentMapper {
         return Incident.builder()
             .id(incident.id())
             .code(incident.code())
+            .state(State.valueOf(incident.state()))
+            .questionaryId(incident.questionaryId())
             .location(toEntity(incident.location()))
             .patients(toEntity(incident.patients()))
             .numberOfPatients(incident.numberOfPatients())
