@@ -86,8 +86,10 @@ public class ResourceServiceImpl implements ResourceService {
         Resource resource = this.findById(resourceId);
         resource.setState(state);
         if (state == ResourceState.AVAILABLE && resource.getAssignedIncident() != null) {
-            log.debug("Resource {} reported status AVAILABLE, unassigning from incident {}", resourceId, resource.getAssignedIncident().getId());
+            UUID incidentId = resource.getAssignedIncident().getId();
+            log.debug("Resource {} reported status AVAILABLE, unassigning from incident {}", resourceId, incidentId);
             resource.setAssignedIncident(null);
+            incidentService.unassignResource(incidentId, resourceId);
         }
         resourceRepository.save(resource);
 

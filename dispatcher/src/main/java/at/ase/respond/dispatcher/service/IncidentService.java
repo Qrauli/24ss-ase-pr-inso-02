@@ -32,4 +32,11 @@ public interface IncidentService {
      */
     Incident save(Incident incident);
 
+    /**
+     * Unassigns the specified resource from the incident with the specified id.
+     * @param id the id of the incident
+     * @param resourceId the id of the resource to unassign
+     */
+    void unassignResource(UUID id, String resourceId);
+
 }
