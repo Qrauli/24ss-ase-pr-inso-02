@@ -58,6 +58,7 @@ export class QuestionsFormComponent implements AfterViewInit {
 
   private categorization: Categorization;
 
+  // TODO add functionality
   summaryTags: string[] = [];
 
   recommendation = '';

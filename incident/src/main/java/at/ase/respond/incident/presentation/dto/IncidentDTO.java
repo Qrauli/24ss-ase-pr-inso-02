@@ -2,7 +2,6 @@ package at.ase.respond.incident.presentation.dto;
 
 import at.ase.respond.common.dto.LocationDTO;
 import at.ase.respond.common.dto.PatientDTO;
-import at.ase.respond.incident.persistence.model.OperationCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.io.Serializable;
@@ -21,5 +20,5 @@ import java.util.UUID;
  */
 @Schema(description = "A DTO representing an incident")
 public record IncidentDTO(UUID id, Collection<PatientDTO> patients, Integer numberOfPatients,
-            String code, LocationDTO location, UUID questionaryId) implements Serializable {
+            String code, LocationDTO location, UUID questionaryId, String state) implements Serializable {
 }

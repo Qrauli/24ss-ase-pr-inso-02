@@ -3,8 +3,6 @@ package at.ase.respond.incident.persistence.model;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,9 +32,6 @@ public class Incident {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    private OperationCode code;
-
     @Embedded
     private Location location;
 
@@ -47,4 +42,7 @@ public class Incident {
 
     private UUID questionaryId;
 
+    private State state;
+
+    private String code;
 }

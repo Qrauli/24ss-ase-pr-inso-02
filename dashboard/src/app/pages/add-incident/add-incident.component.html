@@ -31,29 +31,65 @@
           <span style="font-size: 20px;">{{ selectedCategory ? selectedCategory : "Kategorie auswählen" }}</span>
         </button>
         <mat-menu #categories="matMenu">
-          <button mat-menu-item (click)="changeCategory('01A01')">01A01 - Bauchschmerzen</button>
-          <button mat-menu-item [matMenuTriggerFor]="C0T">Kategorie 0</button>
-          <button mat-menu-item [matMenuTriggerFor]="C1C">Kategorie 1</button>
+          <button mat-menu-item [matMenuTriggerFor]="menu_01">Bauchschmerzen/-beschwerden</button>
+          <button mat-menu-item [matMenuTriggerFor]="menu_02">Allergie/Kontakt mit giftigen Tieren</button>
         </mat-menu>
 
-        <mat-menu #C0T="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="C0T0C">Type 0</button>
-          <button mat-menu-item [matMenuTriggerFor]="C0T1C">Type 1</button>
+        <mat-menu #menu_01="matMenu">
+          <button mat-menu-item (click)="changeCategory('01A01')">01A01</button>
+          <button mat-menu-item (click)="changeCategory('01A02')">01A02</button>
+          <button mat-menu-item (click)="changeCategory('01C00')">01C00</button>
+          <button mat-menu-item (click)="changeCategory('01C01')">01C01</button>
+          <button mat-menu-item (click)="changeCategory('01C02')">01C02</button>
+          <button mat-menu-item (click)="changeCategory('01C03')">01C03</button>
+          <button mat-menu-item (click)="changeCategory('01C04')">01C04</button>
+          <button mat-menu-item (click)="changeCategory('01C05')">01C05</button>
+          <button mat-menu-item (click)="changeCategory('01C06')">01C06</button>
+          <button mat-menu-item (click)="changeCategory('01D00')">01D00</button>
+          <button mat-menu-item (click)="changeCategory('01D01')">01D01</button>
+          <button mat-menu-item (click)="changeCategory('01D02')">01D02</button>
         </mat-menu>
 
-        <mat-menu #C1C="matMenu">
-          <button mat-menu-item (click)="changeCategory('C1C0')">C1C0</button>
-          <button mat-menu-item (click)="changeCategory('C1C1')">C1C1</button>
-        </mat-menu>
-
-        <mat-menu #C0T0C="matMenu">
-          <button mat-menu-item (click)="changeCategory('C0T0C0')">C0T0C0</button>
-          <button mat-menu-item (click)="changeCategory('C0T0C0')">C0T0C0</button>
-        </mat-menu>
-
-        <mat-menu #C0T1C="matMenu">
-          <button mat-menu-item (click)="changeCategory('C0T1C0')">C0T1C0</button>
-          <button mat-menu-item (click)="changeCategory('C0T1C1')">C0T1C1</button>
+        <mat-menu #menu_02="matMenu">
+          <button mat-menu-item (click)="changeCategory('02A01')">02A01</button>
+          <button mat-menu-item (click)="changeCategory('02A01I')">02A01I</button>
+          <button mat-menu-item (click)="changeCategory('02A01M')">02A01M</button>
+          <button mat-menu-item (click)="changeCategory('02A02')">02A02</button>
+          <button mat-menu-item (click)="changeCategory('02A02I')">02A02I</button>
+          <button mat-menu-item (click)="changeCategory('02A02M')">02A02M</button>
+          <button mat-menu-item (click)="changeCategory('02B00')">02B00</button>
+          <button mat-menu-item (click)="changeCategory('02B00I')">02B00I</button>
+          <button mat-menu-item (click)="changeCategory('02B00M')">02B00M</button>
+          <button mat-menu-item (click)="changeCategory('02B01')">02B01</button>
+          <button mat-menu-item (click)="changeCategory('02B01I')">02B01I</button>
+          <button mat-menu-item (click)="changeCategory('02B01M')">02B01M</button>
+          <button mat-menu-item (click)="changeCategory('02C00')">02C00</button>
+          <button mat-menu-item (click)="changeCategory('02C00I')">02C00I</button>
+          <button mat-menu-item (click)="changeCategory('02C00M')">02C00M</button>
+          <button mat-menu-item (click)="changeCategory('02C01')">02C01</button>
+          <button mat-menu-item (click)="changeCategory('02C02')">02C02</button>
+          <button mat-menu-item (click)="changeCategory('02C02I')">02C02I</button>
+          <button mat-menu-item (click)="changeCategory('02C02M')">02C02M</button>
+          <button mat-menu-item (click)="changeCategory('02D00I')">02D00I</button>
+          <button mat-menu-item (click)="changeCategory('02D00M')">02D00M</button>
+          <button mat-menu-item (click)="changeCategory('02D01')">02D01</button>
+          <button mat-menu-item (click)="changeCategory('02D01I')">02D01I</button>
+          <button mat-menu-item (click)="changeCategory('02D01M')">02D01M</button>
+          <button mat-menu-item (click)="changeCategory('02D02')">02D02</button>
+          <button mat-menu-item (click)="changeCategory('02D02I')">02D02I</button>
+          <button mat-menu-item (click)="changeCategory('02D02M')">02D02M</button>
+          <button mat-menu-item (click)="changeCategory('02D03')">02D03</button>
+          <button mat-menu-item (click)="changeCategory('02D03I')">02D03I</button>
+          <button mat-menu-item (click)="changeCategory('02D03M')">02D03M</button>
+          <button mat-menu-item (click)="changeCategory('02D04')">02D04</button>
+          <button mat-menu-item (click)="changeCategory('02D04I')">02D04I</button>
+          <button mat-menu-item (click)="changeCategory('02D04M')">02D04M</button>
+          <button mat-menu-item (click)="changeCategory('02E00')">02E00</button>
+          <button mat-menu-item (click)="changeCategory('02E00I')">02E00I</button>
+          <button mat-menu-item (click)="changeCategory('02E00M')">02E00M</button>
+          <button mat-menu-item (click)="changeCategory('02E01')">02E01</button>
+          <button mat-menu-item (click)="changeCategory('02E01I')">02E01I</button>
+          <button mat-menu-item (click)="changeCategory('02E01M')">02E01M</button>
         </mat-menu>
         <br>
         <mat-divider style="width: 400px"></mat-divider>
