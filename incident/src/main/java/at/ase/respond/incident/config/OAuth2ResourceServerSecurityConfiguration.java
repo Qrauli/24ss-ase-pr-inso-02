@@ -58,6 +58,8 @@ public class OAuth2ResourceServerSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize.requestMatchers(HttpMethod.POST, "/incidents/**")
             .hasRole("calltaker")
+            .requestMatchers(HttpMethod.GET, "/incidents/**")
+            .hasRole("calltaker")
 
             // Swagger UI
             .requestMatchers(HttpMethod.GET, "/swagger-ui/**")

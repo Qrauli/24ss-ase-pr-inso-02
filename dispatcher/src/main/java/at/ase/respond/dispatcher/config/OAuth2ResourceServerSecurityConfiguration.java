@@ -59,7 +59,7 @@ public class OAuth2ResourceServerSecurityConfiguration {
         http.authorizeHttpRequests((authorize) -> authorize.requestMatchers(HttpMethod.GET, "/incidents/**")
             .hasAnyRole("calltaker", "dispatcher")
             .requestMatchers(HttpMethod.GET, "/resources/**")
-            .hasRole("dispatcher")
+            .hasAnyRole("calltaker", "dispatcher")
             .requestMatchers(HttpMethod.POST, "/resources/**")
             .hasRole("dispatcher")
             .requestMatchers(HttpMethod.GET, "/requests/**")
