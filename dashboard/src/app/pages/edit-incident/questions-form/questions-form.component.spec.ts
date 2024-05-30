@@ -1,21 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditIncidentComponent } from './edit-incident.component';
+import { QuestionsFormComponent } from './questions-form.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {OAuthModule} from "angular-oauth2-oidc";
 
 describe('AddIncidentComponent', () => {
-  let component: EditIncidentComponent;
-  let fixture: ComponentFixture<EditIncidentComponent>;
+  let component: QuestionsFormComponent;
+  let fixture: ComponentFixture<QuestionsFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditIncidentComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [QuestionsFormComponent, NoopAnimationsModule, HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(EditIncidentComponent);
+    fixture = TestBed.createComponent(QuestionsFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,26 +1,29 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditIncidentComponent } from './edit-incident.component';
+import { LocationFormComponent } from './location-form.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {OAuthModule} from "angular-oauth2-oidc";
 
 describe('AddIncidentComponent', () => {
-  let component: EditIncidentComponent;
-  let fixture: ComponentFixture<EditIncidentComponent>;
+  let component: LocationFormComponent;
+  let fixture: ComponentFixture<LocationFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditIncidentComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [LocationFormComponent, NoopAnimationsModule, HttpClientTestingModule]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(EditIncidentComponent);
+    fixture = TestBed.createComponent(LocationFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have a map', () => {
+    expect(component.map).toBeTruthy();
   });
 });
