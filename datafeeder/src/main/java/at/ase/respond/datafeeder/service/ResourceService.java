@@ -15,4 +15,6 @@ public interface ResourceService {
 
 	ResourceDTO updateLocation(String resourceId, LocationCoordinatesDTO newLocation) throws NotFoundException;
 
+	void moveToLocation(String resourceId, LocationCoordinatesDTO newLocation, Integer duration) throws NotFoundException;
+
 }

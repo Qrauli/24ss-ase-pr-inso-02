@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -131,6 +132,29 @@ public class ResourceServiceImpl implements ResourceService {
         }
 
         throw new NotFoundException("Resource " + resourceId + " not found");
+    }
+
+    @Override
+    @Async
+    public void moveToLocation(String resourceId, LocationCoordinatesDTO newLocation, Integer duration) throws NotFoundException {
+        log.debug("Moving resource {} to location {} in {} seconds", resourceId, newLocation, duration);
+        LocationCoordinatesDTO currentLocation = resources.get(resourceId).locationCoordinates();
+        double latitudeDelta = (newLocation.latitude() - currentLocation.latitude()) / duration;
+        double longitudeDelta = (newLocation.longitude() - currentLocation.longitude()) / duration;
+        for (int i = 0; i <= duration; i++) {
+            try {
+                LocationCoordinatesDTO intermediateLocation = new LocationCoordinatesDTO(
+                        currentLocation.latitude() + latitudeDelta * i,
+                        currentLocation.longitude() + longitudeDelta * i
+                );
+                updateLocation(resourceId, intermediateLocation);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.error("Thread interrupted", e);
+                Thread.currentThread().interrupt();
+            }
+        }
+        log.debug("Resource {} moved to location {}", resourceId, newLocation);
     }
 
 }
