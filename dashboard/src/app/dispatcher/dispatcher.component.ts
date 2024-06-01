@@ -358,6 +358,7 @@ export class DispatcherComponent implements OnInit {
     this.assignedResources = [];
     this.map.removeLayer(this.selectedIncidentMarker!);
     this.selectedIncidentMarker = null;
+    this.showLocations();
   }
 
   dispatchIncident(): void {

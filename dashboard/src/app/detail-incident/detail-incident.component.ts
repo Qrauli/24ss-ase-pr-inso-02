@@ -50,7 +50,7 @@ export class DetailIncidentComponent implements OnInit {
       }
     });
 
-    timer(0, 5000)
+    timer(500, 5000)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
@@ -106,7 +106,7 @@ export class DetailIncidentComponent implements OnInit {
     this.resourceMarkers = [];
 
     for (let i = 0; i < resources.length; i++) {
-      if (resources[i].assignedIncident == this.incident?.id) {
+      if (this.incident != null && resources[i].assignedIncident == this.incident?.id) {
         let marker = Leaflet.marker(new Leaflet.LatLng(resources[i].locationCoordinates.latitude, resources[i].locationCoordinates.longitude),
           {
             icon: Leaflet.icon({
