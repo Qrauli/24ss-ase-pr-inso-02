@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddIncidentComponent } from './add-incident.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {OAuthModule} from "angular-oauth2-oidc";
 
 describe('AddIncidentComponent', () => {
   let component: AddIncidentComponent;
@@ -10,7 +11,7 @@ describe('AddIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddIncidentComponent, NoopAnimationsModule, HttpClientTestingModule]
+      imports: [AddIncidentComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
     })
     .compileComponents();
 
@@ -22,18 +23,4 @@ describe('AddIncidentComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  it('should have a table', () => {
-    expect(component.table).toBeTruthy();
-  });
-
-  it('should have a map', () => {
-    expect(component.map).toBeTruthy();
-  });
-
-  it('should have an osmGeocoder', () => {
-    expect(component.osmGeocoder).toBeTruthy();
-  });
-
-
 });

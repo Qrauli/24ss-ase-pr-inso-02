@@ -14,4 +14,10 @@ public class QuestionBundle {
 
     Answer answer;
 
+    // Copy constructor
+    public QuestionBundle(QuestionBundle other) {
+        this.question = other.question;
+        this.answer = other.answer != null ? new Answer(other.answer) : null;
+    }
+
 }

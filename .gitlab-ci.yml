@@ -24,10 +24,14 @@ stages:
 
 publish-common-lib:
   stage: publish
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
   image: gradle:8.7-jdk21
   script:
     - cd common
     - ./gradlew publish
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 test-data-feeder:
   stage: test
@@ -36,9 +40,13 @@ test-data-feeder:
     when: always
     reports:
       junit: datafeeder/build/test-results/test/**/TEST-*.xml
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
   script:
     - cd datafeeder
     - ./gradlew check
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 test-incident-service:
   stage: test
@@ -47,9 +55,13 @@ test-incident-service:
     when: always
     reports:
       junit: incident/build/test-results/test/**/TEST-*.xml
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
   script:
     - cd incident
     - ./gradlew check
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 test-categorization-service:
   stage: test
@@ -58,9 +70,13 @@ test-categorization-service:
     when: always
     reports:
       junit: categorization/build/test-results/test/**/TEST-*.xml
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
   script:
     - cd categorization
     - ./gradlew check
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 test-dispatcher-service:
   stage: test
@@ -69,9 +85,13 @@ test-dispatcher-service:
     when: always
     reports:
       junit: dispatcher/build/test-results/test/**/TEST-*.xml
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
   script:
     - cd dispatcher
     - ./gradlew check
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
 test-dashboard:
   stage: test

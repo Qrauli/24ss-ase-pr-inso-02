@@ -20,6 +20,6 @@ export interface Resource {
     id: string;
     type: ResourceType;
     state: ResourceState;
-    location: LocationCoordinates;
+    locationCoordinates: LocationCoordinates;
     assignedIncident?: string;
 }

@@ -3,17 +3,19 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.alert-red{
+.alert-red {
     --mdc-snackbar-container-color: red;
     --mat-mdc-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: white;
-  }
-.alert-default{
+}
+
+.alert-default {
     --mdc-snackbar-container-color: white;
     --mat-mdc-snack-bar-button-color: #fff;
     --mdc-snackbar-supporting-text-color: black;
-  }
-  .alert-red button {
-    color: white !important;
-    background-color: #4758B8 !important;
-  }
+}
+
+.alert-red button {
+  color: white !important;
+  background-color: #4758B8 !important;
+}

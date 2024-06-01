@@ -33,7 +33,7 @@
                             "1080",
                             "1090",
                             "1100",
-                            "11",
+                            "1110",
                             "1120",
                             "1130",
                             "1140",
@@ -86,35 +86,19 @@
             {
                 "id": 3,
                 "questionType": "BASE",
-                "text": "Wie viele Personen sind betroffen?",
+                "text": "Patientendaten",
                 "nextBaseQuestionId": 4,
                 "fields": [
                     {
                         "fieldId": "numberOfPeople",
                         "text": "Anzahl",
-                        "type": "TEXT"
-                    }
-                ]
-            },
-            {
-                "id": 4,
-                "questionType": "BASE",
-                "text": "Wie alt ist die betroffene Person?",
-                "nextBaseQuestionId": 5,
-                "fields": [
+                        "type": "NUMBER"
+                    },
                     {
                         "fieldId": "age",
                         "text": "Alter",
-                        "type": "TEXT"
-                    }
-                ]
-            },
-            {
-                "id": 5,
-                "questionType": "BASE",
-                "text": "Welches Geschlecht hat die betroffene Person?",
-                "nextBaseQuestionId": 6,
-                "fields": [
+                        "type": "NUMBER"
+                    },
                     {
                         "fieldId": "gender",
                         "text": "Geschlecht",
@@ -128,7 +112,7 @@
                 ]
             },
             {
-                "id": 6,
+                "id": 4,
                 "text": "Was ist passiert?",
                 "questionType": "BASE",
                 "fields": [

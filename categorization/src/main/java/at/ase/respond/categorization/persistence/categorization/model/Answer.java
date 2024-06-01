@@ -21,4 +21,12 @@ public class Answer {
 
     private Map<String, String> answers = new HashMap<>();
 
+    // Copy constructor
+    public Answer(Answer other) {
+        this.questionType = other.questionType;
+        this.questionId = other.questionId;
+        this.protocolId = other.protocolId;
+        this.answers = other.answers != null ? new HashMap<>(other.answers) : null;
+    }
+
 }

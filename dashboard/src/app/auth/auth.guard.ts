@@ -12,10 +12,8 @@ export function featureFlagGuard(
         const router: Router = inject(Router);
         const isLoggedIn = authService.isLoggedIn();
         if (flagName === 'login') {
-            return !isLoggedIn || router.createUrlTree(['/' + localStorage.getItem('userrole')]);
+            return !isLoggedIn || router.createUrlTree(['/']);
         }
-        const isFlagEnabled = localStorage.getItem('userrole') === flagName;
-
-        return (isLoggedIn && isFlagEnabled) || router.createUrlTree([redirectRoute]);
+        return (isLoggedIn && authService.hasRole(flagName)) || router.createUrlTree([redirectRoute]);
     };
 }

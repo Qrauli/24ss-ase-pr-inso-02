@@ -36,4 +36,11 @@ public class IncidentServiceImpl implements IncidentService {
         return repository.save(incident);
     }
 
+    @Override
+    public void unassignResource(UUID id, String resourceId) {
+        Incident incident = findById(id);
+        incident.getAssignedResources().remove(resourceId);
+        save(incident);
+    }
+
 }

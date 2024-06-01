@@ -16,6 +16,7 @@ import {MatSort, MatSortModule} from '@angular/material/sort';
 import {MatInputModule} from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {IncidentService} from '../incidents.service';
+import {geocoderAddressConverter, prettyLocationAddress} from "../dto/location-address";
 
 
 @Component({
@@ -90,4 +91,6 @@ export class CalltakerComponent implements OnInit {
     this.dataSource.filter = value.trim().toLocaleLowerCase();
   }
 
+  protected readonly prettyLocationAddress = prettyLocationAddress;
+  protected readonly geocoderAddressConverter = geocoderAddressConverter;
 }

@@ -16,4 +16,13 @@ public class BaseQuestion extends Question {
 
     private List<BaseQuestionField> fields = new ArrayList<>();
 
+
+    public boolean containsFieldId(String fieldId) {
+        return fields.stream().anyMatch(field -> field.getFieldId().equals(fieldId));
+    }
+
+    public BaseQuestionField getFieldByFieldId(String fieldId) {
+        return fields.stream().filter(field -> field.getFieldId().equals(fieldId)).findFirst().orElse(null);
+    }
+
 }

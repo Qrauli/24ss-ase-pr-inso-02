@@ -26,6 +26,8 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@asymmetrik/ngx-leaflet": "^17.0.0",
+    "angular-oauth2-oidc": "^17.0.2",
+    "angular-oauth2-oidc-jwks": "^17.0.2",
     "css-loader": "^7.1.1",
     "leaflet": "^1.9.4",
     "leaflet-control-geocoder": "^2.4.0",

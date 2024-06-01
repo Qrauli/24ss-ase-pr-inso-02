@@ -14,14 +14,15 @@
           <td mat-cell *matCellDef="let element">
             <mat-icon *ngIf="element.state == 'DISPATCHED'" class="check" fontIcon="check"></mat-icon>
             <mat-icon *ngIf="element.state != 'DISPATCHED'" class="notcheck" fontIcon="close"></mat-icon>
-            <mat-icon *ngIf="hasRequest(element)" matTooltip="Anfrage für zusätzliche Resourcen" style="margin-left: 5px; color: blue;" fontIcon="message"></mat-icon>
+            <mat-icon *ngIf="hasRequest(element)" matTooltip="Anfrage für zusätzliche Resourcen"
+              style="margin-left: 5px; color: blue;" fontIcon="message"></mat-icon>
           </td>
         </ng-container>
 
         <!-- Location Column -->
-        <ng-container matColumnDef="location" >
+        <ng-container matColumnDef="location">
           <th mat-header-cell *matHeaderCellDef> Standort </th>
-          <td mat-cell *matCellDef="let element"> {{element.location.address?.street}}, {{element.location.address.postalCode}} {{element.location.address.city}} </td>
+          <td mat-cell *matCellDef="let element"> {{element.location?.address?.street}}, {{element.location?.address?.postalCode}} {{element.location?.address?.city}} </td>
         </ng-container>
 
         <!-- Classification Column -->
@@ -37,9 +38,9 @@
     <div class="center-heading heading-coloring">
       <p style="color: white">Ausgewählter Einsatz</p>
       <button style="position:absolute; right: 3px;" mat-icon-button (click)="unselectIncident()"
-      [disabled]="selectedIncident === null" aria-label="Einsatz abwählen" matTooltip="Einsatz abwählen" >
-      <mat-icon [ngClass]="{'white-icon': selectedIncident !== null}">deselect</mat-icon>
-    </button>
+        [disabled]="selectedIncident === null" aria-label="Einsatz abwählen" matTooltip="Einsatz abwählen">
+        <mat-icon [ngClass]="{'white-icon': selectedIncident !== null}">deselect</mat-icon>
+      </button>
     </div>
     <div class="section-vert-2 scrollsection" *ngIf="selectedIncident !== null">
       <mat-grid-list cols="5" rowHeight="50px">
@@ -49,37 +50,45 @@
         <mat-grid-tile colspan="3" class="incident-property">{{selectedIncidentData?.code}}</mat-grid-tile>
       </mat-grid-list>
       <br *ngIf="hasRequest(selectedIncidentData!)">
-      <mat-grid-list *ngIf="hasRequest(selectedIncidentData!)"  cols="5" rowHeight="50px">
-        <mat-grid-tile colspan="5" class="incident-property" style="background-color: lightgrey;"><i>Zusätzliche Resourcenanfragen</i></mat-grid-tile>
-        <ng-container *ngFor="let request of getRequests(selectedIncidentData!)"> 
+      <mat-grid-list *ngIf="hasRequest(selectedIncidentData!)" cols="5" rowHeight="50px">
+        <mat-grid-tile colspan="5" class="incident-property" style="background-color: lightgrey;"><i>Zusätzliche
+            Resourcenanfragen</i></mat-grid-tile>
+        <ng-container *ngFor="let request of getRequests(selectedIncidentData!)">
           <mat-grid-tile colspan="2" class="key-normal">{{request.requestedResourceType}}</mat-grid-tile>
           <mat-grid-tile colspan="2" class="key-normal">{{request.resourceId}}</mat-grid-tile>
           <mat-grid-tile colspan="1" class="property">
             <button (click)="finishRequest(request)" mat-icon-button aria-label="Resourcen-Anfrage abschließen">
-            <mat-icon style="color: blue">task_alt</mat-icon>
-          </button>
-        </mat-grid-tile>
-        </ng-container> 
+              <mat-icon style="color: blue">task_alt</mat-icon>
+            </button>
+          </mat-grid-tile>
+        </ng-container>
       </mat-grid-list>
       <br>
       <mat-grid-list cols="5" rowHeight="50px">
-        <mat-grid-tile colspan="5" class="incident-property" style="background-color: lightgrey;"><i>Standort</i></mat-grid-tile>
+        <mat-grid-tile colspan="5" class="incident-property"
+          style="background-color: lightgrey;"><i>Standort</i></mat-grid-tile>
         <mat-grid-tile colspan="2" class="incident-key">PLZ</mat-grid-tile>
-        <mat-grid-tile colspan="3" class="incident-property">{{selectedIncidentData?.location?.address?.postalCode}}</mat-grid-tile>
+        <mat-grid-tile colspan="3"
+          class="incident-property">{{selectedIncidentData?.location?.address?.postalCode}}</mat-grid-tile>
         <mat-grid-tile colspan="2" class="incident-key">Ort</mat-grid-tile>
-        <mat-grid-tile colspan="3" class="incident-property">{{selectedIncidentData?.location?.address?.city}}</mat-grid-tile>
+        <mat-grid-tile colspan="3"
+          class="incident-property">{{selectedIncidentData?.location?.address?.city}}</mat-grid-tile>
         <mat-grid-tile colspan="2" class="incident-key">Straße</mat-grid-tile>
-        <mat-grid-tile colspan="3" class="incident-property">{{selectedIncidentData?.location?.address?.street}}</mat-grid-tile>
+        <mat-grid-tile colspan="3"
+          class="incident-property">{{selectedIncidentData?.location?.address?.street}}</mat-grid-tile>
         <mat-grid-tile colspan="2" rowspan="2" class="incident-key">Zusätzliche Standortinformationen</mat-grid-tile>
-        <mat-grid-tile colspan="3" rowspan="2" class="incident-property">{{selectedIncidentData?.location?.address?.additionalInformation}}</mat-grid-tile>
+        <mat-grid-tile colspan="3" rowspan="2"
+          class="incident-property">{{selectedIncidentData?.location?.address?.additionalInformation}}</mat-grid-tile>
       </mat-grid-list>
       <br>
       <mat-grid-list cols="6" rowHeight="50px">
-        <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>AnruferIn</i></mat-grid-tile>
+        <mat-grid-tile colspan="6" class="incident-property"
+          style="background-color: lightgrey;"><i>AnruferIn</i></mat-grid-tile>
         <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
         <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
         <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
-        <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>Betroffene ({{selectedIncidentData?.numberOfPatients}})</i>  </mat-grid-tile>
+        <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>Betroffene
+            ({{selectedIncidentData?.numberOfPatients}})</i> </mat-grid-tile>
         <ng-container *ngFor="let patient of selectedIncidentData?.patients">
           <mat-grid-tile colspan="3" class="key-normal">{{patient.sex}}</mat-grid-tile>
           <mat-grid-tile colspan="3" class="property">{{patient.age}}</mat-grid-tile>
@@ -90,14 +99,15 @@
   <div class="section-2">
     <div class="center-heading heading-coloring">
       <p style="color: white">Resourcen</p>
-      <mat-slide-toggle  [(ngModel)]="showDispatched" matTooltip="Zugewiesene Resourcen anzeigen" style="position:absolute; right: 10px;">
+      <mat-slide-toggle [(ngModel)]="showDispatched" (ngModelChange)="showLocations()"
+        matTooltip="Zugewiesene Resourcen anzeigen" style="position:absolute; right: 10px;">
       </mat-slide-toggle>
     </div>
 
-    <button style="position:absolute; bottom: 15px; right: 20px; z-index: 999;" color="primary" mat-flat-button (click)="dispatchIncident()"
-    [disabled]="selectedIncident === null" aria-label="Einsatz dispatchen">
-    Dispatch
-  </button>
+    <button style="position:absolute; bottom: 15px; right: 20px; z-index: 999;" color="primary" mat-flat-button
+      (click)="dispatchIncident()" [disabled]="selectedIncident === null" aria-label="Einsatz dispatchen">
+      Dispatch
+    </button>
 
     <mat-tab-group class="resource-tabs">
       <mat-tab label="Standard">
@@ -107,7 +117,7 @@
 
             <ng-container matColumnDef="location">
               <th mat-header-cell *matHeaderCellDef> Location </th>
-              <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.locationCoordinates}} </td>
             </ng-container>
 
             <ng-container matColumnDef="id">
@@ -123,8 +133,11 @@
 
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef> Status </th>
-              <td mat-cell *matCellDef="let element"> <mat-icon *ngIf="element.assignedIncident" class="notcheck"
-                  fontIcon="crisis_alert"></mat-icon>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon *ngIf="element.assignedIncident && element.assignedIncident != selectedIncident"
+                  class="notcheck" fontIcon="crisis_alert"></mat-icon>
+                <mat-icon *ngIf="element.assignedIncident && element.assignedIncident == selectedIncident"
+                  style="color: blue" fontIcon="check_circle_outline"></mat-icon>
                 <mat-icon *ngIf="!element.assignedIncident" class="check" fontIcon="house"></mat-icon>
               </td>
             </ng-container>
@@ -132,7 +145,7 @@
             <ng-container matColumnDef="locate">
               <th mat-header-cell *matHeaderCellDef> Locate </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-icon-button aria-label="Resource lokalisieren" >
+                <button mat-icon-button aria-label="Resource lokalisieren" (click)="zoomToLocation(element.locationCoordinates)">
                   <mat-icon>location_pin</mat-icon>
                 </button>
               </td>
@@ -142,19 +155,23 @@
               <th mat-header-cell *matHeaderCellDef>assign</th>
               <td mat-cell *matCellDef="let element">
 
-                <button *ngIf="!assignedResources?.includes(element)"  (click)="assignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
-                aria-label="Ressource zuweisen">
-                <mat-icon>add</mat-icon>
-              </button>
-              <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
-              aria-label="Ressource abwählen">
-              <mat-icon class="notcheck">close</mat-icon>
-            </button>
+                <button *ngIf="!assignedResources?.includes(element)" (click)="assignResource(element)" mat-icon-button
+                  [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
+                  aria-label="Ressource zuweisen">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button
+                  [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
+                  aria-label="Ressource abwählen">
+                  <mat-icon class="notcheck">remove_circle_outline</mat-icon>
+                </button>
 
               </td>
             </ng-container>
 
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;" [ngClass]="{'hidden': !showDispatched && row.assignedIncident}"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResources;"
+              [ngClass]="{'hidden': !showDispatched && row.assignedIncident && (row.assignedIncident != selectedIncident)}">
+            </tr>
           </table>
         </div>
 
@@ -167,7 +184,12 @@
 
             <ng-container matColumnDef="location">
               <th mat-header-cell *matHeaderCellDef> Location </th>
-              <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+              <td mat-cell *matCellDef="let element"> {{element.locationCoordinates}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> ID </th>
+              <td mat-cell *matCellDef="let element"> {{element.id}} </td>
             </ng-container>
 
             <ng-container matColumnDef="type">
@@ -177,16 +199,19 @@
 
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef> Status </th>
-              <td mat-cell *matCellDef="let element"> <mat-icon *ngIf="element.assignedIncident" class="notcheck"
-                fontIcon="crisis_alert"></mat-icon>
-              <mat-icon *ngIf="!element.assignedIncident" class="check" fontIcon="house"></mat-icon>
-            </td>
+              <td mat-cell *matCellDef="let element">
+                <mat-icon *ngIf="element.assignedIncident && element.assignedIncident != selectedIncident"
+                  class="notcheck" fontIcon="crisis_alert"></mat-icon>
+                <mat-icon *ngIf="element.assignedIncident && element.assignedIncident == selectedIncident"
+                  style="color: blue" fontIcon="check_circle_outline"></mat-icon>
+                <mat-icon *ngIf="!element.assignedIncident" class="check" fontIcon="house"></mat-icon>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="locate">
               <th mat-header-cell *matHeaderCellDef> Locate </th>
               <td mat-cell *matCellDef="let element">
-                <button mat-icon-button aria-label="Resource lokalisieren">
+                <button mat-icon-button aria-label="Resource lokalisieren" (click)="zoomToLocation(element.locationCoordinates)">
                   <mat-icon>location_pin</mat-icon>
                 </button>
               </td>
@@ -195,18 +220,22 @@
             <ng-container matColumnDef="assign">
               <th mat-header-cell *matHeaderCellDef>assign</th>
               <td mat-cell *matCellDef="let element">
-                <button *ngIf="!assignedResources?.includes(element)"  (click)="assignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
+                <button *ngIf="!assignedResources?.includes(element)" (click)="assignResource(element)" mat-icon-button
+                  [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
                   aria-label="Ressource zuweisen">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button [disabled]="selectedIncident === null"
-                aria-label="Ressource abwählen">
-                <mat-icon class="notcheck">close</mat-icon>
-              </button>
+                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button
+                  [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
+                  aria-label="Ressource abwählen">
+                  <mat-icon class="notcheck">remove_circle_outline</mat-icon>
+                </button>
               </td>
             </ng-container>
 
-            <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;" [ngClass]="{'hidden': !showDispatched && row.assignedIncident}"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsResourcesAdditional;"
+              [ngClass]="{'hidden': !showDispatched && row.assignedIncident && (row.assignedIncident != selectedIncident)}">
+            </tr>
           </table>
         </div>
 
@@ -215,7 +244,7 @@
 
   </div>
   <div class="section-3">
-    <div class="map" leaflet [leafletOptions]="options">
+    <div class="map" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)">
     </div>
   </div>
 </div>
