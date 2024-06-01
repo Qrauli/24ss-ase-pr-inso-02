@@ -91,6 +91,7 @@ services:
       - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
       - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
       - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+      - 'SPRING_PROFILES_ACTIVE=presentation'
   datafeeder:
     build:
       context: '../datafeeder'
@@ -116,6 +117,7 @@ services:
       - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
       - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
       - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+      - 'SPRING_PROFILES_ACTIVE=presentation'
   dashboard:
     build: 
       context: '../dashboard'

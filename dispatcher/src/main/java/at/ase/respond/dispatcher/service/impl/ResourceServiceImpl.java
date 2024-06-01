@@ -47,10 +47,6 @@ public class ResourceServiceImpl implements ResourceService {
         Incident incident = incidentService.findById(incidentId);
         Resource resource = this.findById(resourceId);
 
-        if (resource.getState() != ResourceState.AVAILABLE) {
-            throw new ValidationException("Resource is not available");
-        }
-
         resource.setState(ResourceState.DISPATCHED);
         resource.setAssignedIncident(incident);
         resourceRepository.save(resource);
@@ -89,6 +85,12 @@ public class ResourceServiceImpl implements ResourceService {
     public Resource updateState(String resourceId, ResourceState state) {
         Resource resource = this.findById(resourceId);
         resource.setState(state);
+        if (state == ResourceState.AVAILABLE && resource.getAssignedIncident() != null) {
+            UUID incidentId = resource.getAssignedIncident().getId();
+            log.debug("Resource {} reported status AVAILABLE, unassigning from incident {}", resourceId, incidentId);
+            resource.setAssignedIncident(null);
+            incidentService.unassignResource(incidentId, resourceId);
+        }
         resourceRepository.save(resource);
 
         log.debug("Resource {} state updated to {}", resourceId, state);
