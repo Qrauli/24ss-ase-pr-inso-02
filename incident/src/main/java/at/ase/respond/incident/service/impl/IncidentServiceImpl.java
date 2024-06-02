@@ -26,6 +26,7 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public UUID create(IncidentDTO incident) {
+        log.debug("Creating incident {}", incident);
         Incident saved = repository.save(incidentMapper.toEntity(incident));
         sender.publish(incidentMapper.toEvent(saved));
         return saved.getId();
@@ -48,8 +49,10 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public Incident update(IncidentDTO incident) {
-        // TODO update to the broker needed?
-        return repository.save(incidentMapper.toEntity(incident));
+        log.debug("Updating incident {}", incident);
+        Incident saved = repository.save(incidentMapper.toEntity(incident));
+        sender.publish(incidentMapper.toEvent(saved));
+        return saved;
     }
 
 }
