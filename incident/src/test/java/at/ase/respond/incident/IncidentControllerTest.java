@@ -1,5 +1,6 @@
 package at.ase.respond.incident;
 
+import at.ase.respond.common.IncidentState;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -61,7 +62,8 @@ public class IncidentControllerTest {
                 new LocationAddressDTO("","","",""),
                 new LocationCoordinatesDTO(0d, 0d)
             ),
-            UUID.randomUUID()
+            UUID.randomUUID(),
+            IncidentState.READY.toString()
         );
         when(incidentService.create(incident)).thenReturn(UUID.randomUUID());
 
@@ -82,7 +84,8 @@ public class IncidentControllerTest {
                 new LocationAddressDTO("","","",""),
                 new LocationCoordinatesDTO(0d, 0d)
             ),
-            UUID.randomUUID()
+            UUID.randomUUID(),
+            IncidentState.READY.toString()
         );
         when(incidentMapper.toDTO(incidentService.findById(incidentId))).thenReturn(incident);
         Incident serviceIncident = incidentMapper.toEntity(incident);
