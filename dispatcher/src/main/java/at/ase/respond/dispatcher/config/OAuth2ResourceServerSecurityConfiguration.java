@@ -64,6 +64,8 @@ public class OAuth2ResourceServerSecurityConfiguration {
             .hasRole("dispatcher")
             .requestMatchers(HttpMethod.GET, "/requests/**")
             .hasRole("dispatcher")
+            .requestMatchers(HttpMethod.PUT, "/requests/**")
+            .hasRole("dispatcher")
 
             // Swagger UI
             .requestMatchers(HttpMethod.GET, "/swagger-ui/**")

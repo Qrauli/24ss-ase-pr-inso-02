@@ -16,6 +16,9 @@ import at.ase.respond.dispatcher.service.MessageSender;
 import at.ase.respond.dispatcher.service.ResourceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +46,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
+    @Retryable(value = OptimisticLockingFailureException.class, maxAttempts = 5, backoff = @Backoff(delay = 100, multiplier = 2))
     public Resource assignToIncident(String resourceId, UUID incidentId) {
         Incident incident = incidentService.findById(incidentId);
         Resource resource = this.findById(resourceId);

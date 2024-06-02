@@ -28,14 +28,14 @@ public class IncidentController {
     private final IncidentMapper incidentMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns a list of all incidents", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Returns a list of all incidents", security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<List<IncidentDTO>> findAll(
             @RequestParam(value = "running", required = false, defaultValue = "true") boolean running) {
         return ResponseEntity.ok(service.findAll(running).stream().map(incidentMapper::toDTO).toList());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns an incident by id", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "Returns an incident by id", security = @SecurityRequirement(name = "bearer"))
     public ResponseEntity<IncidentDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(incidentMapper.toDTO(service.findById(id)));
     }

@@ -19,6 +19,14 @@ export class IncidentService {
         })});
   }
 
+  getIncidentsOngoingDispatcher(): Observable<Incident[]> {
+    return this.httpClient.get<Incident[]>(
+      environment.resourceUrl + 'incidents',
+      { headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        })});
+  }
+
   getIncidentById(id: string): Observable<Incident> {
     //return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`);
     return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`, { headers: new HttpHeaders({

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card'
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,9 +28,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSortHeader } from "@angular/material/sort";
 import {
   MatSnackBar,
-  MatSnackBarHorizontalPosition,
   MatSnackBarRef,
-  MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ResourceRequest } from '../../dtos/resource-request';
 import { LocationCoordinates } from '../../dtos/locationCoordinates';
@@ -66,7 +64,7 @@ import { LocationCoordinates } from '../../dtos/locationCoordinates';
 export class DispatcherComponent implements OnInit {
 
   selectedIncident: string | null = null;
-  assignedResources: Resource[] | null = null;
+  assignedResources: string[] | null = null;
   selectedIncidentData: Incident | null = null;
   selectedIncidentMarker: Leaflet.Marker | null = null;
 
@@ -104,7 +102,7 @@ export class DispatcherComponent implements OnInit {
 
   constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
   ngOnInit(): void {
-    this.incidentService.getIncidentsOngoing().subscribe(data => {
+    this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
       data.sort((a, b) => a.state.localeCompare(b.state));
       this.incidents = data;
     });
@@ -113,7 +111,7 @@ export class DispatcherComponent implements OnInit {
       this.resourceRequests = data;
     });
 
-    timer(0, 5000)
+    timer(0, 500)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
@@ -123,9 +121,9 @@ export class DispatcherComponent implements OnInit {
       }
       )
 
-    interval(5000)
+    interval(500)
       .pipe(
-        switchMap(() => this.incidentService.getIncidentsOngoing())
+        switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
       .subscribe(data => {
         data.sort((a, b) => a.state.localeCompare(b.state));
@@ -133,7 +131,7 @@ export class DispatcherComponent implements OnInit {
       }
       )
 
-    interval(5000)
+    interval(500)
       .pipe(
         switchMap(() => this.resourcesService.getOpenResourceRequests())
       )
@@ -215,15 +213,14 @@ onMapReady(map: Leaflet.Map) {
 
     for (let i = 0; i < this.resources.length; i++) {
       let iconUrl = 'assets/ambulance_green.png';
-      if (this.resources[i].state == ResourceState.DISPATCHED) {
-        iconUrl = 'assets/ambulance_red.png';
+      if (this.resources[i].state != ResourceState.AVAILABE) {
         if (this.resources[i].assignedIncident == this.selectedIncident) {
           iconUrl = 'assets/ambulance_blue.png';
-        }
-        else {
-          if (this.showDispatched == false) {
+        } else {
+          if (!this.showDispatched) {
             continue;
           }
+          iconUrl = 'assets/ambulance_red.png';
         }
       }
       let marker = Leaflet.marker(new Leaflet.LatLng(this.resources[i].locationCoordinates.latitude, this.resources[i].locationCoordinates.longitude),
@@ -237,8 +234,8 @@ onMapReady(map: Leaflet.Map) {
           })
         });
       marker.bindTooltip(this.resources[i].id, { permanent: true, direction: 'center' });
-      this.resourceMarkers.push(marker);
       marker.addTo(this.map);
+      this.resourceMarkers.push(marker);
     }
   }
 
@@ -281,7 +278,7 @@ onMapReady(map: Leaflet.Map) {
   }
 
   unassignResource(resource: Resource): void {
-    const index = this.assignedResources?.indexOf(resource);
+    const index = this.assignedResources?.indexOf(resource.id);
     if (index !== undefined && index !== -1) {
       this.assignedResources?.splice(index, 1);
     }
@@ -308,12 +305,12 @@ onMapReady(map: Leaflet.Map) {
       });
       dialogRef.afterClosed().subscribe(dialogResult => {
         if (dialogResult === true) {
-          this.assignedResources?.push(resource);
+          this.assignedResources?.push(resource.id);
         }
       });
     }
     else {
-      this.assignedResources?.push(resource);
+      this.assignedResources?.push(resource.id);
     }
   }
 
@@ -322,11 +319,11 @@ onMapReady(map: Leaflet.Map) {
    * @param incident
    */
   selectIncident(incident: Incident): void {
+    if(this.selectedIncident == incident.id){
+      return;
+    }
     this.selectedIncident = incident.id;
     this.selectedIncidentData = incident;
-    /*this.incidentService.getIncidentById(incident.id).subscribe(data => {
-      this.selectedIncidentData = data;
-    });*/
     this.recommended = new Set([1, 2, 3]);
     this.assignedResources = [];
     if (this.selectedIncidentMarker) {
@@ -373,6 +370,7 @@ onMapReady(map: Leaflet.Map) {
       if (dialogResult === true) {
         if (this.selectedIncident && this.assignedResources) {
           this.resourcesService.assignResources(this.selectedIncident, this.assignedResources);
+          this.assignedResources = [];
         }
       }
     });
