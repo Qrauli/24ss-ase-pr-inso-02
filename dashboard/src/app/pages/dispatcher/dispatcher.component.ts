@@ -11,7 +11,7 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
 import { Incident } from '../../dtos/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import {Resource, ResourceState} from '../../dtos/resource';
+import { Resource, ResourceState } from '../../dtos/resource';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
@@ -22,7 +22,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../../components/confirm-dialog/confirm-dialog.component';
 import { ResourceService } from '../../services/resources.service';
-import { interval, switchMap } from "rxjs";
+import { interval, switchMap, timer } from "rxjs";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSortHeader } from "@angular/material/sort";
@@ -33,6 +33,7 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ResourceRequest } from '../../dtos/resource-request';
+import { LocationCoordinates } from '../../dtos/locationCoordinates';
 
 
 @Component({
@@ -67,24 +68,31 @@ export class DispatcherComponent implements OnInit {
   selectedIncident: string | null = null;
   assignedResources: Resource[] | null = null;
   selectedIncidentData: Incident | null = null;
+  selectedIncidentMarker: Leaflet.Marker | null = null;
 
   recommended: Set<number> = new Set();
 
   resourceRequests: ResourceRequest[] = [];
 
-  showDispatched: boolean;
+  showDispatched: boolean = false;
 
   incidents: Incident[] = [];
 
   resources: Resource[];
 
+  resourceMarkers: Leaflet.Marker[];
+
+
   resourcesAdditional: Resource[];
 
   notifications: any[] = [];
 
-  displayedColumnsResources: string[] = ['status', 'id', 'type', 'location', 'locate', 'assign'];
-  displayedColumnsResourcesAdditional: string[] = ['status', 'type', 'location', 'locate', 'assign'];
-  displayedColumnsIncidents: string[] = ['status', 'location', 'class',];
+  displayedColumnsResources: string[] = ['status', 'id', 'type', 'locate', 'assign'];
+  displayedColumnsResourcesAdditional: string[] = ['status', 'id', 'type', 'locate', 'assign'];
+  displayedColumnsIncidents: string[] = ['status', 'location', 'class'];
+
+  map: Leaflet.Map;
+
 
   options: Leaflet.MapOptions = {
     layers: [
@@ -105,13 +113,14 @@ export class DispatcherComponent implements OnInit {
       this.resourceRequests = data;
     });
 
-    interval(5000)
+    timer(0, 5000)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
       .subscribe(data => {
-          this.resources = data;
-        }
+        this.resources = data;
+        this.showLocations();
+      }
       )
 
     interval(5000)
@@ -119,9 +128,9 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoing())
       )
       .subscribe(data => {
-          data.sort((a, b) => a.state.localeCompare(b.state));
-          this.incidentRefresher(data);
-        }
+        data.sort((a, b) => a.state.localeCompare(b.state));
+        this.incidentRefresher(data);
+      }
       )
 
     interval(5000)
@@ -184,6 +193,54 @@ export class DispatcherComponent implements OnInit {
     }
   }
 
+onMapReady(map: Leaflet.Map) {
+    this.map = map;
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 0);
+  }
+
+
+  /**
+   * displays the locations of the resources on the map
+   */
+  showLocations(): void {
+    if (this.resourceMarkers) {
+      for (let i = 0; i < this.resourceMarkers.length; i++) {
+        this.map.removeLayer(this.resourceMarkers[i]);
+      }
+    }
+
+    this.resourceMarkers = [];
+
+    for (let i = 0; i < this.resources.length; i++) {
+      let iconUrl = 'assets/ambulance_green.png';
+      if (this.resources[i].state == ResourceState.DISPATCHED) {
+        iconUrl = 'assets/ambulance_red.png';
+        if (this.resources[i].assignedIncident == this.selectedIncident) {
+          iconUrl = 'assets/ambulance_blue.png';
+        }
+        else {
+          if (this.showDispatched == false) {
+            continue;
+          }
+        }
+      }
+      let marker = Leaflet.marker(new Leaflet.LatLng(this.resources[i].locationCoordinates.latitude, this.resources[i].locationCoordinates.longitude),
+        {
+          icon: Leaflet.icon({
+            iconSize: [37, 61],
+            iconAnchor: [19, 61],
+            iconUrl: iconUrl,
+            shadowUrl: 'leaflet/marker-shadow.png',
+            popupAnchor: [0, -42]
+          })
+        });
+      marker.bindTooltip(this.resources[i].id, { permanent: true, direction: 'center' });
+      this.resourceMarkers.push(marker);
+      marker.addTo(this.map);
+    }
+  }
 
   /**
    * displays the notifications in the snackbar
@@ -206,7 +263,7 @@ export class DispatcherComponent implements OnInit {
           this.displayNotifications();
         });
       }
-      else if(<ResourceRequest>notification.requestedResourceType){
+      else if (<ResourceRequest>notification.requestedResourceType) {
         const ref: MatSnackBarRef<any> = this._snackBar.open('Neue Resourcen-Anfrage', 'Auswählen', {
           horizontalPosition: 'center',
           verticalPosition: 'top',
@@ -272,7 +329,22 @@ export class DispatcherComponent implements OnInit {
     });*/
     this.recommended = new Set([1, 2, 3]);
     this.assignedResources = [];
-
+    if (this.selectedIncidentMarker) {
+      this.map.removeLayer(this.selectedIncidentMarker);
+    }
+    this.selectedIncidentMarker = Leaflet.marker(new Leaflet.LatLng(incident.location!.coordinates!.latitude!, incident.location!.coordinates!.longitude!), {
+      icon: Leaflet.icon({
+        iconSize: [37, 61],
+        iconAnchor: [19, 61],
+        iconUrl: 'assets/incident.png',
+        shadowUrl: 'leaflet/marker-shadow.png',
+        popupAnchor: [0, -42]
+      })
+    });
+    this.selectedIncidentMarker.addTo(this.map);
+    this.selectedIncidentMarker.bindTooltip("Einsatz", { permanent: true, direction: 'center' });
+    this.showLocations();
+    this.zoomToLocation(incident.location!.coordinates!);
   }
 
   /**
@@ -283,6 +355,9 @@ export class DispatcherComponent implements OnInit {
     this.selectedIncident = null;
     this.recommended = new Set();
     this.assignedResources = [];
+    this.map.removeLayer(this.selectedIncidentMarker!);
+    this.selectedIncidentMarker = null;
+    this.showLocations();
   }
 
   dispatchIncident(): void {
@@ -347,6 +422,10 @@ export class DispatcherComponent implements OnInit {
 
   incidentFromId(id: string): Incident {
     return this.incidents.find(incident => incident.id === id)!;
+  }
+
+  zoomToLocation(location: LocationCoordinates) {
+    this.map.setView(new Leaflet.LatLng(location.latitude, location.longitude), 15);
   }
 
 }

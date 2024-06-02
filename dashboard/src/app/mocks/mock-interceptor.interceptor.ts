@@ -66,9 +66,9 @@ function mockResources(entries: number) {
       id: "FLO-" + length,
       type: ResourceType.KTW,
       state: assignment ? ResourceState.DISPATCHED : ResourceState.AVAILABE,
-      location: {
-        latitude: 48.227747192035764,
-        longitude: 16.40545336304577
+      locationCoordinates: {
+        latitude: Math.random() * 0.1 + 48.227747192035764,
+        longitude: Math.random() * 0.1 + 16.40545336304577
       },
       assignedIncident: assignment
     };
@@ -83,61 +83,13 @@ function mockResourceRequests(entries: number) {
     const request: ResourceRequest = {
       id: uuidv4(),
       assignedIncident: incidents[Math.floor(Math.random() * incidents.length)].id,
-      requestedResourceType: "Request " + i,
+      requestedResourceType: "KTW",
       state: RequestState.OPEN,
       resourceId: resources[Math.floor(Math.random() * resources.length)].id
     };
     resourceRequests.push(request);
   }
 }
-
-const resourceData = [
-  { id: 'FLO-1', type: 'Rettungswagen', location: 'Wien', assignedIncident: 'test' },
-  { id: 'FLO-2', type: 'Rettungswagen', location: 'Wien', assignedIncident: 'test' },
-  { id: 'FLO-3', type: 'Rettungswagen', location: 'Wien', assignedIncident: 'test' },
-  { id: 'FLO-4', type: 'Rettungswagen', location: 'Wien', assignedIncident: 'test' },
-  { id: 'FLO-5', type: 'Rettungswagen', location: 'Wien', assignedIncident: 'test' },
-  { id: 'FLO-6', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-7', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-8', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-9', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-10', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-11', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-12', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-13', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-14', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-15', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-16', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-17', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-18', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-19', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'FLO-20', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-];
-
-const resourceDataAdditional = [
-  { id: 'RKK-1', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-2', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-3', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-4', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-5', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-6', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-7', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-8', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-9', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-10', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-11', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-12', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-13', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-14', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-15', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-16', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-17', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-18', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-19', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-  { id: 'RKK-20', type: 'Rettungswagen', location: 'Wien', assignedIncident: null },
-];
-
-// TODO categorization mocks
 
 export const mockInterceptor: HttpInterceptorFn = (req, next) => {
 
@@ -177,9 +129,9 @@ function interceptGetRequests(req: HttpRequest<any>, next: HttpHandlerFn)  {
       return of(new HttpResponse({ status: 404 }));
     }
   } else if (req.url === incidentResourceUrl + "resources?additional=false") {
-    return of(new HttpResponse({ status: 200, body: resourceData }));
+    return of(new HttpResponse({ status: 200, body: resources }));
   } else if (req.url === incidentResourceUrl + "resources?additional=true") {
-    return of(new HttpResponse({ status: 200, body: resourceDataAdditional }));
+    return of(new HttpResponse({ status: 200, body: resources }));
   } else if (req.url === incidentResourceUrl + "requests") {
     return of(new HttpResponse({ status: 200, body: resourceRequests }));
   }

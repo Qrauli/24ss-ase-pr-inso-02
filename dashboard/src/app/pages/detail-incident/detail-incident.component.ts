@@ -9,6 +9,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { IncidentService } from '../../services/incidents.service';
 import { Incident } from '../../dtos/incident';
 import { NgFor } from '@angular/common';
+import { ResourceService } from '../../services/resources.service';
+import { switchMap, timer } from 'rxjs';
+import { Resource } from '../../dtos/resource';
 
 
 @Component({
@@ -28,22 +31,34 @@ export class DetailIncidentComponent implements OnInit {
 
   incident: Incident | undefined;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService) { }
+  resourceMarkers: Leaflet.Marker[] = [];
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private resourcesService: ResourceService) { }
 
   ngOnInit(): void {
     this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']).subscribe(data => {
       this.incident = data;
-      if(this.map){
-        Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {icon: Leaflet.icon({
-          iconSize: [ 25, 41 ],
-          iconAnchor: [ 13, 41 ],
-          iconUrl: 'leaflet/marker-icon.png',
-          shadowUrl: 'leaflet/marker-shadow.png'
-        })}).addTo(this.map);
+      if (this.map) {
+        Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
+          icon: Leaflet.icon({
+            iconSize: [37, 61],
+            iconAnchor: [19, 61],
+            iconUrl: 'assets/incident.png',
+            shadowUrl: 'leaflet/marker-shadow.png'
+          })
+        }).addTo(this.map).bindTooltip("Einsatz", { permanent: true, direction: 'center' });
       }
     });
+
+    timer(500, 5000)
+      .pipe(
+        switchMap(() => this.resourcesService.getResources())
+      )
+      .subscribe(data => {
+        this.showLocations(data);
+      }
+      )
     //TODO: fetch categorization data
-    //TODO: fetch location data of resources
   }
   map: Leaflet.Map;
 
@@ -67,16 +82,47 @@ export class DetailIncidentComponent implements OnInit {
     if (this.incident) {
       Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
         icon: Leaflet.icon({
-          iconSize: [25, 41],
-          iconAnchor: [13, 41],
-          iconUrl: 'leaflet/marker-icon.png',
+          iconSize: [37, 61],
+          iconAnchor: [19, 61],
+          iconUrl: 'assets/incident.png',
           shadowUrl: 'leaflet/marker-shadow.png'
         })
-      }).addTo(this.map);
+      }).addTo(this.map).bindTooltip("Einsatz", { permanent: true, direction: 'center' });
+
     }
 
   }
 
+  /**
+   * displays the locations of the resources on the map
+   */
+  showLocations(resources: Resource[]) {
+    if (this.resourceMarkers) {
+      for (let i = 0; i < this.resourceMarkers.length; i++) {
+        this.map.removeLayer(this.resourceMarkers[i]);
+      }
+    }
 
+    this.resourceMarkers = [];
+
+    for (let i = 0; i < resources.length; i++) {
+      if (this.incident != null && resources[i].assignedIncident == this.incident?.id) {
+        let marker = Leaflet.marker(new Leaflet.LatLng(resources[i].locationCoordinates.latitude, resources[i].locationCoordinates.longitude),
+          {
+            icon: Leaflet.icon({
+              iconSize: [37, 61],
+              iconAnchor: [19, 61],
+              iconUrl: 'assets/ambulance_blue.png',
+              shadowUrl: 'leaflet/marker-shadow.png',
+              popupAnchor: [0, -42]
+            })
+          });
+        marker.bindTooltip(resources[i].id, { permanent: true, direction: 'center' });
+        this.resourceMarkers.push(marker);
+        marker.addTo(this.map);
+      }
+    }
+
+  }
 
 }
