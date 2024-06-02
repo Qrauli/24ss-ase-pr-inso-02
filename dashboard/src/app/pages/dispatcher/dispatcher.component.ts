@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card'
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -28,9 +28,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSortHeader } from "@angular/material/sort";
 import {
   MatSnackBar,
-  MatSnackBarHorizontalPosition,
   MatSnackBarRef,
-  MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import { ResourceRequest } from '../../dtos/resource-request';
 import { LocationCoordinates } from '../../dtos/locationCoordinates';
@@ -104,7 +102,7 @@ export class DispatcherComponent implements OnInit {
 
   constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
   ngOnInit(): void {
-    this.incidentService.getIncidentsOngoing().subscribe(data => {
+    this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
       data.sort((a, b) => a.state.localeCompare(b.state));
       this.incidents = data;
     });
@@ -125,7 +123,7 @@ export class DispatcherComponent implements OnInit {
 
     interval(500)
       .pipe(
-        switchMap(() => this.incidentService.getIncidentsOngoing())
+        switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
       .subscribe(data => {
         data.sort((a, b) => a.state.localeCompare(b.state));
