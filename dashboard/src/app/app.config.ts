@@ -26,6 +26,6 @@ export const appConfig: ApplicationConfig = {
         }
       }
     ),
-    environment.mock ? provideHttpClient(withInterceptors([mockInterceptor]), withInterceptorsFromDi()) : provideHttpClient()
+    environment.mock ? provideHttpClient(withInterceptors([mockInterceptor]), withInterceptorsFromDi()) : provideHttpClient(withInterceptorsFromDi())
   ]
 };

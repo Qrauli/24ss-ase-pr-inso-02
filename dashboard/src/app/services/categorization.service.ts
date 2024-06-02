@@ -14,21 +14,18 @@ export class CategorizationService {
   createSession(): Observable<Categorization> {
     return this.httpClient.post<Categorization>(environment.categorizationUrl + 'categorization', null, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
   }
 
   saveAnswer(sessionId: string, answer: Answer): Observable<Categorization> {
     return this.httpClient.put<Categorization>(environment.categorizationUrl + `categorization/${sessionId}`, answer, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
   }
 
   findById(sessionId: string): Observable<Categorization> {
     return this.httpClient.get<Categorization>(environment.categorizationUrl + `categorization/${sessionId}`, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
   }
 

@@ -15,14 +15,12 @@ export class ResourceService {
   getResources(): Observable<Resource[]> {
     return this.httpClient.get<Resource[]>(environment.resourceUrl + 'resources?additional=false', { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockDispatcherToken}`
       })});
   }
 
   getResourcesAdditional(){
     return this.httpClient.get<Resource[]>(environment.resourceUrl + 'resources?additional=true', { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockDispatcherToken}`
       })});
   }
 
@@ -31,7 +29,6 @@ export class ResourceService {
       this.httpClient
         .post<Resource>(environment.resourceUrl + `resources/${resource.id}/assign/${incident}`, null, { headers: new HttpHeaders({
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${environment.mockDispatcherToken}`
           })})
         .subscribe()
     );
@@ -40,14 +37,12 @@ export class ResourceService {
   getOpenResourceRequests(): Observable<ResourceRequest[]> {
     return this.httpClient.get<ResourceRequest[]>(environment.resourceUrl + 'requests', { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockDispatcherToken}`
       })});
   }
 
   finishRequest(request: ResourceRequest): Observable<ResourceRequest> {
     return this.httpClient.put<ResourceRequest>(environment.resourceUrl + 'requests/' + request.id + '/state', null, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockDispatcherToken}`
       })});
   }
 

@@ -16,7 +16,6 @@ export class IncidentService {
       environment.incidentUrl + 'incidents',
       { headers: new HttpHeaders({
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${environment.mockCalltakerToken}`
         })});
   }
 
@@ -24,14 +23,12 @@ export class IncidentService {
     //return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`);
     return this.httpClient.get<Incident>(environment.incidentUrl + `incidents/${id}`, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })})
     .pipe(
       switchMap(
         incident =>{
           return this.httpClient.get<Incident>(environment.resourceUrl + `incidents/${id}`, { headers: new HttpHeaders({
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${environment.mockCalltakerToken}`
             })})
           .pipe(
             map(incidentState => {
@@ -47,14 +44,12 @@ export class IncidentService {
   saveIncident(incident: Incident): Observable<Incident> {
     return this.httpClient.post<Incident>(environment.incidentUrl + 'incidents', incident, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
   }
 
   updateIncident(incident: Incident): Observable<Incident> {
     return this.httpClient.put<Incident>(environment.incidentUrl + 'incidents', incident, { headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${environment.mockCalltakerToken}`
       })});
   }
 }
