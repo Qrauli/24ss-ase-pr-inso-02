@@ -215,15 +215,14 @@ onMapReady(map: Leaflet.Map) {
 
     for (let i = 0; i < this.resources.length; i++) {
       let iconUrl = 'assets/ambulance_green.png';
-      if (this.resources[i].state == ResourceState.DISPATCHED) {
-        iconUrl = 'assets/ambulance_red.png';
+      if (this.resources[i].state != ResourceState.AVAILABE) {
         if (this.resources[i].assignedIncident == this.selectedIncident) {
           iconUrl = 'assets/ambulance_blue.png';
-        }
-        else {
-          if (this.showDispatched == false) {
+        } else {
+          if (!this.showDispatched) {
             continue;
           }
+          iconUrl = 'assets/ambulance_red.png';
         }
       }
       let marker = Leaflet.marker(new Leaflet.LatLng(this.resources[i].locationCoordinates.latitude, this.resources[i].locationCoordinates.longitude),
