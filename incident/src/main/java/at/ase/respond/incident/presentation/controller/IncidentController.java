@@ -9,18 +9,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin
 @RequiredArgsConstructor
 @RequestMapping("/incidents")
 public class IncidentController {
@@ -52,4 +47,11 @@ public class IncidentController {
         return ResponseEntity.ok(incidentMapper.toDTO(service.findById(id)));
     }
 
+    @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Updates a given incident", security = @SecurityRequirement(name = "bearer"))
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE))
+    public ResponseEntity<IncidentDTO> update(@RequestBody IncidentDTO payload) {
+        return ResponseEntity.ok(incidentMapper.toDTO(service.update(payload)));
+    }
 }

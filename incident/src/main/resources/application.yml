@@ -3,7 +3,7 @@ server:
 
 logging:
   level:
-    at.ase.respond.categorizer: 'debug'
+    at.ase.respond.incident: 'debug'
 
 rabbit:
   backoff-policy:
@@ -42,3 +42,4 @@ spring:
             - RS256
           audiences:
             - 'at.ase.respond'
+

@@ -36,4 +36,12 @@ public interface IncidentService {
      */
     Incident findById(UUID id);
 
+    /**
+     * Updates a given incident.
+     *
+     * @param incident the incident to be updated
+     * @return the updates incident
+     */
+    Incident update(IncidentDTO incident);
+
 }
