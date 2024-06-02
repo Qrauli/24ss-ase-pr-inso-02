@@ -84,9 +84,8 @@
       <mat-grid-list cols="6" rowHeight="50px">
         <mat-grid-tile colspan="6" class="incident-property"
           style="background-color: lightgrey;"><i>AnruferIn</i></mat-grid-tile>
-        <mat-grid-tile colspan="2" class="key-normal">Max Mustermann</mat-grid-tile>
-        <mat-grid-tile colspan="2" class="key-normal">Männlich</mat-grid-tile>
-        <mat-grid-tile colspan="2" class="property">20</mat-grid-tile>
+        <mat-grid-tile colspan="3" class="key-normal">Max Mustermann</mat-grid-tile>
+        <mat-grid-tile colspan="3" class="key-normal">+43 000 00000000</mat-grid-tile>
         <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>Betroffene
             ({{selectedIncidentData?.numberOfPatients}})</i> </mat-grid-tile>
         <ng-container *ngFor="let patient of selectedIncidentData?.patients">
@@ -155,12 +154,12 @@
               <th mat-header-cell *matHeaderCellDef>assign</th>
               <td mat-cell *matCellDef="let element">
 
-                <button *ngIf="!assignedResources?.includes(element)" (click)="assignResource(element)" mat-icon-button
+                <button *ngIf="!assignedResources?.includes(element.id)" (click)="assignResource(element)" mat-icon-button
                   [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
                   aria-label="Ressource zuweisen">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button
+                <button *ngIf="assignedResources?.includes(element.id)" (click)="unassignResource(element)" mat-icon-button
                   [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
                   aria-label="Ressource abwählen">
                   <mat-icon class="notcheck">remove_circle_outline</mat-icon>
@@ -220,12 +219,12 @@
             <ng-container matColumnDef="assign">
               <th mat-header-cell *matHeaderCellDef>assign</th>
               <td mat-cell *matCellDef="let element">
-                <button *ngIf="!assignedResources?.includes(element)" (click)="assignResource(element)" mat-icon-button
+                <button *ngIf="!assignedResources?.includes(element.id)" (click)="assignResource(element)" mat-icon-button
                   [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
                   aria-label="Ressource zuweisen">
                   <mat-icon>add</mat-icon>
                 </button>
-                <button *ngIf="assignedResources?.includes(element)" (click)="unassignResource(element)" mat-icon-button
+                <button *ngIf="assignedResources?.includes(element.id)" (click)="unassignResource(element)" mat-icon-button
                   [disabled]="selectedIncident === null || element.assignedIncident === selectedIncident"
                   aria-label="Ressource abwählen">
                   <mat-icon class="notcheck">remove_circle_outline</mat-icon>

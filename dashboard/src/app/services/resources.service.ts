@@ -24,10 +24,10 @@ export class ResourceService {
       })});
   }
 
-  assignResources(incident: string, resources: Resource[]): void {
+  assignResources(incident: string, resources: string[]): void {
     resources.map(resource =>
       this.httpClient
-        .post<Resource>(environment.resourceUrl + `resources/${resource.id}/assign/${incident}`, null, { headers: new HttpHeaders({
+        .post<Resource>(environment.resourceUrl + `resources/${resource}/assign/${incident}`, null, { headers: new HttpHeaders({
             'Content-Type': 'application/json',
           })})
         .subscribe()

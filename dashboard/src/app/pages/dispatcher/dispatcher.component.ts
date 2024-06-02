@@ -66,7 +66,7 @@ import { LocationCoordinates } from '../../dtos/locationCoordinates';
 export class DispatcherComponent implements OnInit {
 
   selectedIncident: string | null = null;
-  assignedResources: Resource[] | null = null;
+  assignedResources: string[] | null = null;
   selectedIncidentData: Incident | null = null;
   selectedIncidentMarker: Leaflet.Marker | null = null;
 
@@ -236,8 +236,8 @@ onMapReady(map: Leaflet.Map) {
           })
         });
       marker.bindTooltip(this.resources[i].id, { permanent: true, direction: 'center' });
-      this.resourceMarkers.push(marker);
       marker.addTo(this.map);
+      this.resourceMarkers.push(marker);
     }
   }
 
@@ -280,7 +280,7 @@ onMapReady(map: Leaflet.Map) {
   }
 
   unassignResource(resource: Resource): void {
-    const index = this.assignedResources?.indexOf(resource);
+    const index = this.assignedResources?.indexOf(resource.id);
     if (index !== undefined && index !== -1) {
       this.assignedResources?.splice(index, 1);
     }
@@ -307,12 +307,12 @@ onMapReady(map: Leaflet.Map) {
       });
       dialogRef.afterClosed().subscribe(dialogResult => {
         if (dialogResult === true) {
-          this.assignedResources?.push(resource);
+          this.assignedResources?.push(resource.id);
         }
       });
     }
     else {
-      this.assignedResources?.push(resource);
+      this.assignedResources?.push(resource.id);
     }
   }
 
@@ -321,11 +321,12 @@ onMapReady(map: Leaflet.Map) {
    * @param incident
    */
   selectIncident(incident: Incident): void {
+    if(this.selectedIncident == incident.id){
+      this.unselectIncident();
+      return;
+    }
     this.selectedIncident = incident.id;
     this.selectedIncidentData = incident;
-    /*this.incidentService.getIncidentById(incident.id).subscribe(data => {
-      this.selectedIncidentData = data;
-    });*/
     this.recommended = new Set([1, 2, 3]);
     this.assignedResources = [];
     if (this.selectedIncidentMarker) {
@@ -372,6 +373,7 @@ onMapReady(map: Leaflet.Map) {
       if (dialogResult === true) {
         if (this.selectedIncident && this.assignedResources) {
           this.resourcesService.assignResources(this.selectedIncident, this.assignedResources);
+          this.assignedResources = [];
         }
       }
     });
