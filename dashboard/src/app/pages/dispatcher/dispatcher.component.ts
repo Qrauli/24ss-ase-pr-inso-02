@@ -322,7 +322,6 @@ onMapReady(map: Leaflet.Map) {
    */
   selectIncident(incident: Incident): void {
     if(this.selectedIncident == incident.id){
-      this.unselectIncident();
       return;
     }
     this.selectedIncident = incident.id;
