@@ -4,6 +4,7 @@ import { EditIncidentComponent } from './edit-incident.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {OAuthModule} from "angular-oauth2-oidc";
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('AddIncidentComponent', () => {
   let component: EditIncidentComponent;
@@ -11,7 +12,7 @@ describe('AddIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditIncidentComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [EditIncidentComponent, RouterTestingModule, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
     })
     .compileComponents();
 
