@@ -206,11 +206,11 @@ export class EditIncidentComponent implements OnInit {
     return !!this.incident.location.coordinates;
   }
 
-  saveIncident(): void {
+  updateIncident(): void {
 
     this.incident.code = this.selectedCategory;
 
-    this.incidentService.saveIncident(this.incident).subscribe({
+    this.incidentService.updateIncident(this.incident).subscribe({
       next: (_value) => {
         this.router.navigate(['/calltaker']).then((navigated: boolean) => {
           if (navigated) {

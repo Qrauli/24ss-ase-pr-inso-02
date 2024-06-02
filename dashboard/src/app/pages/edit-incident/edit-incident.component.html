@@ -101,7 +101,7 @@
           </mat-chip-set>
         </div>
         <br>
-        <button [disabled]="!categorySet() || !locationCoordinatesSet()" mat-flat-button color="primary" (click)="saveIncident()" matStepperNext>Einsatz speichern</button>
+        <button [disabled]="!categorySet() || !locationCoordinatesSet()" mat-flat-button color="primary" (click)="updateIncident()" matStepperNext>Einsatz speichern</button>
         <div style="color: red; text-align: center">
           <p *ngIf="!categorySet()">Es muss eine Kategorie gesetzt sein!</p>
           <p *ngIf="!locationCoordinatesSet()">Es müssen Einsatzkoordinaten gesetzt sein!</p>
