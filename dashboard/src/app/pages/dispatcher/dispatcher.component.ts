@@ -113,7 +113,7 @@ export class DispatcherComponent implements OnInit {
       this.resourceRequests = data;
     });
 
-    timer(0, 5000)
+    timer(0, 500)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
@@ -123,7 +123,7 @@ export class DispatcherComponent implements OnInit {
       }
       )
 
-    interval(5000)
+    interval(500)
       .pipe(
         switchMap(() => this.incidentService.getIncidentsOngoing())
       )
@@ -133,7 +133,7 @@ export class DispatcherComponent implements OnInit {
       }
       )
 
-    interval(5000)
+    interval(500)
       .pipe(
         switchMap(() => this.resourcesService.getOpenResourceRequests())
       )
