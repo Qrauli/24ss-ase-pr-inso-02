@@ -215,7 +215,7 @@ export class EditIncidentComponent implements OnInit {
         this.router.navigate(['/calltaker']).then((navigated: boolean) => {
           if (navigated) {
             this.notificationService.showDefaultNotification(
-              'Einsatz erfolgreich erstellt!',
+              'Einsatz erfolgreich aktualisiert!',
               'OK',
               7000
             );
@@ -224,7 +224,7 @@ export class EditIncidentComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Es ist Fehler beim Erstellen des Einsatzes aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          'Es ist Fehler beim Aktualisieren des Einsatzes aufgetreten: \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );
