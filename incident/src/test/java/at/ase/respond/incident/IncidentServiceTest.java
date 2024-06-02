@@ -1,5 +1,6 @@
 package at.ase.respond.incident;
 
+import at.ase.respond.common.IncidentState;
 import at.ase.respond.incident.persistence.IncidentRepository;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
@@ -56,7 +57,8 @@ public class IncidentServiceTest {
                 new LocationAddressDTO("","","",""),
                 new LocationCoordinatesDTO(0d, 0d)
             ),
-            UUID.randomUUID()
+            UUID.randomUUID(),
+            IncidentState.READY.toString()
         );
 
         Incident incident = new Incident();

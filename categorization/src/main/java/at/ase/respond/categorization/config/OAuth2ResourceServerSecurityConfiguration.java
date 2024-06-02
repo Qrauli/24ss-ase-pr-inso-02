@@ -56,18 +56,14 @@ public class OAuth2ResourceServerSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((authorize) -> authorize.requestMatchers(HttpMethod.GET, "/categorization/**")
-            .hasRole("calltaker")
-            .requestMatchers(HttpMethod.POST, "/categorization/**")
-            .hasRole("calltaker")
-            .requestMatchers(HttpMethod.PUT, "/categorization/**")
-            .hasRole("calltaker")
+        http.authorizeHttpRequests((authorize) -> authorize
+            .requestMatchers(HttpMethod.POST, "/categorization").hasRole("calltaker")
+            .requestMatchers(HttpMethod.GET, "/categorization/**").hasRole("calltaker")
+            .requestMatchers(HttpMethod.PUT, "/categorization/**").hasRole("calltaker")
 
             // Swagger UI
-            .requestMatchers(HttpMethod.GET, "/swagger-ui/**")
-            .permitAll()
-            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**")
-            .permitAll())
+            .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll())
             .oauth2ResourceServer(
                     (oauth2) -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter())));
         return http.build();

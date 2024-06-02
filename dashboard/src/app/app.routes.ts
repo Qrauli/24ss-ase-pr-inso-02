@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { featureFlagGuard } from './auth/auth.guard';
-import { DispatcherComponent } from './dispatcher/dispatcher.component';
-import { CalltakerComponent } from './calltaker/calltaker.component';
-import { AddIncidentComponent } from './add-incident/add-incident.component';
-import { DetailIncidentComponent } from './detail-incident/detail-incident.component';
-import { EditIncidentComponent } from './edit-incident/edit-incident.component';
-import {SplashscreenComponent} from "./splashscreen/splashscreen.component";
+import { LoginComponent } from './pages/login/login.component';
+import { featureFlagGuard } from './services/auth/auth.guard';
+import { DispatcherComponent } from './pages/dispatcher/dispatcher.component';
+import { CalltakerComponent } from './pages/calltaker/calltaker.component';
+import { AddIncidentComponent } from './pages/add-incident/add-incident.component';
+import { DetailIncidentComponent } from './pages/detail-incident/detail-incident.component';
+import { EditIncidentComponent } from './pages/edit-incident/edit-incident.component';
+import {SplashscreenComponent} from "./components/splashscreen/splashscreen.component";
 
 export const routes: Routes = [
     { path: 'incidents/add', component: AddIncidentComponent, canActivate: [featureFlagGuard('calltaker', '/login')]},
