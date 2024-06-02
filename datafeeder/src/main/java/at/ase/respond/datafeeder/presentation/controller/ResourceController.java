@@ -43,4 +43,15 @@ public class ResourceController {
         return ResponseEntity.ok(resourceService.updateLocation(resourceId, location));
     }
 
+    @PutMapping(value = "/{resourceId}/move", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Moves a resource to a new location")
+    public ResponseEntity<Void> moveResource(
+            @PathVariable String resourceId,
+            @RequestBody LocationCoordinatesDTO location,
+            @RequestParam Integer duration
+    ) {
+        resourceService.moveToLocation(resourceId, location, duration);
+        return ResponseEntity.accepted().build();
+    }
+
 }
