@@ -200,37 +200,37 @@ build-dashboard-dev:
     - cat kubernetes/${DEPLOYMENT_NAME}.yml
     - kubectl apply -f kubernetes/${DEPLOYMENT_NAME}.yml
 
-deploy-postgres:
+.deploy-postgres:
   extends:  .deploy-external
   variables:
     DEPLOYMENT_NAME: "postgres"
 
-deploy-rabbitmq:
+.deploy-rabbitmq:
   extends: .deploy-external
   variables:
     DEPLOYMENT_NAME: "rabbitmq"
 
-deploy-mongodb:
+.deploy-mongodb:
   extends: .deploy-external
   variables:
     DEPLOYMENT_NAME: "mongodb"
 
-deploy-incident-service:
+.deploy-incident-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "incident-service"
 
-deploy-categorization-service:
+.deploy-categorization-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "categorization-service"
 
-deploy-dispatcher-service:
+.deploy-dispatcher-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "dispatcher-service"
 
-deploy-dashboard:
+.deploy-dashboard:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "dashboard"
