@@ -27,6 +27,7 @@ import {NgForOf, NgIf} from "@angular/common";
 import {NotificationService} from "../../services/notification.service";
 import {CategorizationService} from "../../services/categorization.service";
 import {StepperSelectionEvent} from "@angular/cdk/stepper";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
   selector: 'app-add-incident',
@@ -50,6 +51,7 @@ import {StepperSelectionEvent} from "@angular/cdk/stepper";
     MatTableModule,
     MatDividerModule,
     LocationFormComponent,
+    TranslateModule,
     PersonsFormComponent, QuestionsFormComponent, NgIf, NgForOf],
   templateUrl: './add-incident.component.html',
   styleUrl: './add-incident.component.css'
@@ -62,7 +64,7 @@ export class AddIncidentComponent {
   personsFormLabel = "persons";
   questionsFormLabel = "questions";
 
-  constructor(private router: Router, private incidentService: IncidentService, private categorizationService: CategorizationService, private notificationService: NotificationService) {
+  constructor(private router: Router, private incidentService: IncidentService, private categorizationService: CategorizationService, private notificationService: NotificationService, public translate: TranslateService) {
     this.incident = {
       id: '',
       patients: [],
@@ -146,11 +148,11 @@ export class AddIncidentComponent {
     this.summaryTags = [];
 
     if (this.incident.numberOfPatients == 1) {
-      this.summaryTags.push("eine verletzte Person");
+      this.summaryTags.push(this.translate.instant('INCIDENT.HURT_PERSON'));
     }
 
     if (this.incident.numberOfPatients > 1) {
-      this.summaryTags.push(this.incident.numberOfPatients + " verletzte Personen");
+      this.summaryTags.push(this.incident.numberOfPatients + this.translate.instant('INCIDENT.HURT_PERSONS'));
     }
 
     return this.summaryTags.length > 0;
@@ -175,7 +177,7 @@ export class AddIncidentComponent {
         this.router.navigate(['/calltaker']).then((navigated: boolean) => {
           if (navigated) {
             this.notificationService.showDefaultNotification(
-              'Einsatz erfolgreich erstellt!',
+              this.translate.instant('INCIDENT.SUCCESS_INCIDENT_CREATION'),
               'OK',
               7000
             );
@@ -184,7 +186,7 @@ export class AddIncidentComponent {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Es ist Fehler beim Erstellen des Einsatzes aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.ERROR_INCIDENT_CREATION') + ' \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );

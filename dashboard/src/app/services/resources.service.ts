@@ -46,5 +46,12 @@ export class ResourceService {
       })});
   }
 
+  completeIncident(incident: string){
+    return this.httpClient
+      .put(environment.resourceUrl + `incidents/${incident}/state`, null, { headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        })});
+  }
+
 
 }

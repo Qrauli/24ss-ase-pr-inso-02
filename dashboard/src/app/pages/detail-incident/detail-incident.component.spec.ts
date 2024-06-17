@@ -5,6 +5,7 @@ import { DetailIncidentComponent } from './detail-incident.component';
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {OAuthModule} from "angular-oauth2-oidc";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('DetailIncidentComponent', () => {
@@ -13,7 +14,7 @@ describe('DetailIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetailIncidentComponent, RouterTestingModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [DetailIncidentComponent, RouterTestingModule, HttpClientTestingModule, OAuthModule.forRoot(), TranslateModule.forRoot()]
     })
     .compileComponents();
 

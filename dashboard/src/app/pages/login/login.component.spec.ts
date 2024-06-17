@@ -4,6 +4,7 @@ import { LoginComponent } from './login.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {OAuthModule} from "angular-oauth2-oidc";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('LoginComponent', () => {
@@ -12,7 +13,7 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, HttpClientTestingModule, NoopAnimationsModule, OAuthModule.forRoot()]
+      imports: [LoginComponent, HttpClientTestingModule, NoopAnimationsModule, OAuthModule.forRoot(), TranslateModule.forRoot()]
     })
     .compileComponents();
 

@@ -17,7 +17,7 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
 import {Patient, Sex} from "../../../dtos/incident";
-
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
   selector: 'persons-form',
@@ -39,7 +39,8 @@ import {Patient, Sex} from "../../../dtos/incident";
     MatRadioModule,
     MatMenuModule,
     MatTableModule,
-    MatDividerModule],
+    MatDividerModule,
+    TranslateModule],
   templateUrl: './persons-form.component.html',
   styleUrl: '../add-incident.component.css'
 })

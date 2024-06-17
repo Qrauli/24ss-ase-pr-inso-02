@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 import * as Leaflet from "leaflet";
 import {Geocoder} from "leaflet-control-geocoder";
-import {Observable} from "rxjs";
+import {Observable, firstValueFrom} from "rxjs";
 import {GeocodingResult} from "leaflet-control-geocoder/src/geocoders/api";
 import {FormBuilder, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from "../../../components/header/header.component";
@@ -22,10 +22,11 @@ import {MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
 import {geocoderAddressConverter, LocationAddress, LocationCoordinates, prettyLocationAddress} from "../../../dtos/incident";
 import {NgIf} from "@angular/common";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 
 @Component({
-  selector: 'location-form',
+  selector: 'location-form-edit',
   standalone: true,
   imports: [HeaderComponent,
     MatButtonModule,
@@ -45,13 +46,14 @@ import {NgIf} from "@angular/common";
     MatMenuModule,
     MatTableModule,
     MatDividerModule,
+    TranslateModule,
     NgIf],
-  templateUrl: './location-form.component.html',
+  templateUrl: './location-form-edit.component.html',
   styleUrl: '../edit-incident.component.css'
 })
-export class LocationFormComponent {
+export class LocationFormEditComponent {
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder, public translate: TranslateService) {
   }
 
   form = this.formBuilder.group({
@@ -86,18 +88,20 @@ export class LocationFormComponent {
     center: new Leaflet.LatLng(48.227747192035764, 16.40545336304577)
   };
 
-  onMapReady(map: Leaflet.Map) {
+  async onMapReady(map: Leaflet.Map) {
     this.map = map;
     setTimeout(() => {
       map.invalidateSize();
     }, 0);
 
+    await firstValueFrom(this.translate.get('INCIDENT.ADDRESS_SEARCH'));
+
     const osmGeocoder = (Leaflet.Control as any).geocoder({
       position: 'topright',
       geocoder: this.geocoder,
       collapsed: false,
-      text: 'Adresse suchen',
-      placeholder: 'Straße eingeben',
+      text: this.translate.instant('INCIDENT.ADDRESS_SEARCH'),
+      placeholder: this.translate.instant('INCIDENT.STREET_SEARCH'),
       defaultMarkGeocode: false
     }).addTo(map);
 
@@ -167,7 +171,7 @@ export class LocationFormComponent {
     this.form.controls.street.patchValue(internalFormat.street);
 
     this.marker.bindPopup(
-      "Adresse: ".concat(
+      this.translate.instant('INCIDENT.ADDRESS') + ": ".concat(
         prettyLocationAddress(internalFormat)
       )).openPopup();
   }

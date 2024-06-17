@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import {TranslateService} from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-root',
@@ -12,4 +14,9 @@ import { RouterOutlet } from '@angular/router';
 })
 export class AppComponent {
   title = 'respond';
+
+  constructor(public translate: TranslateService) {
+    translate.addLangs(['de', 'en']);
+    translate.use(translate.getDefaultLang());
+  }
 }

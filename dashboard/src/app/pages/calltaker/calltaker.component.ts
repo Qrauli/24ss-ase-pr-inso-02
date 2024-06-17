@@ -18,6 +18,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {IncidentService} from '../../services/incidents.service';
 import {geocoderAddressConverter, prettyLocationAddress} from "../../dtos/incident";
 import {NotificationService} from "../../services/notification.service";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {Subscription, switchMap, timer } from 'rxjs';
 
 
 @Component({
@@ -37,7 +39,8 @@ import {NotificationService} from "../../services/notification.service";
     NgIf,
     MatSortModule,
     MatInputModule,
-    MatExpansionModule
+    MatExpansionModule,
+    TranslateModule
   ],
   templateUrl: './calltaker.component.html',
   styleUrl: './calltaker.component.css'
@@ -49,11 +52,16 @@ export class CalltakerComponent implements OnInit {
   dataSource: MatTableDataSource<Incident>;
   @ViewChild(MatSort) sort: MatSort;
 
+  private incidentSubscription: Subscription;
 
-  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private notificationService: NotificationService) { }
+  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private notificationService: NotificationService, public translate: TranslateService) { }
 
   ngOnInit(): void {
-    this.incidentService.getIncidentsOngoing().subscribe({
+    this.incidentSubscription = timer(0, 500)
+    .pipe(
+      switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
+    )
+    .subscribe({
       next: data => {
         this.dataSource = new MatTableDataSource(data);
         this.dataSource.sort = this.sort;
@@ -63,16 +71,20 @@ export class CalltakerComponent implements OnInit {
           if (b.state == State.READY) return 1;
           return 0;
         });
-        console.log(data);
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Es ist Fehler beim Abfragen der Einsätze aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('CALLTAKER.ERROR_FETCH') + ': \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );
       }
-    });
+    }
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.incidentSubscription.unsubscribe();
   }
 
   /**

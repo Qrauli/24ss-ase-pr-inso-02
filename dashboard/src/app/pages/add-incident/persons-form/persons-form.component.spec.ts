@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PersonsFormComponent } from './persons-form.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AddIncidentComponent', () => {
   let component: PersonsFormComponent;
@@ -10,7 +11,7 @@ describe('AddIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PersonsFormComponent, NoopAnimationsModule, HttpClientTestingModule]
+      imports: [PersonsFormComponent, NoopAnimationsModule, HttpClientTestingModule, TranslateModule.forRoot()]
     })
       .compileComponents();
 

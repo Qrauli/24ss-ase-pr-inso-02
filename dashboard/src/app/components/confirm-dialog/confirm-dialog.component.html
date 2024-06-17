@@ -7,6 +7,6 @@
   </mat-dialog-content>
   
   <mat-dialog-actions>
-    <button mat-button (click)="onDismiss()">Nein</button>
-    <button mat-raised-button color="primary" (click)="onConfirm()" cdkFocusInitial>Ja</button>
+    <button mat-button (click)="onDismiss()">{{ 'DIALOG.CANCEL' | translate }}</button>
+    <button mat-raised-button color="primary" (click)="onConfirm()" cdkFocusInitial>{{ 'DIALOG.CONFIRM' | translate }}</button>
   </mat-dialog-actions>

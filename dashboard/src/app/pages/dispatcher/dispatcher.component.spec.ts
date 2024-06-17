@@ -4,6 +4,7 @@ import { DispatcherComponent } from './dispatcher.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {OAuthModule} from "angular-oauth2-oidc";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('DispatcherComponent', () => {
@@ -12,7 +13,7 @@ describe('DispatcherComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DispatcherComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [DispatcherComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot(), TranslateModule.forRoot()]
     })
     .compileComponents();
 

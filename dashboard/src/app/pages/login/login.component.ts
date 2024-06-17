@@ -6,6 +6,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {environment} from "../../../environments/environment";
+import {TranslateModule} from '@ngx-translate/core';
 
 
 @Component({
@@ -18,7 +19,8 @@ import {environment} from "../../../environments/environment";
     MatToolbarModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'

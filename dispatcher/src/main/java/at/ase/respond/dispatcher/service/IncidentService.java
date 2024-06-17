@@ -2,6 +2,7 @@ package at.ase.respond.dispatcher.service;
 
 import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.dispatcher.persistence.model.Incident;
+import at.ase.respond.dispatcher.persistence.model.ResourceRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,5 +41,12 @@ public interface IncidentService {
      * @param resourceId the id of the resource to unassign
      */
     void unassignResource(UUID id, String resourceId);
+
+    /**
+     * run a query to complete an incident
+     * @param id the id of the incident to complete
+     * @return the completed incident
+     */
+    Incident completeIncident(UUID id);
 
 }

@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,6 +79,13 @@ public class IncidentController {
                         .map(r -> new ResourceWithDistanceDTO(r.getContent().getId(), r.getDistance().getValue()))
                         .toList()
         );
+    }
+
+    @PutMapping(value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Complete incident by id", security = @SecurityRequirement(name = "bearer"))
+    @CrossOrigin
+    public ResponseEntity<IncidentDTO> completeIncident(@PathVariable UUID id) {
+        return ResponseEntity.ok(incidentMapper.toDTO(incidentService.completeIncident(id)));
     }
 
 }

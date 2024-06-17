@@ -58,6 +58,8 @@ public class OAuth2ResourceServerSecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((authorize) -> authorize.requestMatchers(HttpMethod.GET, "/incidents/**")
             .hasAnyRole("calltaker", "dispatcher")
+            .requestMatchers(HttpMethod.PUT, "/incidents/**")
+            .hasRole("dispatcher")
             .requestMatchers(HttpMethod.GET, "/resources/**")
             .hasAnyRole("calltaker", "dispatcher")
             .requestMatchers(HttpMethod.POST, "/resources/**")

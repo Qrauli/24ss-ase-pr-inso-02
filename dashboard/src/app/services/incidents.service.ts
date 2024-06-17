@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, switchMap, map } from 'rxjs';
 import { Incident } from '../dtos/incident';
 import { environment } from '../../environments/environment';
+import { ResourceRecommendation } from '../dtos/resource-recommendation';
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,12 @@ export class IncidentService {
       { headers: new HttpHeaders({
           'Content-Type': 'application/json',
         })});
+  }
+
+  getRecommendations(id: string): Observable<ResourceRecommendation[]> {
+    return this.httpClient.get<ResourceRecommendation[]>(environment.resourceUrl + `incidents/${id}/recommendations`, { headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      })});
   }
 
   getIncidentById(id: string): Observable<Incident> {

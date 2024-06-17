@@ -10,8 +10,9 @@ import { IncidentService } from '../../services/incidents.service';
 import { Incident } from '../../dtos/incident';
 import { NgFor } from '@angular/common';
 import { ResourceService } from '../../services/resources.service';
-import { switchMap, timer } from 'rxjs';
+import { Subscription, switchMap, timer } from 'rxjs';
 import { Resource } from '../../dtos/resource';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 
 @Component({
@@ -23,7 +24,8 @@ import { Resource } from '../../dtos/resource';
     MatButtonModule,
     LeafletModule,
     NgFor,
-    MatGridListModule],
+    MatGridListModule,
+    TranslateModule],
   templateUrl: './detail-incident.component.html',
   styleUrl: './detail-incident.component.css'
 })
@@ -31,9 +33,11 @@ export class DetailIncidentComponent implements OnInit {
 
   incident: Incident | undefined;
 
+  subcription: Subscription;
+
   resourceMarkers: Leaflet.Marker[] = [];
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private resourcesService: ResourceService) { }
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private resourcesService: ResourceService, public translate: TranslateService) { }
 
   ngOnInit(): void {
     this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']).subscribe(data => {
@@ -46,10 +50,11 @@ export class DetailIncidentComponent implements OnInit {
             iconUrl: 'assets/incident.png',
             shadowUrl: 'leaflet/marker-shadow.png'
           })
-        }).addTo(this.map).bindTooltip("Einsatz", { permanent: true, direction: 'center' });
+        }).addTo(this.map).bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
       }
     });
 
+    this.subcription =
     timer(500, 5000)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
@@ -61,6 +66,10 @@ export class DetailIncidentComponent implements OnInit {
     //TODO: fetch categorization data
   }
   map: Leaflet.Map;
+
+  ngOnDestroy(): void {
+    this.subcription.unsubscribe();
+  }
 
   /**
    * Navigate to the edit incident page
@@ -87,7 +96,7 @@ export class DetailIncidentComponent implements OnInit {
           iconUrl: 'assets/incident.png',
           shadowUrl: 'leaflet/marker-shadow.png'
         })
-      }).addTo(this.map).bindTooltip("Einsatz", { permanent: true, direction: 'center' });
+      }).addTo(this.map).bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
 
     }
 
