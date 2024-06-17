@@ -29,7 +29,7 @@ publish-common-lib:
   image: gradle:8.7-jdk21
   script:
     - cd common
-    - ./gradlew publish
+    - gradle publish
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -44,7 +44,7 @@ test-data-feeder:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd datafeeder
-    - ./gradlew check
+    - gradle check
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -59,7 +59,7 @@ test-incident-service:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd incident
-    - ./gradlew check
+    - gradle check
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -74,7 +74,7 @@ test-categorization-service:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd categorization
-    - ./gradlew check
+    - gradle check
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -89,7 +89,7 @@ test-dispatcher-service:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd dispatcher
-    - ./gradlew check
+    - gradle check
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -200,37 +200,37 @@ build-dashboard-dev:
     - cat kubernetes/${DEPLOYMENT_NAME}.yml
     - kubectl apply -f kubernetes/${DEPLOYMENT_NAME}.yml
 
-deploy-postgres:
+.deploy-postgres:
   extends:  .deploy-external
   variables:
     DEPLOYMENT_NAME: "postgres"
 
-deploy-rabbitmq:
+.deploy-rabbitmq:
   extends: .deploy-external
   variables:
     DEPLOYMENT_NAME: "rabbitmq"
 
-deploy-mongodb:
+.deploy-mongodb:
   extends: .deploy-external
   variables:
     DEPLOYMENT_NAME: "mongodb"
 
-deploy-incident-service:
+.deploy-incident-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "incident-service"
 
-deploy-categorization-service:
+.deploy-categorization-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "categorization-service"
 
-deploy-dispatcher-service:
+.deploy-dispatcher-service:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "dispatcher-service"
 
-deploy-dashboard:
+.deploy-dashboard:
   extends: .deploy-internally-built
   variables:
     DEPLOYMENT_NAME: "dashboard"
