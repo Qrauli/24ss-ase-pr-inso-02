@@ -5,6 +5,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {OAuthModule} from "angular-oauth2-oidc";
 import {RouterTestingModule} from "@angular/router/testing";
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('AddIncidentComponent', () => {
   let component: EditIncidentComponent;
@@ -12,7 +13,7 @@ describe('AddIncidentComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditIncidentComponent, RouterTestingModule, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [EditIncidentComponent, RouterTestingModule, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot(), TranslateModule.forRoot() ]
     })
     .compileComponents();
 

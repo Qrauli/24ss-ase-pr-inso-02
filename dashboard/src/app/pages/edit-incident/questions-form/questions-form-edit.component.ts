@@ -20,6 +20,7 @@ import {CategorizationService} from "../../../services/categorization.service";
 import {NotificationService} from "../../../services/notification.service";
 import {
   Answer,
+  BaseQuestion,
   Categorization,
   FieldType,
   ProtocolQuestion,
@@ -27,9 +28,10 @@ import {
 } from "../../../dtos/categorization";
 import {Incident, Sex} from "../../../dtos/incident";
 import {NgForOf, NgIf} from "@angular/common";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
 
 @Component({
-  selector: 'questions-form',
+  selector: 'questions-form-edit',
   standalone: true,
   imports: [HeaderComponent,
     MatButtonModule,
@@ -48,12 +50,13 @@ import {NgForOf, NgIf} from "@angular/common";
     MatRadioModule,
     MatMenuModule,
     MatTableModule,
+    TranslateModule,
     MatDividerModule, NgIf, NgForOf],
-  templateUrl: './questions-form.component.html',
+  templateUrl: './questions-form-edit.component.html',
   styleUrl: '../edit-incident.component.css'
 })
-export class QuestionsFormComponent {
-  constructor( private categorizationService: CategorizationService, private notificationService: NotificationService) {}
+export class QuestionsFormEditComponent {
+  constructor( private categorizationService: CategorizationService, private notificationService: NotificationService, public translate: TranslateService) {}
 
   private categorization: Categorization;
 
@@ -77,7 +80,7 @@ export class QuestionsFormComponent {
         },
         error: (err) => {
           this.notificationService.showErrorNotification(
-            'Es konnte keine Session für die Kategorisierung erstellt werden: \n\n' + JSON.stringify(err, null, 2),
+            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': \n\n' + JSON.stringify(err, null, 2),
             'OK',
             7000
           );
@@ -93,7 +96,7 @@ export class QuestionsFormComponent {
         },
         error: (err) => {
           this.notificationService.showErrorNotification(
-            'Es konnte keine Session für die Kategorisierung erstellt werden: \n\n' + JSON.stringify(err, null, 2),
+            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': \n\n' + JSON.stringify(err, null, 2),
             'OK',
             7000
           );
@@ -177,7 +180,7 @@ export class QuestionsFormComponent {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Fehler in der Kommunikation mit dem Kategorisierungs-Service: \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_COMMUNICATION') + ': \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );
@@ -283,6 +286,43 @@ export class QuestionsFormComponent {
     this.saveAnswerWithIndexChange(answer, index);
 
   }
+
+  getTranslationForBaseQuestion(baseQuestion?: BaseQuestion) {
+    if(this.translate.currentLang != 'de'){
+      return this.translate.instant('QUESTIONAIRE.BASE.' + baseQuestion?.id + '.TEXT');
+    }
+    else{
+      return baseQuestion?.text;
+    }
+  }
+
+  getTranslationForBaseQuestionOption(index: number, baseQuestion?: BaseQuestion) {
+    if(this.translate.currentLang != 'de'){
+      return this.translate.instant('QUESTIONAIRE.BASE.' + baseQuestion?.id + '.OPTIONS')[index];
+    }
+    else{
+      return baseQuestion?.fields[0].options[index];
+    }
+  }
+
+  getTranslationForProtocolQuestion(protocolQuestion?: ProtocolQuestion) {
+    if(this.translate.currentLang != 'de'){
+      return this.translate.instant('QUESTIONAIRE.PROTOCOL.' + protocolQuestion?.protocolId + '.' + protocolQuestion?.id + '.TEXT');
+    }
+    else{
+      return protocolQuestion?.text;
+    }
+  }
+
+  getTranslationForProtocolQuestionOption(index: number, protocolQuestion?: ProtocolQuestion) {
+    if(this.translate.currentLang != 'de'){
+      return this.translate.instant('QUESTIONAIRE.PROTOCOL.' + protocolQuestion?.protocolId + '.' + protocolQuestion?.id + '.OPTIONS')[index];
+    }
+    else{
+      return protocolQuestion?.fields[0].options[index].text;
+    }
+  }
+
 
   protected readonly QuestionType = QuestionType;
   protected readonly FieldType = FieldType;

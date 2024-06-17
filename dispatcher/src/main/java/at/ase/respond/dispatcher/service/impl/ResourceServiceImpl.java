@@ -116,11 +116,11 @@ public class ResourceServiceImpl implements ResourceService {
     @Override
     @Transactional
     public List<GeoResult<Resource>> getRecommendedResources(UUID id) throws NotFoundException {
-        //Incident incident = incidentService.findById(id);
-        GeoJsonPoint incidentLocation = new GeoJsonPoint(0, 0); //incident.getLocation().getCoordinates();
+        Incident incident = incidentService.findById(id);
+        GeoJsonPoint incidentLocation = incident.getLocation().getCoordinates();
 
         // Get the required resource types (possibly more than one)
-        List<ResourceType> resourceTypes = responseRegulationService.getRecommendedResourceTypes("01A01"); //incident.getCode());
+        List<ResourceType> resourceTypes = responseRegulationService.getRecommendedResourceTypes(incident.getCode()); 
 
         return resourceTypes.stream()
                 .flatMap(resourceType -> resourceRepository.findRecommendedResources(incidentLocation, resourceType).stream())

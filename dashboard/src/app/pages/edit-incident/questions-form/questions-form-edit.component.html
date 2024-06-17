@@ -3,14 +3,14 @@
     <ng-template mat-tab-label>
       <mat-icon *ngIf="isSelectionQuestionAnswered()" class="check">check</mat-icon>
       <mat-icon *ngIf="!isSelectionQuestionAnswered()" class="notcheck">close</mat-icon>
-      Protokoll
+      {{ 'INCIDENT.QUESTIONAIRE.PROTOCOL' | translate }}
     </ng-template>
     <div class="tab-center">
-      <h3>{{ getSelectionQuestion()?.baseQuestion?.text }}</h3>
+      <h3>{{ getTranslationForBaseQuestion(getSelectionQuestion()?.baseQuestion) }}</h3>
       <mat-form-field style="width: 400px">
 
         <mat-select [(ngModel)]="selectionQuestionOption">
-          <mat-option *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options" [value]="option">{{ option }}</mat-option>
+          <mat-option *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options; index as i" [value]="option">{{ getTranslationForBaseQuestionOption(i, getSelectionQuestion()?.baseQuestion) }}</mat-option>
         </mat-select>
 
 <!--        <mat-radio-button-->
@@ -29,16 +29,16 @@
     <ng-template mat-tab-label>
       <mat-icon *ngIf="isProtocolQuestionAnswerd(protocolQuestion.id)" class="check">check</mat-icon>
       <mat-icon *ngIf="!isProtocolQuestionAnswerd(protocolQuestion.id)" class="notcheck">close</mat-icon>
-      Protokoll Frage {{ i + 1 }}
+      {{ 'INCIDENT.QUESTIONAIRE.PROTOCOL_QUESTION' | translate }} {{ i + 1 }}
     </ng-template>
     <div class="tab-center">
-      <h3>{{ protocolQuestion.text }}</h3>
+      <h3>{{ getTranslationForProtocolQuestion(protocolQuestion) }}</h3>
       <div *ngFor="let field of protocolQuestion.fields!">
         <!-- TODO other field types -->
         <mat-form-field *ngIf="field.type == FieldType.SINGLE_CHOICE" style="width: 400px">
-          <mat-label>Auswählen</mat-label>
+          <mat-label>{{ 'INCIDENT.QUESTIONAIRE.CHOOSE' | translate }}</mat-label>
           <mat-select [(ngModel)]="selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id][field.fieldId]">
-            <mat-option *ngFor="let option of field.options" [value]="option.text">{{ option.text }}</mat-option>
+            <mat-option *ngFor="let option of field.options; index as i" [value]="option.text">{{ getTranslationForProtocolQuestionOption(i, protocolQuestion) }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -49,17 +49,17 @@
                 selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id],
                 selectedIndex + 1)
               ">
-        Bestätigen
+        {{ 'INCIDENT.QUESTIONAIRE.CONFIRM' | translate }}
       </button>
     </div>
   </mat-tab>
   <mat-tab *ngIf="recommendation != ''">
     <ng-template mat-tab-label>
       <mat-icon class="done">cloud_done</mat-icon>
-      Vorschlag des Systems
+      {{ 'INCIDENT.QUESTIONAIRE.RECOMMENDATION_MESSAGE' | translate }}
     </ng-template>
     <div class="tab-center">
-      <h3>Vorschlag des Kategorisierungs-Systems</h3>
+      <h3>{{ 'INCIDENT.QUESTIONAIRE.RECOMMENDATION_MESSAGE' | translate }}</h3>
         <span style="font-size: 20px; margin: 0 0 5px 0;"><b>{{ recommendation }}</b></span>
     </div>
   </mat-tab>

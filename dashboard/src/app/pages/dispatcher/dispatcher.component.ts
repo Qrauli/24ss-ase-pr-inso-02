@@ -22,16 +22,17 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmDialogModel } from '../../components/confirm-dialog/confirm-dialog.component';
 import { ResourceService } from '../../services/resources.service';
-import { interval, switchMap, timer } from "rxjs";
+import { Subscription, interval, switchMap, timer } from "rxjs";
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSortHeader } from "@angular/material/sort";
 import {
-  MatSnackBar,
-  MatSnackBarRef,
+  MatSnackBar
 } from '@angular/material/snack-bar';
 import { ResourceRequest } from '../../dtos/resource-request';
 import { LocationCoordinates } from '../../dtos/locationCoordinates';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { NotificationService } from '../../services/notification.service';
 
 
 @Component({
@@ -56,7 +57,8 @@ import { LocationCoordinates } from '../../dtos/locationCoordinates';
     MatGridListModule,
     MatSlideToggleModule,
     MatTooltipModule,
-    MatSortHeader
+    MatSortHeader,
+    TranslateModule
   ],
   templateUrl: './dispatcher.component.html',
   styleUrl: './dispatcher.component.css'
@@ -68,7 +70,7 @@ export class DispatcherComponent implements OnInit {
   selectedIncidentData: Incident | null = null;
   selectedIncidentMarker: Leaflet.Marker | null = null;
 
-  recommended: Set<number> = new Set();
+  recommended: Set<string> = new Set();
 
   resourceRequests: ResourceRequest[] = [];
 
@@ -80,16 +82,14 @@ export class DispatcherComponent implements OnInit {
 
   resourceMarkers: Leaflet.Marker[];
 
-
-  resourcesAdditional: Resource[];
-
   notifications: any[] = [];
 
   displayedColumnsResources: string[] = ['status', 'id', 'type', 'locate', 'assign'];
-  displayedColumnsResourcesAdditional: string[] = ['status', 'id', 'type', 'locate', 'assign'];
   displayedColumnsIncidents: string[] = ['status', 'location', 'class'];
 
   map: Leaflet.Map;
+
+  subscriptions: Subscription[] = [];
 
 
   options: Leaflet.MapOptions = {
@@ -100,7 +100,8 @@ export class DispatcherComponent implements OnInit {
     center: new Leaflet.LatLng(48.227747192035764, 16.40545336304577)
   };
 
-  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar) { }
+  constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private resourcesService: ResourceService, public dialog: MatDialog, private _snackBar: MatSnackBar, public translate: TranslateService, private notificationService: NotificationService) { }
+
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
       data.sort((a, b) => a.state.localeCompare(b.state));
@@ -111,17 +112,21 @@ export class DispatcherComponent implements OnInit {
       this.resourceRequests = data;
     });
 
+    this.subscriptions.push(
     timer(0, 500)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
       .subscribe(data => {
         this.resources = data;
+        this.resources.sort((a, b) => this.recommended.has(a.id) ? -1 : this.recommended.has(b.id) ? 1 : 0);
         this.showLocations();
       }
       )
+    )
 
-    interval(500)
+    this.subscriptions.push(
+      interval(500)
       .pipe(
         switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
@@ -129,20 +134,21 @@ export class DispatcherComponent implements OnInit {
         data.sort((a, b) => a.state.localeCompare(b.state));
         this.incidentRefresher(data);
       }
-      )
+      ))
 
-    interval(500)
-      .pipe(
-        switchMap(() => this.resourcesService.getOpenResourceRequests())
-      )
-      .subscribe(data => {
-        this.requestRefresher(data);
-      }
-      )
+    this.subscriptions.push(
+      interval(500)
+        .pipe(
+          switchMap(() => this.resourcesService.getOpenResourceRequests())
+        )
+        .subscribe(data => {
+          this.requestRefresher(data);
+        }
+        ))
+  }
 
-    this.resourcesService.getResourcesAdditional().subscribe(data => {
-      this.resourcesAdditional = data;
-    });
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   /**
@@ -150,21 +156,24 @@ export class DispatcherComponent implements OnInit {
    * @param data refreshed incidents
    */
   incidentRefresher(data: Incident[]): void {
+    let oldIncidents = this.incidents;
+    this.incidents = data;
     for (let i = 0; i < data.length; i++) {
       let flag = false;
-      for (let j = 0; j < this.incidents.length; j++) {
-        if (this.incidents[j].id == data[i].id) {
+      for (let j = 0; j < oldIncidents.length; j++) {
+        if (oldIncidents[j].id == data[i].id) {
           flag = true;
           break;
         }
       }
       if (!flag) {
-        this.notifications.push(data[i]);
+        if (this.codeIsPriority((data[i].code).toString())) {
+          this.notificationService.showPriorityNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
+        }
+        else {
+          this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000);
+        }
       }
-    }
-    this.incidents = data;
-    if (!this._snackBar._openedSnackBarRef?._open) {
-      this.displayNotifications();
     }
   }
 
@@ -182,16 +191,13 @@ export class DispatcherComponent implements OnInit {
         }
       }
       if (!flag) {
-        this.notifications.push(data[i]);
+        this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.REQUEST'), this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(this.incidentFromId(data[i].assignedIncident)));
       }
     }
     this.resourceRequests = data;
-    if (!this._snackBar._openedSnackBarRef?._open) {
-      this.displayNotifications();
-    }
   }
 
-onMapReady(map: Leaflet.Map) {
+  onMapReady(map: Leaflet.Map) {
     this.map = map;
     setTimeout(() => {
       map.invalidateSize();
@@ -239,44 +245,6 @@ onMapReady(map: Leaflet.Map) {
     }
   }
 
-  /**
-   * displays the notifications in the snackbar
-   */
-  displayNotifications(): void {
-    if (this.notifications.length > 0) {
-      let notification = this.notifications.shift();
-      if (<Incident>notification.code) {
-        let classString = this.codeIsPriority(notification!.code) ? 'alert-red' : 'alert-default';
-        const ref: MatSnackBarRef<any> = this._snackBar.open('Neuer Einsatz: ' + notification!.code, 'Auswählen', {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          duration: 7000,
-          panelClass: [classString]
-        });
-        ref.onAction().subscribe(() => {
-          this.selectIncident(notification!);
-        });
-        ref.afterDismissed().subscribe(() => {
-          this.displayNotifications();
-        });
-      }
-      else if (<ResourceRequest>notification.requestedResourceType) {
-        const ref: MatSnackBarRef<any> = this._snackBar.open('Neue Resourcen-Anfrage', 'Auswählen', {
-          horizontalPosition: 'center',
-          verticalPosition: 'top',
-          duration: 7000,
-          panelClass: ['alert-default']
-        });
-        ref.onAction().subscribe(() => {
-          this.selectIncident(this.incidentFromId(notification.assignedIncident));
-        });
-        ref.afterDismissed().subscribe(() => {
-          this.displayNotifications();
-        });
-      }
-    }
-  }
-
   unassignResource(resource: Resource): void {
     const index = this.assignedResources?.indexOf(resource.id);
     if (index !== undefined && index !== -1) {
@@ -296,7 +264,7 @@ onMapReady(map: Leaflet.Map) {
 
   assignResource(resource: Resource): void {
     if (resource.assignedIncident) {
-      const dialogData = new ConfirmDialogModel("Neu zuweisen", "Diese Resource ist bereits einem Einsatz zugeweisen. <br> Möchten Sie diese Resource sicher neu zuweisen?");
+      const dialogData = new ConfirmDialogModel(this.translate.instant('DISPATCHER.DIALOGS.REDISPATCH_CONFORMATION_HEADER'), this.translate.instant('DISPATCHER.DIALOGS.REDISPATCH_CONFORMATION_BODY'));
 
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: dialogData,
@@ -319,12 +287,15 @@ onMapReady(map: Leaflet.Map) {
    * @param incident
    */
   selectIncident(incident: Incident): void {
-    if(this.selectedIncident == incident.id){
+    if (this.selectedIncident == incident.id) {
       return;
     }
     this.selectedIncident = incident.id;
     this.selectedIncidentData = incident;
-    this.recommended = new Set([1, 2, 3]);
+    this.incidentService.getRecommendations(incident.id).subscribe(data => {
+      this.recommended = new Set(data.map(r => r.resourceId));
+      this.resources.sort((a, b) => this.recommended.has(a.id) ? -1 : this.recommended.has(b.id) ? 1 : 0);
+    });
     this.assignedResources = [];
     if (this.selectedIncidentMarker) {
       this.map.removeLayer(this.selectedIncidentMarker);
@@ -338,8 +309,11 @@ onMapReady(map: Leaflet.Map) {
         popupAnchor: [0, -42]
       })
     });
-    this.selectedIncidentMarker.addTo(this.map);
-    this.selectedIncidentMarker.bindTooltip("Einsatz", { permanent: true, direction: 'center' });
+    try {
+      this.selectedIncidentMarker.addTo(this.map);
+    }
+    catch { }
+    this.selectedIncidentMarker.bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
     this.showLocations();
     this.zoomToLocation(incident.location!.coordinates!);
   }
@@ -358,7 +332,8 @@ onMapReady(map: Leaflet.Map) {
   }
 
   dispatchIncident(): void {
-    const dialogData = new ConfirmDialogModel("Dispatch", "Sollen die ausgewählten Ressourcen wirklich zum Einsatz geschickt werden?");
+    const incidentList = "<ul>" + this.assignedResources?.map(resource => "<li>" + resource + ": " + this.resources.find(r => r.id === resource)?.type + "</li>").join("") + "</ul>";
+    const dialogData = new ConfirmDialogModel("Dispatch", this.translate.instant('DISPATCHER.DIALOGS.DISPATCH_CONFORMATION') + incidentList);
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: dialogData,
@@ -402,7 +377,7 @@ onMapReady(map: Leaflet.Map) {
    */
 
   finishRequest(request: ResourceRequest): void {
-    const dialogData = new ConfirmDialogModel("Anfrage abschließen", "Soll die Anfrage wirklich abgeschlossen werden?");
+    const dialogData = new ConfirmDialogModel(this.translate.instant('DISPATCHER.DIALOGS.REQUEST_CONFORMATION_HEADER'), this.translate.instant('DISPATCHER.DIALOGS.REQUEST_CONFORMATION_BODY'));
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: dialogData,
       enterAnimationDuration: 0,
@@ -424,6 +399,23 @@ onMapReady(map: Leaflet.Map) {
 
   zoomToLocation(location: LocationCoordinates) {
     this.map.setView(new Leaflet.LatLng(location.latitude, location.longitude), 15);
+  }
+
+  completeIncident(incident: string): void {
+    const dialogData = new ConfirmDialogModel(this.translate.instant('DISPATCHER.DIALOGS.INCIDENT_COMPLETE_HEADER'), this.translate.instant('DISPATCHER.DIALOGS.INCIDENT_COMPLETE_BODY'));
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: dialogData,
+      enterAnimationDuration: 0,
+      exitAnimationDuration: 0
+    });
+
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      if (dialogResult === true) {
+        this.resourcesService.completeIncident(incident).subscribe(data => {
+          this.unselectIncident();
+        });
+      }
+    });
   }
 
 }

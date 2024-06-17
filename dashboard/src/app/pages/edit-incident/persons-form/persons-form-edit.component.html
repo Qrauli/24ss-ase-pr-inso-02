@@ -1,20 +1,20 @@
 <form [formGroup]="form">
   <div class="center">
-    <h3>AnruferIn:</h3>
+    <h3>{{ 'INCIDENT.CALLEE' | translate }}</h3>
     <div formGroupName="caller">
       <mat-form-field >
-        <mat-label>Nummer</mat-label>
+        <mat-label>{{ 'INCIDENT.CALLEE_NUMBER' | translate }}</mat-label>
         <input matInput placeholder="+43 000 00000000" formControlName="number"/>
       </mat-form-field>
       <mat-form-field style="margin-left: 5px;">
-        <mat-label>Name</mat-label>
+        <mat-label>{{ 'INCIDENT.CALLEE_NAME' | translate }}</mat-label>
         <input matInput placeholder="Max Mustermann"  formControlName="name"/>
       </mat-form-field>
     </div>
-    <h3>Betroffene:</h3>
+    <h3>{{ 'INCIDENT.AFFECTED' | translate }}</h3>
     <div>
       <mat-form-field>
-        <mat-label>Anzahl der Betroffenen</mat-label>
+        <mat-label>{{ 'INCIDENT.NUMBER_AFFECTED' | translate }}</mat-label>
         <input matInput type="number" placeholder="0" (keydown)="numberInputOnly($event)" formControlName="numberOfPatients" (blur)="updatePatients()" />
       </mat-form-field>
     </div>
@@ -26,10 +26,10 @@
 
         <!-- Age Column -->
         <ng-container matColumnDef="age">
-          <th mat-header-cell *matHeaderCellDef> Alter</th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'INCIDENT.AFFECTED_AGE' | translate }}</th>
           <td mat-cell *matCellDef="let element">
             <mat-form-field>
-              <mat-label>Alter</mat-label>
+              <mat-label>{{ 'INCIDENT.AFFECTED_AGE' | translate }}</mat-label>
               <input type="number" matInput placeholder="20" [(ngModel)]="element.age" [ngModelOptions]="{standalone: true}"/>
             </mat-form-field>
           </td>
@@ -37,14 +37,14 @@
 
         <!-- Sex Column -->
         <ng-container matColumnDef="sex">
-          <th mat-header-cell *matHeaderCellDef> Geschlecht</th>
+          <th mat-header-cell *matHeaderCellDef> {{ 'INCIDENT.AFFECTED_GENDER' | translate }}</th>
           <td mat-cell *matCellDef="let element">
             <mat-form-field>
-              <mat-label>Geschlecht</mat-label>
+              <mat-label>{{ 'INCIDENT.AFFECTED_GENDER' | translate }}</mat-label>
               <mat-select [(value)]="element.sex">
-                <mat-option value="MALE">Männlich</mat-option>
-                <mat-option value="FEMALE">Weiblich</mat-option>
-                <mat-option value="UNKNOWN">Unbekannt</mat-option>
+                <mat-option value="MALE">{{ 'INCIDENT.GENDER_M' | translate }}</mat-option>
+                <mat-option value="FEMALE">{{ 'INCIDENT.GENDER_F' | translate }}</mat-option>
+                <mat-option value="UNKNOWN">{{ 'INCIDENT.GENDER_U' | translate }}</mat-option>
               </mat-select>
             </mat-form-field>
           </td>

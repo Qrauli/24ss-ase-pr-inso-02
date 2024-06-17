@@ -1,0 +1,321 @@
+{
+    "DISPATCHER": {
+        "INCIDENT_LIST": "Incident List",
+        "SELECTED_INCIDENT": "Selected Incident",
+        "RESOURCES": "Ressourcs",
+        "RESOURCE_STANDARD": "Standard",
+        "RESOURCE_ADDITIONAL": "Additional",
+        "SELECT": {
+            "DISPATCH_STATE": "Dispatch State",
+            "CLASSIFICATION": "Classification",
+            "LOCATION": "Location",
+            "POSTAL_CODE": "Postal Code",
+            "STREET": "Street",
+            "LOCATION_ADDITIONAL": "Additional Information",
+            "CITY": "City",
+            "CALLEE": "Callee",
+            "AFFECTED": "Affected",
+            "REQUESTS": "Additional Resource Requests"
+        },
+        "TOOLTIP_RESOURCE_TOGGLE": "Show dispatched Resources",
+        "TOOLTIP_DESELECT_INCIDENT": "Deselect Incident",
+        "TOOLTIP_INCIDENT_MAP": "Incident",
+        "DIALOGS": {
+            "DISPATCH_CONFORMATION": "Should the selected resources really be dispatched to the incident location?",
+            "REQUEST_CONFORMATION_HEADER": "Complete Request",
+            "REQUEST_CONFORMATION_BODY": "Do you really want to complete the request?",
+            "REDISPATCH_CONFORMATION_HEADER": "Reassign Resource",
+            "REDISPATCH_CONFORMATION_BODY": "This resource is already assigned to an incident. <br> Do you really want to reassign it?",
+            "INCIDENT_COMPLETE_HEADER": "Complete Incident",
+            "INCIDENT_COMPLETE_BODY": "Do you really want to complete the incident?"
+        },
+        "NOTIFICATIONS": {
+            "ACTION": "Select",
+            "REQUEST": "New Resource Request",
+            "INCIDENT": "New Incident: "
+        },
+        "RECOMMENDED": "Recommended",
+        "COMPLETE_BUTTON": "Complete",
+        "NO_INCIDENTS": "No incidents available",
+        "NO_RESOURCES": "No resources available"
+    },
+    "CALLTAKER": {
+        "DISPATCH_STATE": "Dispatch State",
+        "LOCATION": "Location",
+        "CLASSIFICATION": "Classification",
+        "NEW_INCIDENT": "New Incident",
+        "ERROR_FETCH": "An error occurred while querying the incidents",
+        "NO_INCIDENTS": "No incidents available"
+    },
+    "INCIDENT": {
+        "ADD_INCIDENT_HEADER": "New Incident",
+        "SECTION_LOCATION": "Location",
+        "STREET_SEARCH": "Enter street",
+        "ADDRESS_SEARCH": "Search address",
+        "SECTION_PERSONS": "Persons",
+        "SECTION_QUESTIONNAIRE": "Questions",
+        "SECTION_CLASSIFICATION": "Classification",
+        "RECOMMENDATION_MESSAGE": "Recommendation of the classification system: ",
+        "SELECTED_MESSAGE": "Selected:",
+        "CATEGORY_ACTION": "Select Category",
+        "SUMMARY_QUESTIONS": "Summary of the Questionaire",
+        "ERROR_CATEGORY": "A category must be set!",
+        "ERROR_LOCATION": "Incident coordinates must be set!",
+        "HURT_PERSON": "one injured person",
+        "HURT_PERSONS": " injured persons",
+        "SUCCESS_INCIDENT_CREATION": "Incident created successfully!",
+        "ERROR_INCIDENT_CREATION": "An error occurred while creating the incident:",
+        "POSTAL_CODE": "Postal Code",
+        "STREET": "Street",
+        "STREET_PH": "Hauptstraße 1",
+        "LOCATION_ADDITIONAL": "Additional Information",
+        "LOCATION_ADDITIONAL_PH": "outbuilding, floor, etc.",
+        "CITY": "Vienna, Austria",
+        "CITY_PH": "City",
+        "CALLEE": "Callee:",
+        "CALLEE_NUMBER": "Number",
+        "CALLEE_NAME": "Name",
+        "ADDRESS": "Address",
+        "AFFECTED": "Affected:",
+        "AFFECTED_AGE": "Age",
+        "AFFECTED_GENDER": "Gender",
+        "GENDER_M": "Male",
+        "GENDER_F": "Female",
+        "GENDER_U": "Unkown",
+        "NUMBER_AFFECTED": "Number of affected",
+        "SAVE_INCIDENT": "Save incident",
+        "QUESTIONAIRE": {
+            "PROTOCOL": "Protocol",
+            "CONFIRM": "Confirm",
+            "PROTOCOL_QUESTION": "Protocol Question",
+            "CHOOSE": "Select",
+            "RECOMMENDATION_MESSAGE": "Recommendation of the classification system",
+            "ERROR_SESSION": "No session could be created for categorization",
+            "ERROR_COMMUNICATION": "Error in communication with the categorization service"
+        },
+        "EDIT_ACTION": "Edit incident",
+        "EDIT_FETCH_ERROR": "An error occurred while querying the incident",
+        "EDIT_SUCCESS": "Incident successfully updated!",
+        "EDIT_ERROR": "An error occurred while editing the incident",
+        "DETAIL_HEADER": "Incident Details",
+        "EDIT_HEADER": "Edit Incident",
+        "CODE_1": "Abdominal pain/discomfort",
+        "CODE_2": "Allergy/contact with poisonous animals"
+    },
+    "HEADER": {
+        "LOGOUT_HEADER": "Log out",
+        "LOGOUT_BODY": "Do you really want to log out?",
+        "BACK_HEADER": "Cancel",
+        "BACK_BODY": "Should the current changes really be discarded?"
+    },
+    "DIALOG": {
+        "CONFIRM": "Yes",
+        "CANCEL": "No"
+    },
+    "LOGIN": "Please log in to continue",
+    "QUESTIONAIRE": {
+        "BASE": {
+            "2": {
+                "TEXT": "What happened?",
+                "OPTIONS": [
+                    "1-Abdominal pain/discomfort",
+                    "2-Allergy/contact with poisonous animals",
+                    "3-Animal bite/attack",
+                    "4-Ailment",
+                    "5-Back pain",
+                    "6-Breathing difficulties",
+                    "7-Burns/Explosion",
+                    "8-Carbon monoxide",
+                    "9-Cardiac arrest",
+                    "10-Chest pain",
+                    "11-Suffocation",
+                    "12-Seizure",
+                    "13-Blood sugar imbalance",
+                    "14-Drowning",
+                    "15-Electrical accident/lightning strike",
+                    "16-Eye problems/injuries",
+                    "17-Fall",
+                    "18-Headache",
+                    "19-Heart problems",
+                    "20-Heat/cold problems",
+                    "21-Hemorrhage",
+                    "22-Inaccessible/buried person",
+                    "23-Overdose/poisoning",
+                    "24-Pregnancy",
+                    "25-Psychiatry",
+                    "26-Sick person",
+                    "27-Stab/gunshot/impaling injury",
+                    "28-Stroke",
+                    "29-Traffic accident",
+                    "30-Injuries",
+                    "31-Unconsciousness/fainting (near)",
+                    "32-Unclear events",
+                    "33-Transportanforderung",
+                    "37-Examination/transport (from/to care facility)",
+                    "42-Additional demand"
+                ]
+            }
+        },
+        "PROTOCOL": {
+            "1": {
+                "1": {
+                    "TEXT": "Is there a clouding of consciousness?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "2": {
+                    "TEXT": "Does the patient have ashen or gray skin and is he older than 50 years?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "3": {
+                    "TEXT": "Is an upgrade necessary?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "4": {
+                    "TEXT": "Is there a suspicion of an aortic aneurysm (tearing pain) and is the patient older than 50 years?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "5": {
+                    "TEXT": "Is there a known aortic aneurysm?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "6": {
+                    "TEXT": "Is there fainting and is the patient older than 50 years?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "7": {
+                    "TEXT": "Is a woman between 12-50 years of age affected by fainting?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "8": {
+                    "TEXT": "Is a man with pain above the belly button and older than 35 years affected?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "9": {
+                    "TEXT": "Is a woman with pain above the belly button and older than 45 years affected?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "10": {
+                    "TEXT": "Is an upgrade necessary?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "11": {
+                    "TEXT": "Is there abdominal pain without any other specific symptoms?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                },
+                "12": {
+                    "TEXT": "Is there testicular or groin pain?",
+                    "OPTIONS": [
+                        "Yes",
+                        "No"
+                    ]
+                }
+            },
+            "2": {
+                "1": {
+                    "TEXT": "Is it ineffective breathing or clouding of consciousness?",
+                    "OPTIONS": [
+                        "Yes, ineffective breathing",
+                        "Yes, ineffective breathing. Injection administered or instructed",
+                        "Yes, ineffective breathing. Medication administered or instructed",
+                        "Yes, clouding of consciousness",
+                        "Yes, clouding of consciousness. Injection administered or instructed",
+                        "Yes, clouding of consciousness. Medication administered or instructed",
+                        "No"
+                    ]
+                },
+                "2": {
+                    "TEXT": "Are there speech difficulties between breaths?",
+                    "OPTIONS": [
+                        "Yes",
+                        "Yes. Injection administered or instructed",
+                        "Yes. Medication administered or instructed",
+                        "No"
+                    ]
+                },
+                "3": {
+                    "TEXT": "Are there difficulties with breathing or swallowing?",
+                    "OPTIONS": [
+                        "Yes",
+                        "Yes. Injection administered or instructed",
+                        "Yes. Medication administered or instructed",
+                        "No"
+                    ]
+                },
+                "4": {
+                    "TEXT": "Does the patient have a history of severe allergic reactions?",
+                    "OPTIONS": [
+                        "Yes",
+                        "Yes. Injection administered or instructed",
+                        "Yes. Medication administered or instructed",
+                        "No"
+                    ]
+                },
+                "5": {
+                    "TEXT": "Which case applies?",
+                    "OPTIONS": [
+                        "Attack by insect swarm",
+                        "Attack by insect swarm. Injection administered or instructed",
+                        "Attack by insect swarm. Medication administered or instructed",
+                        "Snake bite",
+                        "Snake bite. Injection administered or instructed",
+                        "Snake bite. Medication administered or instructed",
+                        "Spider bite",
+                        "Spider bite. Injection administered or instructed",
+                        "Spider bite. Medication administered or instructed",
+                        "No difficulty breathing or swallowing, possibly rash or itching",
+                        "No difficulty breathing or swallowing, possible rash or itching. Injection administered or instructed",
+                        "No difficulty breathing or swallowing, possible rash or itching. Medication administered or instructed",
+                        "Unknown condition/Other codes not applicable",
+                        "Unknown condition/Other codes not applicable. Injection administered or directed",
+                        "Unknown condition/Other codes not applicable. Medication administered or directed",
+                        "Upgrade Bravo",
+                        "Upgrade Bravo. Injection administered or instructed",
+                        "Upgrade Bravo. Medication administered or instructed",
+                        "Upgrade Charlie",
+                        "Upgrade Charlie. Injection administered or instructed",
+                        "Upgrade Charlie. Medication administered or instructed",
+                        "Upgrade Delta",
+                        "Upgrade Delta. Injection administered or instructed",
+                        "Upgrade Delta. Medication administered or instructed",
+                        "Upgrade Echo",
+                        "Upgrade Echo. Injection administered or instructed",
+                        "Upgrade Echo. Medication administered or instructed"
+                    ]
+                }
+            }
+        }
+    }
+}

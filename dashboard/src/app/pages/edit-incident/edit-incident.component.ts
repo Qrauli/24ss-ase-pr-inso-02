@@ -20,14 +20,16 @@ import "leaflet-control-geocoder/dist/Control.Geocoder.js";
 import {MatDividerModule} from '@angular/material/divider';
 import {Incident, State} from "../../dtos/incident";
 import {IncidentService} from "../../services/incidents.service";
-import {LocationFormComponent} from "./location-form/location-form.component";
-import {PersonsFormComponent} from "./persons-form/persons-form.component";
-import {QuestionsFormComponent} from "./questions-form/questions-form.component";
+import {LocationFormEditComponent} from "./location-form/location-form-edit.component";
+import {PersonsFormEditComponent} from "./persons-form/persons-form-edit.component";
+import {QuestionsFormEditComponent} from "./questions-form/questions-form-edit.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {NotificationService} from "../../services/notification.service";
 import {CategorizationService} from "../../services/categorization.service";
 import {StepperSelectionEvent} from "@angular/cdk/stepper";
 import * as Leaflet from "leaflet";
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-add-incident',
@@ -50,8 +52,9 @@ import * as Leaflet from "leaflet";
     MatMenuModule,
     MatTableModule,
     MatDividerModule,
-    LocationFormComponent,
-    PersonsFormComponent, QuestionsFormComponent, NgIf, NgForOf],
+    LocationFormEditComponent,
+    TranslateModule,
+    PersonsFormEditComponent, QuestionsFormEditComponent, NgIf, NgForOf],
   templateUrl: './edit-incident.component.html',
   styleUrl: './edit-incident.component.css'
 })
@@ -65,7 +68,7 @@ export class EditIncidentComponent implements OnInit {
   personsFormLabel = "persons";
   questionsFormLabel = "questions";
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private categorizationService: CategorizationService, private notificationService: NotificationService) {
+  constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private categorizationService: CategorizationService, private notificationService: NotificationService, public translate: TranslateService) {
     this.incident = {
       id: '',
       patients: [],
@@ -116,7 +119,7 @@ export class EditIncidentComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Es ist ein Fehler beim Abfragen des Einsatzes aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.EDIT_FETCH_ERROR') + ': \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );
@@ -165,11 +168,11 @@ export class EditIncidentComponent implements OnInit {
     }
   }
 
-  @ViewChild(LocationFormComponent) locationFormComponent: LocationFormComponent;
+  @ViewChild(LocationFormEditComponent) locationFormComponent: LocationFormEditComponent;
 
-  @ViewChild(PersonsFormComponent) personFormComponent: PersonsFormComponent;
+  @ViewChild(PersonsFormEditComponent) personFormComponent: PersonsFormEditComponent;
 
-  @ViewChild(QuestionsFormComponent) questionsFormComponent: QuestionsFormComponent;
+  @ViewChild(QuestionsFormEditComponent) questionsFormComponent: QuestionsFormEditComponent;
 
   // ####################### Categorization ####################### //
 
@@ -186,11 +189,11 @@ export class EditIncidentComponent implements OnInit {
     this.summaryTags = [];
 
     if (this.incident.numberOfPatients == 1) {
-      this.summaryTags.push("eine verletzte Person");
+      this.summaryTags.push(this.translate.instant('INCIDENT.HURT_PERSON'));
     }
 
     if (this.incident.numberOfPatients > 1) {
-      this.summaryTags.push(this.incident.numberOfPatients + " verletzte Personen");
+      this.summaryTags.push(this.incident.numberOfPatients + this.translate.instant('INCIDENT.HURT_PERSONS'));
     }
 
     return this.summaryTags.length > 0;
@@ -215,7 +218,7 @@ export class EditIncidentComponent implements OnInit {
         this.router.navigate(['/calltaker']).then((navigated: boolean) => {
           if (navigated) {
             this.notificationService.showDefaultNotification(
-              'Einsatz erfolgreich aktualisiert!',
+              this.translate.instant('INCIDENT.EDIT_SUCCESS'),
               'OK',
               7000
             );
@@ -224,7 +227,7 @@ export class EditIncidentComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          'Es ist Fehler beim Aktualisieren des Einsatzes aufgetreten: \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.EDIT_ERROR') + ': \n\n' + JSON.stringify(err, null, 2),
           'OK',
           7000
         );

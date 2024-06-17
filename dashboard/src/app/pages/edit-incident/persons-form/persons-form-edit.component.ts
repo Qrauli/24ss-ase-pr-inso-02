@@ -17,10 +17,10 @@ import {MatMenuModule} from "@angular/material/menu";
 import {MatTable, MatTableModule} from "@angular/material/table";
 import {MatDividerModule} from "@angular/material/divider";
 import {Patient, Sex} from "../../../dtos/incident";
-
+import {TranslateModule} from '@ngx-translate/core';
 
 @Component({
-  selector: 'persons-form',
+  selector: 'persons-form-edit',
   standalone: true,
   imports: [HeaderComponent,
     MatButtonModule,
@@ -39,11 +39,12 @@ import {Patient, Sex} from "../../../dtos/incident";
     MatRadioModule,
     MatMenuModule,
     MatTableModule,
-    MatDividerModule],
-  templateUrl: './persons-form.component.html',
+    MatDividerModule,
+    TranslateModule],
+  templateUrl: './persons-form-edit.component.html',
   styleUrl: '../edit-incident.component.css'
 })
-export class PersonsFormComponent {
+export class PersonsFormEditComponent {
 
   constructor(private formBuilder: FormBuilder) {
   }
@@ -61,6 +62,8 @@ export class PersonsFormComponent {
   @ViewChild(MatTable) table: MatTable<any>;
 
   // TODO maybe we can also use dynamic forms for the patients
+
+  dataSource: Patient[] = [];
 
 
   patients: Patient[] = [];

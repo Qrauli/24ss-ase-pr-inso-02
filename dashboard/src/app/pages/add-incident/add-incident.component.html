@@ -1,38 +1,38 @@
-<app-header [backButton]="true" backRoute="/calltaker" title="Neuer Einsatz"></app-header>
+<app-header [backButton]="true" backRoute="/calltaker" [title]="'INCIDENT.ADD_INCIDENT_HEADER' | translate"></app-header>
 <div class="container">
   <mat-stepper #stepper (selectionChange)="handleSelectionChange($event)">
     <mat-step label="{{ locationFormLabel }}">
-        <ng-template matStepLabel>Standort</ng-template>
+        <ng-template matStepLabel>{{ 'INCIDENT.SECTION_LOCATION' | translate }}</ng-template>
         <location-form> </location-form>
     </mat-step>
     <mat-step label="{{ personsFormLabel }}">
-      <ng-template matStepLabel>Personen</ng-template>
+      <ng-template matStepLabel>{{ 'INCIDENT.SECTION_PERSONS' | translate }}</ng-template>
         <persons-form> </persons-form>
     </mat-step>
 
     <mat-step label="{{ questionsFormLabel }}">
-      <ng-template matStepLabel>Fragen</ng-template>
+      <ng-template matStepLabel>{{ 'INCIDENT.SECTION_QUESTIONNAIRE' | translate }}</ng-template>
       <questions-form> </questions-form>
     </mat-step>
 
     <mat-step>
-      <ng-template matStepLabel>Klassifikation</ng-template>
+      <ng-template matStepLabel>{{ 'INCIDENT.SECTION_CLASSIFICATION' | translate }}</ng-template>
 
       <div class="center" *ngIf="recommendedCategory">
-        <p>Empfehlung des Klassifizierungssystems: </p>
+        <p>{{ 'INCIDENT.RECOMMENDATION_MESSAGE' | translate }}</p>
         <span style="font-size: 20px; margin: 0 0 5px 0;"><b>{{ recommendedCategory }}</b></span>
         <br>
         <mat-divider style="width: 400px"></mat-divider>
         <br>
       </div>
       <div class="center-last">
-        <span style="margin-top: 5px;">Ausgewählt:</span>
+        <span style="margin-top: 5px;">{{ 'INCIDENT.SELECTED_MESSAGE' | translate }}</span>
         <button style="margin: 10px 0 10px 0;" mat-raised-button [matMenuTriggerFor]="categories">
-          <span style="font-size: 20px;">{{ selectedCategory ? selectedCategory : "Kategorie auswählen" }}</span>
+          <span style="font-size: 20px;">{{ selectedCategory ? selectedCategory : 'INCIDENT.CATEGORY_ACTION' | translate }}</span>
         </button>
         <mat-menu #categories="matMenu">
-          <button mat-menu-item [matMenuTriggerFor]="menu_01">Bauchschmerzen/-beschwerden</button>
-          <button mat-menu-item [matMenuTriggerFor]="menu_02">Allergie/Kontakt mit giftigen Tieren</button>
+          <button mat-menu-item [matMenuTriggerFor]="menu_01">{{ 'INCIDENT.CODE_1' | translate }}</button>
+          <button mat-menu-item [matMenuTriggerFor]="menu_02">{{ 'INCIDENT.CODE_2' | translate }}</button>
         </mat-menu>
 
         <mat-menu #menu_01="matMenu">
@@ -95,16 +95,16 @@
         <mat-divider style="width: 400px"></mat-divider>
 
         <div *ngIf="loadSummary()" class="center" style="margin: 0 0 5px 0;">
-          <p>Zusammenfassung des Befragungsschemas</p>
+          <p>{{ 'INCIDENT.SUMMARY_QUESTIONS' | translate }}</p>
           <mat-chip-set aria-label="Fish selection">
             <mat-chip *ngFor="let tag of summaryTags">{{ tag }}</mat-chip>
           </mat-chip-set>
         </div>
         <br>
-        <button [disabled]="!categorySet() || !locationCoordinatesSet()" mat-flat-button color="primary" (click)="saveIncident()" matStepperNext>Einsatz speichern</button>
+        <button [disabled]="!categorySet() || !locationCoordinatesSet()" mat-flat-button color="primary" (click)="saveIncident()" matStepperNext>{{ 'INCIDENT.SAVE_INCIDENT' | translate }}</button>
         <div style="color: red; text-align: center">
-          <p *ngIf="!categorySet()">Es muss eine Kategorie gesetzt sein!</p>
-          <p *ngIf="!locationCoordinatesSet()">Es müssen Einsatzkoordinaten gesetzt sein!</p>
+          <p *ngIf="!categorySet()">{{ 'INCIDENT.ERROR_CATEGORY' | translate }}</p>
+          <p *ngIf="!locationCoordinatesSet()">{{ 'INCIDENT.ERROR_LOCATION' | translate }}</p>
         </div>
       </div>
     </mat-step>

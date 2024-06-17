@@ -27,6 +27,8 @@ rabbit:
       location: 'respond-resources-location-queue'
 
 spring:
+  main:
+    allow-circular-references: true
   rabbitmq:
     listener:
       simple:

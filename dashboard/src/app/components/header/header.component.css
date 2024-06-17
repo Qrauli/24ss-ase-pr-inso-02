@@ -2,4 +2,7 @@
     flex: 1 1 auto;
   }
 
-  
+.language-select{
+  margin-top: 20px;
+  width: 80px;
+}

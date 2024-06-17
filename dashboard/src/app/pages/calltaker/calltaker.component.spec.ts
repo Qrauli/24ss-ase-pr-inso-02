@@ -4,6 +4,7 @@ import { CalltakerComponent } from './calltaker.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {OAuthModule} from "angular-oauth2-oidc";
+import { TranslateModule } from '@ngx-translate/core';
 
 
 describe('CalltakerComponent', () => {
@@ -12,7 +13,7 @@ describe('CalltakerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CalltakerComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot()]
+      imports: [CalltakerComponent, NoopAnimationsModule, HttpClientTestingModule, OAuthModule.forRoot(), TranslateModule.forRoot()]
     })
     .compileComponents();
 

@@ -5,23 +5,23 @@
     </div>
     <div class="center-2">
       <mat-form-field class="form-field">
-        <mat-label>Ort</mat-label>
-        <input matInput placeholder="Wien, Österreich" formControlName="city"/>
+        <mat-label>{{ 'INCIDENT.CITY' | translate }}</mat-label>
+        <input matInput [placeholder]="'INCIDENT.CITY_PH' | translate" formControlName="city"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
-        <mat-label>Postleitzahl</mat-label>
+        <mat-label>{{ 'INCIDENT.POSTAL_CODE' | translate }}</mat-label>
         <input matInput placeholder="1010" formControlName="postalCode"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
-        <mat-label>Straße</mat-label>
-        <input matInput placeholder="Hauptstraße 1" formControlName="street"/>
+        <mat-label>{{ 'INCIDENT.STREET' | translate }}</mat-label>
+        <input matInput [placeholder]="'INCIDENT.STREET_PH' | translate" formControlName="street"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
-        <mat-label>Zusätzliche Informationen</mat-label>
-        <textarea matInput placeholder="Nebengebäude, Stockwerk, etc."
+        <mat-label>{{ 'INCIDENT.LOCATION_ADDITIONAL' | translate }}</mat-label>
+        <textarea matInput [placeholder]="'INCIDENT.LOCATION_ADDITIONAL_PH' | translate"
                   formControlName="additionalInformation"> </textarea>
       </mat-form-field>
       <div *ngIf="coordinates" style="color: gray; display: grid; grid-template-columns: auto auto; grid-template-rows: auto">
