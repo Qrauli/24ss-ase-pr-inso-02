@@ -2,21 +2,23 @@ package at.ase.respond.dispatcher.service.impl;
 
 import at.ase.respond.common.IncidentState;
 import at.ase.respond.common.ResourceState;
+import at.ase.respond.common.ResourceType;
 import at.ase.respond.common.dto.IncidentDTO;
 import at.ase.respond.common.event.IncidentStatusUpdatedEvent;
 import at.ase.respond.common.exception.NotFoundException;
-import at.ase.respond.common.exception.ValidationException;
-import at.ase.respond.dispatcher.persistence.ResourceRepository;
+import at.ase.respond.dispatcher.persistence.repository.ResourceRepository;
 import at.ase.respond.dispatcher.persistence.model.Incident;
-import at.ase.respond.dispatcher.persistence.vo.LocationCoordinatesVO;
 import at.ase.respond.dispatcher.persistence.model.Resource;
 import at.ase.respond.dispatcher.presentation.mapper.IncidentMapper;
 import at.ase.respond.dispatcher.service.IncidentService;
 import at.ase.respond.dispatcher.service.MessageSender;
 import at.ase.respond.dispatcher.service.ResourceService;
+import at.ase.respond.dispatcher.service.ResponseRegulationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -25,11 +27,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl implements ResourceService {
+
+    private final ResponseRegulationService responseRegulationService;
 
     private final ResourceRepository resourceRepository;
 
@@ -46,7 +51,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    @Retryable(value = OptimisticLockingFailureException.class, maxAttempts = 5, backoff = @Backoff(delay = 100, multiplier = 2))
+    @Retryable(retryFor = OptimisticLockingFailureException.class, maxAttempts = 5, backoff = @Backoff(delay = 100, multiplier = 2))
     public Resource assignToIncident(String resourceId, UUID incidentId) {
         Incident incident = incidentService.findById(incidentId);
         Resource resource = this.findById(resourceId);
@@ -74,7 +79,7 @@ public class ResourceServiceImpl implements ResourceService {
 
     @Override
     @Transactional
-    public Resource updateLocation(String resourceId, LocationCoordinatesVO location) throws NotFoundException {
+    public Resource updateLocation(String resourceId, GeoJsonPoint location) throws NotFoundException {
         Resource resource = this.findById(resourceId);
         resource.setLocationCoordinates(location);
         resourceRepository.save(resource);
@@ -106,6 +111,20 @@ public class ResourceServiceImpl implements ResourceService {
     public Resource findById(String resourceId) {
         return resourceRepository.findById(resourceId)
                 .orElseThrow(() -> new NotFoundException("Resource with id " + resourceId + " not found"));
+    }
+
+    @Override
+    @Transactional
+    public List<GeoResult<Resource>> getRecommendedResources(UUID id) throws NotFoundException {
+        //Incident incident = incidentService.findById(id);
+        GeoJsonPoint incidentLocation = new GeoJsonPoint(0, 0); //incident.getLocation().getCoordinates();
+
+        // Get the required resource types (possibly more than one)
+        List<ResourceType> resourceTypes = responseRegulationService.getRecommendedResourceTypes("01A01"); //incident.getCode());
+
+        return resourceTypes.stream()
+                .flatMap(resourceType -> resourceRepository.findRecommendedResources(incidentLocation, resourceType).stream())
+                .collect(Collectors.toList());
     }
 
 }

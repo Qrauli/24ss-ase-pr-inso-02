@@ -10,6 +10,7 @@ public interface IncidentService {
 
     /**
      * Returns a list of all incidents.
+     *
      * @param running if true, only non-completed incidents are returned
      * @return a list of all incidents
      */
@@ -34,7 +35,8 @@ public interface IncidentService {
 
     /**
      * Unassigns the specified resource from the incident with the specified id.
-     * @param id the id of the incident
+     *
+     * @param id         the id of the incident
      * @param resourceId the id of the resource to unassign
      */
     void unassignResource(UUID id, String resourceId);

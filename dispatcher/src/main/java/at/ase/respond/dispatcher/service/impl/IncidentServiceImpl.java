@@ -1,7 +1,7 @@
 package at.ase.respond.dispatcher.service.impl;
 
 import at.ase.respond.common.exception.NotFoundException;
-import at.ase.respond.dispatcher.persistence.IncidentRepository;
+import at.ase.respond.dispatcher.persistence.repository.IncidentRepository;
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.common.IncidentState;
 import at.ase.respond.dispatcher.service.IncidentService;
@@ -23,7 +23,6 @@ public class IncidentServiceImpl implements IncidentService {
     public List<Incident> findAll(boolean running) {
         return running ? repository.findByStateNot(IncidentState.COMPLETED) : repository.findAll();
     }
-
 
     @Override
     public Incident findById(UUID id) {

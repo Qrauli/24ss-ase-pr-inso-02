@@ -1,4 +1,4 @@
-package at.ase.respond.dispatcher.persistence;
+package at.ase.respond.dispatcher.persistence.repository;
 
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.common.IncidentState;
@@ -13,8 +13,9 @@ import java.util.UUID;
 public interface IncidentRepository extends MongoRepository<Incident, UUID> {
 
     /**
-     * find all incidents which are not in the specified state
-     * @param state the state of the incidents to exclude
+     * Finds all incidents which are not in the specified state.
+     *
+     * @param state the state of the incidents to be excluded
      * @return a list of all incidents which are not in the specified state
      */
     List<Incident> findByStateNot(IncidentState state);

@@ -8,11 +8,7 @@ import at.ase.respond.common.event.ResourceStatusUpdatedEvent;
 import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.dispatcher.persistence.model.Resource;
-import at.ase.respond.dispatcher.persistence.vo.LocationCoordinatesVO;
-import at.ase.respond.dispatcher.persistence.IncidentRepository;
-import at.ase.respond.dispatcher.persistence.ResourceRequestRepository;
 import at.ase.respond.dispatcher.persistence.model.ResourceRequest;
-import at.ase.respond.dispatcher.presentation.mapper.ResourceRequestMapper;
 import at.ase.respond.common.event.AdditionalResourcesRequestedEvent;
 
 import at.ase.respond.dispatcher.presentation.mapper.LocationCoordinatesMapper;
@@ -27,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -53,6 +50,7 @@ public class MessageReceiverImpl implements MessageReceiver {
     @RabbitListener(queues = "${rabbit.queues.incidents}")
     public void receive(Channel channel, Message message, IncidentCreatedOrUpdatedEvent payload) throws IOException {
         log.debug("Received incident payload {}", payload);
+
         IncidentState state;
         try {
             // Check if incident already exists, if so, keep its state
@@ -79,7 +77,8 @@ public class MessageReceiverImpl implements MessageReceiver {
     @Override
     @RabbitListener(queues = "${rabbit.queues.requests}")
     public void receive(Channel channel, Message message, AdditionalResourcesRequestedEvent payload) throws IOException {
-        log.debug("Received incident payload {}", payload);
+        log.debug("Received additional request payload {}", payload);
+
         Resource resource = resourceService.findById(payload.resourceId());
         if (resource == null) {
             log.error("Resource with id {} not found", payload.resourceId());
@@ -104,7 +103,7 @@ public class MessageReceiverImpl implements MessageReceiver {
         log.debug("Received resource location update payload {}", payload);
 
         try {
-            LocationCoordinatesVO location = locationCoordinatesMapper.toVO(payload.locationCoordinates());
+            GeoJsonPoint location = locationCoordinatesMapper.toGeoJsonPoint(payload.locationCoordinates());
             resourceService.updateLocation(payload.resourceId(), location);
         } catch (NotFoundException e) {
             log.error("Failed to update resource location for id {}: Resource not found", payload.resourceId());
