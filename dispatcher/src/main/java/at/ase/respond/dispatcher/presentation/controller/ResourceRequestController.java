@@ -1,13 +1,11 @@
 package at.ase.respond.dispatcher.presentation.controller;
 
 import at.ase.respond.dispatcher.presentation.mapper.ResourceRequestMapper;
-import at.ase.respond.common.dto.IncidentDTO;
 import at.ase.respond.common.dto.ResourceRequestDTO;
 import at.ase.respond.dispatcher.service.ResourceRequestService;
-import at.ase.respond.dispatcher.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +24,23 @@ public class ResourceRequestController {
     private final ResourceRequestMapper resourceRequestMapper;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "List of requests returned successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     @Operation(summary = "Returns a list of all requests")
     public ResponseEntity<List<ResourceRequestDTO>> findAll(
-            @RequestParam(value = "open", required = false, defaultValue = "true") boolean additional) {
-        return ResponseEntity.ok(service.findAll(additional).stream().map(resourceRequestMapper::toDTO).toList());
+            @RequestParam(value = "open", required = false, defaultValue = "true") boolean open
+    ) {
+        return ResponseEntity.ok(service.findAll(open).stream().map(resourceRequestMapper::toDTO).toList());
     }
 
     @PutMapping(value = "/{id}/state", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Request state updated successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Request not found")
+    })
     @Operation(summary = "Finish resource request")
     @CrossOrigin
     public ResponseEntity<ResourceRequestDTO> finishRequest(@PathVariable UUID id) {
