@@ -2,6 +2,8 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.2.5"
 	id("io.spring.dependency-management") version "1.1.4"
+	id("org.barfuin.gradle.jacocolog") version "3.1.0"
+	id("jacoco")
 }
 
 group = "at.ase.respond"
@@ -79,4 +81,16 @@ tasks.bootJar {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.12" // Use the latest version of JaCoCo
+}
+
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test) // tests are required to run before generating the report
 }
