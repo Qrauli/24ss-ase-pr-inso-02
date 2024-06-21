@@ -5,6 +5,11 @@ import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/
 import {OAuthModule} from "angular-oauth2-oidc";
 import { TranslateModule } from '@ngx-translate/core';
 
+export class MatDialogRefMock {
+  close(value = '') {
+
+  }
+}
 
 describe('ConfirmDialogComponent', () => {
   let component: ConfirmDialogComponent;
@@ -14,7 +19,7 @@ describe('ConfirmDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ConfirmDialogComponent, MatDialogModule, TranslateModule.forRoot()],
       providers: [
-        {provide: MatDialogRef, useValue: {}},
+        {provide: MatDialogRef, useClass: MatDialogRefMock},
         {provide: MAT_DIALOG_DATA, useValue: []},
     ]
     })
@@ -27,5 +32,23 @@ describe('ConfirmDialogComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should run #constructor()', async () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should run #onConfirm()', async () => {
+    component.dialogRef = component.dialogRef || {};
+    spyOn<any>(component.dialogRef, 'close');
+    component.onConfirm();
+    expect(component.dialogRef.close).toHaveBeenCalled();
+  });
+
+  it('should run #onDismiss()', async () => {
+    component.dialogRef = component.dialogRef || {};
+    spyOn<any>(component.dialogRef, 'close');
+    component.onDismiss();
+    expect(component.dialogRef.close).toHaveBeenCalled();
   });
 });
