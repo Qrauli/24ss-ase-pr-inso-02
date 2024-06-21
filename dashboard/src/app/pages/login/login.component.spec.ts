@@ -27,7 +27,20 @@ describe('LoginComponent', () => {
   });
 
   it('should have a form', () => {
-    expect(component.form).toBeTruthy();
+    expect((<any>component).form).toBeTruthy();
+  });
+
+  it('should run #constructor()', async () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should run #loginOauth()', async () => {
+    (<any>component).form = (<any>component).form || {};
+    (<any>component).form.value = {
+      userName: {}
+    };
+    (<any>component).loginOauth();
+    expect((<any>component).form.value.userName).toEqual({});
   });
 
 

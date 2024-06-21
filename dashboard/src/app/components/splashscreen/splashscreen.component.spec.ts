@@ -22,4 +22,15 @@ describe('SplashscreenComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should run #constructor()', async () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should run #triggerLogin()', async () => {
+    component.authService = component.authService || {};
+    spyOn(component.authService, 'triggerLogin');
+    component.triggerLogin();
+    expect(component.authService.triggerLogin).toHaveBeenCalled();
+  });
 });
