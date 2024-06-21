@@ -29,7 +29,9 @@ publish-common-lib:
   image: gradle:8.7-jdk21
   script:
     - cd common
+    - gradle check
     - gradle publish
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -55,11 +57,14 @@ test-incident-service:
     when: always
     reports:
       junit: incident/build/test-results/test/**/TEST-*.xml
+    paths:
+      - incident/build/reports
   before_script:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd incident
     - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -70,11 +75,14 @@ test-categorization-service:
     when: always
     reports:
       junit: categorization/build/test-results/test/**/TEST-*.xml
+    paths:
+      - categorization/build/reports
   before_script:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd categorization
     - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
@@ -85,11 +93,14 @@ test-dispatcher-service:
     when: always
     reports:
       junit: dispatcher/build/test-results/test/**/TEST-*.xml
+    paths:
+      - dispatcher/build/reports
   before_script:
     - mkdir -p $GRADLE_USER_HOME
   script:
     - cd dispatcher
     - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
   variables:
     GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
 
