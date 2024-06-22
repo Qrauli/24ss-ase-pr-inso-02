@@ -138,56 +138,56 @@ test-dashboard:
       --label "org.opencontainers.image.ref.name=${CI_COMMIT_REF_NAME}"
       --destination "${CI_REGISTRY_IMAGE}/${SUBPROJECT}:${IMAGE_TAG}"
 
-build-incident-service-main:
+.build-incident-service-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
     SUBPROJECT: incident
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-categorization-service-main:
+.build-categorization-service-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
     SUBPROJECT: categorization
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-dispatcher-service-main:
+.build-dispatcher-service-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
     SUBPROJECT: dispatcher
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-dashboard-main:
+.build-dashboard-main:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-main, rules]
   variables:
     SUBPROJECT: dashboard
     IMAGE_TAG: ${CI_PIPELINE_ID}
 
-build-incident-service-dev:
+.build-incident-service-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
     SUBPROJECT: incident
     IMAGE_TAG: latest
 
-build-categorization-service-dev:
+.build-categorization-service-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
     SUBPROJECT: categorization
     IMAGE_TAG: latest
 
-build-dispatcher-service-dev:
+.build-dispatcher-service-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
     SUBPROJECT: dispatcher
     IMAGE_TAG: latest
 
-build-dashboard-dev:
+.build-dashboard-dev:
   extends: .build-template-kaniko
   rules: !reference [.build-rules-dev, rules]
   variables:
