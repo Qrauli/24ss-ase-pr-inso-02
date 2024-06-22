@@ -28,12 +28,14 @@ export class SplashscreenComponent {
     private router: Router
   ) {
     this.authService.loginOauth();
-    this.authService.hasRole('dispatcher').then(r => {
-      if (r) this.router.navigate(['/dispatcher'])
-    });
-    this.authService.hasRole('calltaker').then(r => {
-      if (r) this.router.navigate(['/calltaker'])
-    });
+    setTimeout(() => {
+      this.authService.hasRole('dispatcher').then(r => {
+        if (r) this.router.navigate(['/dispatcher']);
+      });
+      this.authService.hasRole('calltaker').then(r => {
+        if (r) this.router.navigate(['/calltaker']);
+      });
+    }, 50);
   }
 
   /**
