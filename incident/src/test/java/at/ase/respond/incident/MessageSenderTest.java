@@ -1,4 +1,4 @@
-package at.ase.respond.incident.service.impl;
+package at.ase.respond.incident;
 
 import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.service.impl.MessageSenderImpl;
@@ -16,7 +16,6 @@ import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 

@@ -93,4 +93,14 @@ tasks.test {
 
 tasks.jacocoTestReport {
 	dependsOn(tasks.test) // tests are required to run before generating the report
+
+	classDirectories.setFrom(files(classDirectories.files.map {
+		fileTree(it).apply {
+			exclude(
+				"at/ase/respond/incident/persistence/model/*.class",
+				"at/ase/respond/incident/presentation/dto/*.class",
+				"at/ase/respond/incident/exception/*.class"
+			)
+		}
+	}))
 }
