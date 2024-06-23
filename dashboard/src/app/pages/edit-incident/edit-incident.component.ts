@@ -119,7 +119,7 @@ export class EditIncidentComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          this.translate.instant('INCIDENT.EDIT_FETCH_ERROR') + ': \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.EDIT_FETCH_ERROR') + ': ' + err.message,
           'OK',
           7000
         );
@@ -227,7 +227,7 @@ export class EditIncidentComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          this.translate.instant('INCIDENT.EDIT_ERROR') + ': \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.EDIT_ERROR') + ': ' + err.message,
           'OK',
           7000
         );

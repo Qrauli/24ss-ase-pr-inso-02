@@ -66,7 +66,7 @@
         "HURT_PERSON": "eine verletzte Person",
         "HURT_PERSONS": " verletzte Personen",
         "SUCCESS_INCIDENT_CREATION": "Einsatz erfolgreich erstellt!",
-        "ERROR_INCIDENT_CREATION": "Es ist Fehler beim Erstellen des Einsatzes aufgetreten:",
+        "ERROR_INCIDENT_CREATION": "Es ist Fehler beim Erstellen des Einsatzes aufgetreten",
         "POSTAL_CODE": "PLZ",
         "STREET": "Straße",
         "STREET_PH": "Hauptstraße 1",

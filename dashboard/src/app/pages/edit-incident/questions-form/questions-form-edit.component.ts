@@ -80,7 +80,7 @@ export class QuestionsFormEditComponent {
         },
         error: (err) => {
           this.notificationService.showErrorNotification(
-            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': \n\n' + JSON.stringify(err, null, 2),
+            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': ' + err.message,
             'OK',
             7000
           );
@@ -96,7 +96,7 @@ export class QuestionsFormEditComponent {
         },
         error: (err) => {
           this.notificationService.showErrorNotification(
-            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': \n\n' + JSON.stringify(err, null, 2),
+            this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_SESSION') + ': ' + err.message,
             'OK',
             7000
           );
@@ -180,7 +180,7 @@ export class QuestionsFormEditComponent {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_COMMUNICATION') + ': \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.QUESTIONAIRE.ERROR_COMMUNICATION') + ': ' + err.message,
           'OK',
           7000
         );

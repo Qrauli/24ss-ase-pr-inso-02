@@ -64,7 +64,7 @@
         "HURT_PERSON": "one injured person",
         "HURT_PERSONS": " injured persons",
         "SUCCESS_INCIDENT_CREATION": "Incident created successfully!",
-        "ERROR_INCIDENT_CREATION": "An error occurred while creating the incident:",
+        "ERROR_INCIDENT_CREATION": "An error occurred while creating the incident",
         "POSTAL_CODE": "Postal Code",
         "STREET": "Street",
         "STREET_PH": "Hauptstraße 1",
