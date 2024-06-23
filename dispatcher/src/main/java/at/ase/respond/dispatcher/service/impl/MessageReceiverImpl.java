@@ -51,23 +51,21 @@ public class MessageReceiverImpl implements MessageReceiver {
     public void receive(Channel channel, Message message, IncidentCreatedOrUpdatedEvent payload) throws IOException {
         log.debug("Received incident payload {}", payload);
 
-        IncidentState state;
+        Incident incident;
         try {
             // Check if incident already exists, if so, keep its state
-            state = incidentService.findById(payload.id()).getState();
+            incident = incidentService.findById(payload.id());
         } catch (NotFoundException e) {
             // Incident does not exist yet, so it is in READY state
-            state = IncidentState.READY;
+            incident = new Incident();
+            incident.setId(payload.id());
+            incident.setState(IncidentState.READY);
         }
 
-        Incident incident = Incident.builder()
-                .id(payload.id())
-                .code(payload.code())
-                .state(state)
-                .patients(payload.patients().stream().map(patientMapper::toVO).toList())
-                .numberOfPatients(payload.numberOfPatients())
-                .location(locationMapper.toVO(payload.location()))
-                .build();
+        incident.setCode(payload.code());
+        incident.setPatients(payload.patients().stream().map(patientMapper::toVO).toList());
+        incident.setNumberOfPatients(payload.numberOfPatients());
+        incident.setLocation(locationMapper.toVO(payload.location()));
 
         incidentService.save(incident);
 

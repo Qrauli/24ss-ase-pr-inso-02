@@ -154,7 +154,7 @@ public class CategorizationServiceImpl implements CategorizationService {
             QuestionBundle beforeQuestionBundle = categorization.getQuestionBundleByTypeAndId(question.getQuestionType(), question.getId(), null);
 
             if (beforeQuestionBundle == null) {
-                log.error("Question bundle not found for base questionId: {}", answer.getQuestionId());
+                log.error("Question bundle not found for base questionId: {}, protocolId: {}", answer.getQuestionId(), answer.getProtocolId());
                 throw new NotFoundException("Question bundle not found for questionId: " + answer.getQuestionId() + ", protocolId: " + answer.getProtocolId());
             }
 
@@ -169,8 +169,8 @@ public class CategorizationServiceImpl implements CategorizationService {
         }
 
         if (nextQuestion == null) {
-            log.error("Next base question not found for question ID: {}", question.getNextBaseQuestionId());
-            throw new NotFoundException("Next base question not found for question ID: " + question.getNextBaseQuestionId());
+            log.error("Next base question not found for questionId: {}", question.getNextBaseQuestionId());
+            throw new NotFoundException("Next base question not found for questionId: " + question.getNextBaseQuestionId());
         }
 
         boolean isNextQuestionAlreadyInList = updatedCategorization.containsQuestionBundleByTypeAndId(nextQuestion.getQuestionType(), nextQuestion.getId(), null);

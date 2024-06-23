@@ -16,7 +16,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class QuestionnaireController {
+public class CategorizationController {
 
     private final CategorizationService service;
 

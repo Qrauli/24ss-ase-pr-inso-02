@@ -1,7 +1,7 @@
 custom:
   questionschema:
     path: "/data/question_schema.json"
-    protocolSelectorQuestionId: 6
+    protocolSelectorQuestionId: 2
 
 spring:
   security:
