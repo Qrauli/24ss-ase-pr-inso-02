@@ -22,6 +22,7 @@ public interface IncidentMapper {
     IncidentDTO toDTO(Incident incident);
 
     default Incident toEntity(IncidentDTO incident) {
+        if (incident == null) return null;
         return Incident.builder()
             .id(incident.id())
             .code(incident.code())

@@ -5,6 +5,8 @@ import at.ase.respond.incident.presentation.mapper.IncidentMapper;
 import at.ase.respond.incident.service.IncidentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -34,15 +36,20 @@ public class IncidentController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Returns a list of incidents", security = @SecurityRequirement(name = "bearer"))
-    public ResponseEntity<List<IncidentDTO>> findIncidents(@RequestParam(required = false) UUID[] ids) {
-        if (ids == null) {
-            return ResponseEntity.ok(service.findAllIncidents().stream().map(incidentMapper::toDTO).toList());
-        }
-        return ResponseEntity.ok(service.findIncidents(ids).stream().map(incidentMapper::toDTO).toList());
+    public ResponseEntity<List<IncidentDTO>> findIncidents() {
+        return ResponseEntity.ok(service.findAllIncidents().stream().map(incidentMapper::toDTO).toList());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "Returns an incident by id", security = @SecurityRequirement(name = "bearer"))
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Incident returned successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "404", description = "Incident not found")
+    })
+    @Operation(
+            summary = "Returns an incident by id",
+            security = @SecurityRequirement(name = "bearer")
+    )
     public ResponseEntity<IncidentDTO> findById(@PathVariable UUID id) {
         return ResponseEntity.ok(incidentMapper.toDTO(service.findById(id)));
     }
