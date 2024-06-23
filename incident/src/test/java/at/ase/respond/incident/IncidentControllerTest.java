@@ -3,7 +3,6 @@ package at.ase.respond.incident;
 import at.ase.respond.common.IncidentState;
 import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.incident.persistence.model.Location;
-import at.ase.respond.incident.persistence.model.Patient;
 import at.ase.respond.incident.persistence.model.State;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -23,7 +22,6 @@ import at.ase.respond.incident.presentation.controller.IncidentController;
 import at.ase.respond.incident.presentation.mapper.IncidentMapper;
 import at.ase.respond.incident.service.IncidentService;
 import at.ase.respond.common.dto.LocationDTO;
-import at.ase.respond.common.dto.PatientDTO;
 import at.ase.respond.common.dto.LocationAddressDTO;
 import at.ase.respond.common.dto.LocationCoordinatesDTO;
 
@@ -199,8 +197,9 @@ public class IncidentControllerTest {
                         new LocationAddress("","","","")
 
                 ),
-                new ArrayList<Patient>(),
+                new ArrayList<>(),
                 0,
+                "",
                 UUID.randomUUID(),
                 State.READY,
                 "Test"
@@ -214,7 +213,8 @@ public class IncidentControllerTest {
     private IncidentDTO createDummyIncidentDTO(UUID id) {
         return new IncidentDTO(
                 id,
-                new ArrayList<PatientDTO>(),
+                "",
+                new ArrayList<>(),
                 0,
                 "Test",
                 new LocationDTO(

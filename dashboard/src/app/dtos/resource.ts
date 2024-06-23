@@ -1,9 +1,11 @@
 import {LocationCoordinates} from "./locationCoordinates";
 
 export enum ResourceType {
-  NEF = "NEF",
-  RTW = "RTW",
   KTW = "KTW",
+  RTW = "RTW",
+  FISU = "FISU",
+  NEF = "NEF",
+  NAH = "NAH",
 }
 
 export enum ResourceState {

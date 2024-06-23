@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "at.ase.respond"
-version = "0.0.1"
+version = "0.0.1-SNAPSHOT-76"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21

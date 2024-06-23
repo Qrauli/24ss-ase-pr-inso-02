@@ -37,7 +37,7 @@
       <div *ngIf="incidents?.length == 0">
         <div class="no-data">{{ 'DISPATCHER.NO_INCIDENTS' | translate }}</div>
       </div>
-      
+
     </div>
     <div class="center-heading heading-coloring">
       <p style="color: white">{{ 'DISPATCHER.SELECTED_INCIDENT' | translate }}</p>
@@ -87,8 +87,7 @@
       <mat-grid-list cols="6" rowHeight="50px">
         <mat-grid-tile colspan="6" class="incident-property"
           style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.CALLEE' | translate }}</i></mat-grid-tile>
-        <mat-grid-tile colspan="3" class="key-normal">Max Mustermann</mat-grid-tile>
-        <mat-grid-tile colspan="3" class="key-normal">+43 000 00000000</mat-grid-tile>
+        <mat-grid-tile colspan="6" class="key-normal">{{selectedIncidentData?.callerNumber}}</mat-grid-tile>
         <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.AFFECTED' | translate }}
             ({{selectedIncidentData?.numberOfPatients}})</i> </mat-grid-tile>
         <ng-container *ngFor="let patient of selectedIncidentData?.patients">
@@ -182,7 +181,7 @@
           </div>
         </div>
 
-     
+
 
   </div>
   <div class="section-3">

@@ -76,7 +76,7 @@ public class IncidentMapperTest {
         LocationAddressDTO addressDTO = new LocationAddressDTO("Street", "12345", "City", "Info");
         LocationDTO locationDTO = new LocationDTO(addressDTO, coordinatesDTO);
         PatientDTO patientDTO = new PatientDTO(30, Sex.MALE);
-        IncidentDTO dto = new IncidentDTO(UUID.randomUUID(), List.of(patientDTO), 1, "INC123", locationDTO, UUID.randomUUID(), "READY");
+        IncidentDTO dto = new IncidentDTO(UUID.randomUUID(), "0000 123 456 78", List.of(patientDTO), 1, "INC123", locationDTO, UUID.randomUUID(), "READY");
 
         Incident entity = mapper.toEntity(dto);
 

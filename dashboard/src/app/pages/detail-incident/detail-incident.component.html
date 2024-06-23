@@ -26,10 +26,9 @@
 
 <mat-grid-list cols="6" rowHeight="50px" style="width: 50%">
   <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.CALLEE' | translate }}</i></mat-grid-tile>
-  <mat-grid-tile colspan="3" class="key-normal">Max Mustermann</mat-grid-tile>
-  <mat-grid-tile colspan="3" class="property">+43 000 00000000</mat-grid-tile>
+  <mat-grid-tile colspan="6" class="property">{{incident?.callerNumber}}</mat-grid-tile>
   <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.AFFECTED' | translate }}</i></mat-grid-tile>
-  <ng-container *ngFor="let patient of incident?.patients"> 
+  <ng-container *ngFor="let patient of incident?.patients">
     <mat-grid-tile colspan="3" class="key-normal">{{patient.sex}}</mat-grid-tile>
     <mat-grid-tile colspan="3" class="property">{{patient.age}}</mat-grid-tile>
   </ng-container>

@@ -40,6 +40,8 @@ public class Incident {
 
     private Integer numberOfPatients;
 
+    private String callerNumber;
+
     private UUID questionaryId;
 
     private State state;

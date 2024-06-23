@@ -47,6 +47,7 @@ function mockIncidents(entries: number) {
           longitude: 16.40545336304577
         }
       },
+      callerNumber: "0664 123 456 78",
       state: incidents.length % 2 == 0 ? State.READY : State.DISPATCHED
     };
     incidents.push(incident);

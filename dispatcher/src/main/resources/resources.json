@@ -1,5 +1,14 @@
 [
   {
+    "id": "MHD-1",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.214214684870235,
+      "longitude": 16.36760367505924
+    }
+  },
+  {
     "id": "JOK-2",
     "type": "KTW",
     "state": "AVAILABLE",
@@ -9,7 +18,169 @@
     }
   },
   {
-    "id": "JOH-1",
+    "id": "JOK-3",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.231713048991594,
+      "longitude": 16.32329045919734
+    }
+  },
+  {
+    "id": "JOK-4",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.24906281286434,
+      "longitude": 16.38837721222017
+    }
+  },
+  {
+    "id": "JOK-7",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.2053872541136,
+      "longitude": 16.32486697316216
+    }
+  },
+  {
+    "id": "RKK-1",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.267206308653186,
+      "longitude": 16.40200018354911
+    }
+  },
+  {
+    "id": "RKK-4",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.18738037001996,
+      "longitude": 16.40162053395267
+    }
+  },
+  {
+    "id": "ABK-8",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.265715326433636,
+      "longitude": 16.457573815729877
+    }
+  },
+  {
+    "id": "ABK-9",
+    "type": "KTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.14229370277286,
+      "longitude": 16.385319857563104
+    }
+  },
+  {
+    "id": "ZTR-2",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.211393204183665,
+      "longitude": 16.386821678911726
+    }
+  },
+  {
+    "id": "RKL-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.19047692590588,
+      "longitude": 16.411490306587712
+    }
+  },
+  {
+    "id": "MHF-5",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.192907370321116,
+      "longitude": 16.339196685546202
+    }
+  },
+  {
+    "id": "FAV-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.16386500701314,
+      "longitude": 16.374660368763468
+    }
+  },
+  {
+    "id": "FAV-2",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.18433171185906,
+      "longitude": 16.373534956800253
+    }
+  },
+  {
+    "id": "SIM-2",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.165463400583846,
+      "longitude": 16.43280629964875
+    }
+  },
+  {
+    "id": "RKP-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.20076694915105,
+      "longitude": 16.308636258272237
+    }
+  },
+  {
+    "id": "HER-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.22439423022282,
+      "longitude": 16.319216539930608
+    }
+  },
+  {
+    "id": "BRI-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.231082688671385,
+      "longitude": 16.36375172051967
+    }
+  },
+  {
+    "id": "LEO-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.26438791395429,
+      "longitude": 16.429952995754427
+    }
+  },
+  {
+    "id": "FLO-3",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.268730691759416,
+      "longitude": 16.405285158361707
+    }
+  },
+  {
+    "id": "JOH-F",
     "type": "RTW",
     "state": "AVAILABLE",
     "locationCoordinates": {
@@ -18,12 +189,93 @@
     }
   },
   {
-    "id": "ZTR-1",
+    "id": "JOH-H",
     "type": "RTW",
     "state": "AVAILABLE",
     "locationCoordinates": {
-      "latitude": 48.211393204183665,
-      "longitude": 16.386821678911726
+      "latitude": 48.22577220231236,
+      "longitude": 16.309395078987965
+    }
+  },
+  {
+    "id": "ABD-8",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.23652112854623,
+      "longitude": 16.407513989656273
+    }
+  },
+  {
+    "id": "ASP-1",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.21815454390473,
+      "longitude": 16.48673356108259
+    }
+  },
+  {
+    "id": "SMD-2",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.17147009475162,
+      "longitude": 16.332521529088147
+    }
+  },
+  {
+    "id": "SMD-5",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.139534375649795,
+      "longitude": 16.28706526325776
+    }
+  },
+  {
+    "id": "SMD-7",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.137172938422935,
+      "longitude": 16.25220682421719
+    }
+  },
+  {
+    "id": "GRK-3",
+    "type": "RTW",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.1354503255453,
+      "longitude": 16.298094206623475
+    }
+  },
+  {
+    "id": "MHF-FISU",
+    "type": "FISU",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.19891387816866,
+      "longitude": 16.330570378000036
+    }
+  },
+  {
+    "id": "SIM-FISU",
+    "type": "FISU",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.15366911180035,
+      "longitude": 16.445325128147974
+    }
+  },
+  {
+    "id": "FLO-FISU",
+    "type": "FISU",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.265538975305404,
+      "longitude": 16.457304798863568
     }
   },
   {
@@ -36,12 +288,57 @@
     }
   },
   {
+    "id": "AKH-NEF-2",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.19088248536682,
+      "longitude": 16.338025167077515
+    }
+  },
+  {
+    "id": "FLO-NEF-1",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.26641815399722,
+      "longitude": 16.40272275798457
+    }
+  },
+  {
+    "id": "HIE-NEF-1",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.16944062369126,
+      "longitude": 16.2786699417772
+    }
+  },
+  {
+    "id": "WIL-NEF-1",
+    "type": "NEF",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.21052434311133,
+      "longitude": 16.300815513424777
+    }
+  },
+  {
     "id": "DSP-NEF-1",
     "type": "NEF",
     "state": "AVAILABLE",
     "locationCoordinates": {
       "latitude": 48.21948318149794,
       "longitude": 16.464497497601503
+    }
+  },
+  {
+    "id": "CHR-9",
+    "type": "NAH",
+    "state": "AVAILABLE",
+    "locationCoordinates": {
+      "latitude": 48.18936453728574,
+      "longitude": 16.412807887775582
     }
   }
 ]

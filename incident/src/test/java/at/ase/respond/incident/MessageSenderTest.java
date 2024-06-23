@@ -3,7 +3,6 @@ package at.ase.respond.incident;
 import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.service.impl.MessageSenderImpl;
 import at.ase.respond.common.dto.LocationDTO;
-import at.ase.respond.common.dto.PatientDTO;
 import at.ase.respond.common.dto.LocationAddressDTO;
 import at.ase.respond.common.dto.LocationCoordinatesDTO;
 
@@ -39,15 +38,16 @@ public class MessageSenderTest {
     @Test
     public void testPublish() {
         IncidentCreatedOrUpdatedEvent event = new IncidentCreatedOrUpdatedEvent(
-            UUID.randomUUID(),
-            "test",
-            new LocationDTO(
-                new LocationAddressDTO("","","",""),
-                new LocationCoordinatesDTO(0d, 0d)
-            ),
-            new ArrayList<PatientDTO>(),
-            0,
-            ZonedDateTime.now()
+                UUID.randomUUID(),
+                "test",
+                "12345678910",
+                new LocationDTO(
+                        new LocationAddressDTO("", "", "", ""),
+                        new LocationCoordinatesDTO(0d, 0d)
+                ),
+                new ArrayList<>(),
+                0,
+                ZonedDateTime.now()
         );
 
         messageSender.publish(event);

@@ -52,3 +52,4 @@ spring:
             - RS256
           audiences:
             - 'at.ase.respond'
+          jwk-set-uri: 'http://localhost/assets/jwks.json'
