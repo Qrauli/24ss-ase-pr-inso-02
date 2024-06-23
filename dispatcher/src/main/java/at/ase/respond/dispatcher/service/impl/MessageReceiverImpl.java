@@ -66,6 +66,7 @@ public class MessageReceiverImpl implements MessageReceiver {
         incident.setPatients(payload.patients().stream().map(patientMapper::toVO).toList());
         incident.setNumberOfPatients(payload.numberOfPatients());
         incident.setLocation(locationMapper.toVO(payload.location()));
+        incident.setCallerNumber(payload.callerNumber());
 
         incidentService.save(incident);
 

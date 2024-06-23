@@ -52,7 +52,6 @@ export class PersonsFormComponent {
   form = this.formBuilder.group({
     caller: this.formBuilder.group({
       number: [''],
-      name: [''],
     }),
     numberOfPatients: ['', Validators.pattern("^[0-9]{0,2}$")],
   })

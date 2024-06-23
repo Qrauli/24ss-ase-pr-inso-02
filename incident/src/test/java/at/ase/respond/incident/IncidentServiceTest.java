@@ -4,7 +4,6 @@ import at.ase.respond.common.IncidentState;
 import at.ase.respond.common.dto.LocationAddressDTO;
 import at.ase.respond.common.dto.LocationCoordinatesDTO;
 import at.ase.respond.common.dto.LocationDTO;
-import at.ase.respond.common.dto.PatientDTO;
 import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
 import at.ase.respond.incident.persistence.IncidentRepository;
 import at.ase.respond.incident.persistence.model.Incident;
@@ -55,7 +54,8 @@ class IncidentServiceTest {
         );
         incidentDTO = new IncidentDTO(
                 incidentId,
-                new ArrayList<PatientDTO>(),
+                "0000 123 456 78",
+                new ArrayList<>(),
                 0,
                 "Test",
                 locationDTO,
@@ -64,9 +64,10 @@ class IncidentServiceTest {
         );
         incidentEvent = new IncidentCreatedOrUpdatedEvent(
                 incidentId,
+                "0000 123 456 78",
                 "Test",
                 locationDTO,
-                new ArrayList<PatientDTO>(),
+                new ArrayList<>(),
                 0,
                 ZonedDateTime.now()
         );

@@ -80,7 +80,8 @@ export class AddIncidentComponent {
         coordinates: {latitude: 48.227747192035764, longitude: 16.40545336304577}
       },
       state: State.READY,
-      questionaryId: ''
+      questionaryId: '',
+      callerNumber: ''
     };
   }
 
@@ -105,8 +106,10 @@ export class AddIncidentComponent {
         break;
       }
       case this.personsFormLabel: {
+        const personFormValues = this.personFormComponent.form.value;
         const numberOfPatients = this.personFormComponent.patients.length;
 
+        this.incident.callerNumber = personFormValues.caller?.number!;
         this.incident.patients = this.personFormComponent.patients;
         this.incident.numberOfPatients = numberOfPatients;
 

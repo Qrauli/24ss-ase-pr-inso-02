@@ -85,6 +85,7 @@ class IncidentControllerTest {
         when(incidentMapper.toDTO(any())).thenReturn(new IncidentDTO(
                 UUID.fromString("00000000-0000-0000-0000-000000000000"),
                 "01A01",
+                "1234567890",
                 IncidentState.READY,
                 null,
                 List.of(),
@@ -98,7 +99,7 @@ class IncidentControllerTest {
                         .with(jwt().jwt(jwt -> jwt.claim("realm_access", Map.of("roles", List.of("dispatcher")))))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":\"00000000-0000-0000-0000-000000000000\",\"code\":\"01A01\",\"state\":\"READY\",\"location\":null,\"patients\":[],\"numberOfPatients\":1,\"assignedResources\":[],\"createdAt\":null,\"updatedAt\":null}"));
+                .andExpect(content().json("{\"id\":\"00000000-0000-0000-0000-000000000000\",\"callerNumber\":\"1234567890\",\"code\":\"01A01\",\"state\":\"READY\",\"location\":null,\"patients\":[],\"numberOfPatients\":1,\"assignedResources\":[],\"createdAt\":null,\"updatedAt\":null}"));
     }
 
     @Test

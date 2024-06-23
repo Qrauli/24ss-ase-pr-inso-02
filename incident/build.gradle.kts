@@ -65,7 +65,7 @@ dependencies {
 	annotationProcessor("org.mapstruct:mapstruct-processor:1.6.0.Beta1")
 
 	// Respond Common Lib
-	implementation("at.ase.respond:common-lib:0.0.1")
+	implementation("at.ase.respond:common-lib:0.0.1-SNAPSHOT-76")
 }
 
 buildscript {

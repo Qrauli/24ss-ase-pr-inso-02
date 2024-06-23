@@ -26,6 +26,7 @@ public interface IncidentMapper {
         return Incident.builder()
             .id(incident.id())
             .code(incident.code())
+            .callerNumber(incident.callerNumber())
             .state(State.valueOf(incident.state()))
             .questionaryId(incident.questionaryId())
             .location(toEntity(incident.location()))
@@ -38,6 +39,7 @@ public interface IncidentMapper {
         return new IncidentCreatedOrUpdatedEvent(
                 incident.getId(),
                 incident.getCode(),
+                incident.getCallerNumber(),
                 toEvent(incident.getLocation()),
                 toEvent(incident.getPatients()),
                 incident.getNumberOfPatients(),

@@ -49,7 +49,6 @@ public class IncidentServiceImpl implements IncidentService {
         save(incident);
     }
 
-
     @Override
     public Incident completeIncident(UUID id) {
         Incident completeIncident = findById(id);
@@ -65,8 +64,5 @@ public class IncidentServiceImpl implements IncidentService {
 
         return updatedIncident;
     }
-    
-
-
 
 }

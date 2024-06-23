@@ -30,6 +30,8 @@ public class Incident {
 
     private String code;
 
+    private String callerNumber;
+
     private IncidentState state;
 
     private LocationVO location;

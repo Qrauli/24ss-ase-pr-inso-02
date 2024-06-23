@@ -12,6 +12,7 @@ import java.util.UUID;
  *
  * @param id                the incident identifier
  * @param code              the operation code of the incident
+ * @param callerNumber      the phone number of the caller
  * @param state             the state of the incident
  * @param location          the location of the incident
  * @param patients          the involved patients of the incident
@@ -23,6 +24,7 @@ import java.util.UUID;
 public record IncidentDTO(
         UUID id,
         String code,
+        String callerNumber,
         IncidentState state,
         LocationDTO location,
         Collection<PatientDTO> patients,

@@ -16,6 +16,7 @@ export interface Incident {
   location: Location;
   state: State;
   questionaryId: string;
+  callerNumber: string;
 }
 
 // TODO define status

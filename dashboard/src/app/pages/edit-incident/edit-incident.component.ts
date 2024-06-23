@@ -84,7 +84,8 @@ export class EditIncidentComponent implements OnInit {
         coordinates: {latitude: 48.227747192035764, longitude: 16.40545336304577}
       },
       state: State.READY,
-      questionaryId: ''
+      questionaryId: '',
+      callerNumber: ''
     };
   }
 
@@ -108,7 +109,7 @@ export class EditIncidentComponent implements OnInit {
 
         this.locationFormComponent.coordinates = { latitude: this.incident.location.coordinates!.latitude, longitude: this.incident.location.coordinates!.longitude };
 
-        // TODO callee information
+        this.personFormComponent.form.patchValue({caller: {number: this.incident.callerNumber}});
         this.personFormComponent.form.patchValue({numberOfPatients: this.incident.numberOfPatients.toString()});
         this.personFormComponent.patients = this.incident.patients;
 

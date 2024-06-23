@@ -1,7 +1,7 @@
 package at.ase.respond.common;
 
 /**
- * Represents the type of a resource.
+ * Represents the type of one specific resource.
  */
 public enum ResourceType {
     /**
@@ -13,7 +13,15 @@ public enum ResourceType {
      */
     RTW,
     /**
+     * Indicates that the resource is a field supervisor.
+     */
+    FISU,
+    /**
      * Indicates that the resource is an emergency doctor's vehicle.
      */
     NEF,
+    /**
+     * Indicates that the resource is a helicopter.
+     */
+    NAH,
 }

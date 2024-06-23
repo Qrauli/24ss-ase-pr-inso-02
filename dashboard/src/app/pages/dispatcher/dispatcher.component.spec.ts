@@ -241,7 +241,7 @@ describe('DispatcherComponent', () => {
 
   it('should run #codeIsPriority()', async () => {
 
-    expect((<any>component).codeIsPriority("2")).toBeTrue();  
+    expect((<any>component).codeIsPriority("2")).toBeTrue();
 
   });
 
@@ -314,7 +314,8 @@ describe('DispatcherComponent', () => {
       numberOfPatients: 0,
       code: "",
       state: State.READY,
-      questionaryId: ''
+      questionaryId: '',
+      callerNumber: ''
     });
     expect((<any>component).incidentService.getRecommendations).toHaveBeenCalled();
     expect(component.resources.sort).toHaveBeenCalled();
@@ -424,8 +425,8 @@ describe('DispatcherComponent', () => {
     ];
     expect((<any>component).incidentFromId("")).not.toBeNull();
   });
-  
-  
+
+
   it('should run #zoomToLocation()', async () => {
     (<any>component).map = (<any>component).map || {};
     spyOn((<any>component).map, 'setView');
