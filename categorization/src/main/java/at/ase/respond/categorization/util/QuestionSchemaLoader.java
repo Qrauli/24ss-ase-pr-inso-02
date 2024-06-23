@@ -20,7 +20,13 @@ public class QuestionSchemaLoader {
     }
 
     private QuestionSchema loadQuestionSchema(String filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("File path must not be null");
+        }
         try (InputStream is = QuestionSchemaLoader.class.getResourceAsStream(filePath)) {
+            if (is == null) {
+                throw new IllegalArgumentException("File not found: " + filePath);
+            }
             ObjectMapper mapper = new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false)
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
