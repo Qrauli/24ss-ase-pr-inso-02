@@ -74,7 +74,7 @@ export class CalltakerComponent implements OnInit {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          this.translate.instant('CALLTAKER.ERROR_FETCH') + ': \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('CALLTAKER.ERROR_FETCH') + ': ' + err.message,
           'OK',
           7000
         );

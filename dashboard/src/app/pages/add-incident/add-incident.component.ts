@@ -186,7 +186,7 @@ export class AddIncidentComponent {
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
-          this.translate.instant('INCIDENT.ERROR_INCIDENT_CREATION') + ' \n\n' + JSON.stringify(err, null, 2),
+          this.translate.instant('INCIDENT.ERROR_INCIDENT_CREATION') + ': ' + err.message,
           'OK',
           7000
         );
