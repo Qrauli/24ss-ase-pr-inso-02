@@ -216,6 +216,7 @@ export class EditIncidentComponent implements OnInit {
 
     this.incidentService.updateIncident(this.incident).subscribe({
       next: (_value) => {
+        this.questionsFormComponent.readIncidentBaseInformation(this.incident); // update answer in CategorizationService
         this.router.navigate(['/calltaker']).then((navigated: boolean) => {
           if (navigated) {
             this.notificationService.showDefaultNotification(
