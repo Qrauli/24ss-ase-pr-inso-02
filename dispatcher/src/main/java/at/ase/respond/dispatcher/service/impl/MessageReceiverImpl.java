@@ -78,12 +78,15 @@ public class MessageReceiverImpl implements MessageReceiver {
     public void receive(Channel channel, Message message, AdditionalResourcesRequestedEvent payload) throws IOException {
         log.debug("Received additional request payload {}", payload);
 
-        Resource resource = resourceService.findById(payload.resourceId());
-        if (resource == null) {
+        Resource resource;
+        try {
+            resource = resourceService.findById(payload.resourceId());
+        } catch (NotFoundException e) {
             log.error("Resource with id {} not found", payload.resourceId());
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             return;
         }
+
         ResourceRequest resourceRequest = ResourceRequest.builder()
                 .id(UUID.randomUUID())
                 .assignedIncident(resource.getAssignedIncident())
