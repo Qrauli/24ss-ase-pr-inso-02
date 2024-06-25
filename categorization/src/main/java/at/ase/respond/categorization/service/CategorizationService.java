@@ -10,9 +10,10 @@ public interface CategorizationService {
     /**
      * Creates a new categorization session.
      *
+     * @param name the name of the user who creates the session
      * @return the created categorization object with the sessionId and the first question.
      */
-    CategorizationDTO createSession();
+    CategorizationDTO createSession(String name);
 
 
     /**

@@ -76,4 +76,15 @@ tasks.test {
 
 tasks.jacocoTestReport {
 	dependsOn(tasks.test) // tests are required to run before generating the report
+
+	classDirectories.setFrom(files(classDirectories.files.map {
+		fileTree(it).apply {
+			exclude(
+				"at/ase/respond/categorization/persistence/**/*.class",
+				"at/ase/respond/categorization/presentation/dto/**/*.class",
+				"at/ase/respond/categorization/presentation/mapper/*.class",
+				"at/ase/respond/categorization/util/*.class"
+			)
+		}
+	}))
 }

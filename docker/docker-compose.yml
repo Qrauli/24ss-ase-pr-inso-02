@@ -68,6 +68,7 @@ services:
       - 'SPRING_DATA_MONGODB_DATABASE=db'
       - 'SPRING_DATA_MONGODB_HOST=mongo'
       - 'SPRING_DATA_MONGODB_PORT=27017'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
       - 'LOG_KEY_PATH=/run/secrets/private-key.pem'
       - 'PUBLIC_KEY_PATH=/run/secrets/public-key.pem'
       - 'SERVICE_NAME=Categorization'
