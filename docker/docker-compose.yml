@@ -173,7 +173,7 @@ services:
     volumes:
       - loki_data:/loki
       - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
-    command: -config.file=/etc/loki/loki-config.ya  ml
+    command: -config.file=/etc/loki/loki-config.yaml
   promtail-dispatcher:
     image: grafana/promtail:latest
     volumes:
