@@ -63,7 +63,9 @@ public class OAuth2ResourceServerSecurityConfiguration {
             .requestMatchers(HttpMethod.PUT, "/incidents/**").hasRole("calltaker")
             // Swagger UI
             .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
-            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll())
+            .requestMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+            // Signature verification
+            .requestMatchers(HttpMethod.POST, "/signatures/**").hasAnyRole("calltaker", "dispatcher"))
             .oauth2ResourceServer(
                     (oauth2) -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(customJwtAuthenticationConverter())));
         return http.build();

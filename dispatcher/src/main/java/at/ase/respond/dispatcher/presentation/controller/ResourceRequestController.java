@@ -7,10 +7,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,8 +32,10 @@ public class ResourceRequestController {
     })
     @Operation(summary = "Returns a list of all requests")
     public ResponseEntity<List<ResourceRequestDTO>> findAll(
-            @RequestParam(value = "open", required = false, defaultValue = "true") boolean open
+            @RequestParam(value = "open", required = false, defaultValue = "true") boolean open,
+            Principal principal
     ) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(service.findAll(open).stream().map(resourceRequestMapper::toDTO).toList());
     }
 
@@ -43,7 +47,8 @@ public class ResourceRequestController {
     })
     @Operation(summary = "Finish resource request")
     @CrossOrigin
-    public ResponseEntity<ResourceRequestDTO> finishRequest(@PathVariable UUID id) {
+    public ResponseEntity<ResourceRequestDTO> finishRequest(@PathVariable UUID id, Principal principal) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(resourceRequestMapper.toDTO(service.finishRequest(id)));
     }
 

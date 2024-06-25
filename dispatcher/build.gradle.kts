@@ -45,6 +45,10 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("ch.qos.logback:logback-classic:1.5.6")
+	testImplementation("ch.qos.logback:logback-core:1.5.6")
+	implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+
 
 	// Lombok
 	compileOnly("org.projectlombok:lombok")
@@ -66,7 +70,7 @@ dependencies {
 	testImplementation("org.springframework.amqp:spring-rabbit-test")
 
 	// Respond Common Lib
-	implementation("at.ase.respond:common-lib:0.0.1-SNAPSHOT-76")
+	implementation("at.ase.respond:common-lib:0.1.0")
 }
 
 buildscript {

@@ -6,6 +6,7 @@ import at.ase.respond.common.ResourceType;
 import at.ase.respond.common.dto.IncidentDTO;
 import at.ase.respond.common.event.IncidentStatusUpdatedEvent;
 import at.ase.respond.common.exception.NotFoundException;
+import at.ase.respond.common.logging.SignedLogger;
 import at.ase.respond.dispatcher.persistence.repository.ResourceRepository;
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.dispatcher.persistence.model.Resource;
@@ -44,6 +45,8 @@ public class ResourceServiceImpl implements ResourceService {
 
     private final MessageSender messageSender;
 
+    private final SignedLogger signedLogger = new SignedLogger();
+
     @Override
     public List<Resource> findAll() {
         return resourceRepository.findAll();
@@ -72,7 +75,7 @@ public class ResourceServiceImpl implements ResourceService {
             messageSender.publish(event);
         }
 
-        log.debug("Resource {} assigned to incident {}", resourceId, incidentId);
+        signedLogger.info("Dispatched resource {} to incident {}", resourceId, incidentId);
 
         return resource;
     }
@@ -84,7 +87,7 @@ public class ResourceServiceImpl implements ResourceService {
         resource.setLocationCoordinates(location);
         resourceRepository.save(resource);
 
-        log.debug("Resource {} location updated to {}", resourceId, location);
+        log.trace("Resource {} location updated to {}", resourceId, location);
 
         return resource;
     }
@@ -125,9 +128,12 @@ public class ResourceServiceImpl implements ResourceService {
         List<ResourceType> resourceTypes = responseRegulationService.getRecommendedResourceTypes(incident.getCode());
         log.debug("Recommended resource types for incident {}: {}", id, resourceTypes);
 
-        return resourceTypes.stream()
+        List<GeoResult<Resource>> recommended = resourceTypes.stream()
                 .flatMap(resourceType -> resourceRepository.findRecommendedResources(incidentLocation, resourceType).stream())
-                .collect(Collectors.toList());
+                .toList();
+        signedLogger.info("Recommended resources for incident {}: {}", id, recommended.stream()
+                .map(GeoResult::getContent).collect(Collectors.toList()));
+        return recommended;
     }
 
 }

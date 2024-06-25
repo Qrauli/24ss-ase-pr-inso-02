@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,8 +36,10 @@ public class ResourceController {
             security = @SecurityRequirement(name = "bearerAuth")
     )
     public ResponseEntity<List<ResourceDTO>> findAll(
-            @RequestParam(value = "additional", required = false, defaultValue = "false") boolean additional
+            @RequestParam(value = "additional", required = false, defaultValue = "false") boolean additional,
+            Principal principal
     ) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(service.findAll().stream().map(mapper::toDTO).toList());
     }
 
@@ -52,8 +56,10 @@ public class ResourceController {
     )
     public ResponseEntity<ResourceDTO> assignToIncident(
             @PathVariable String resourceId,
-            @PathVariable UUID incidentId
+            @PathVariable UUID incidentId,
+            Principal principal
     ) {
+        MDC.put("user", principal.getName());
             return ResponseEntity.ok(mapper.toDTO(service.assignToIncident(resourceId, incidentId)));
     }
 
