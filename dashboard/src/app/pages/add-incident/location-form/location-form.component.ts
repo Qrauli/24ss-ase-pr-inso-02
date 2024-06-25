@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Output} from "@angular/core";
+import {Component} from "@angular/core";
 import * as Leaflet from "leaflet";
 import {Geocoder} from "leaflet-control-geocoder";
 import {Observable, firstValueFrom} from "rxjs";
 import {GeocodingResult} from "leaflet-control-geocoder/src/geocoders/api";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormControl, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HeaderComponent} from "../../../components/header/header.component";
 import {MatButtonModule} from "@angular/material/button";
 import {MatStepperModule} from "@angular/material/stepper";
@@ -23,7 +23,7 @@ import {MatDividerModule} from "@angular/material/divider";
 import {geocoderAddressConverter, LocationAddress, LocationCoordinates, prettyLocationAddress} from "../../../dtos/incident";
 import {NgIf} from "@angular/common";
 import {TranslateModule, TranslateService} from '@ngx-translate/core';
-
+import {MatTooltip} from "@angular/material/tooltip";
 
 @Component({
   selector: 'location-form',
@@ -47,7 +47,7 @@ import {TranslateModule, TranslateService} from '@ngx-translate/core';
     MatTableModule,
     MatDividerModule,
     TranslateModule,
-    NgIf],
+    NgIf, MatTooltip],
   templateUrl: './location-form.component.html',
   styleUrl: '../add-incident.component.css'
 })
@@ -57,10 +57,10 @@ export class LocationFormComponent {
   }
 
   form = this.formBuilder.group({
-    street: [''],
-    postalCode: [''],
-    city: [''],
-    additionalInformation: [''],
+    street: new FormControl({ value: '', disabled: true }),
+    postalCode: new FormControl({ value: '', disabled: true }),
+    city: new FormControl({ value: '', disabled: true }),
+    additionalInformation: new FormControl({ value: '', disabled: false})
   });
 
   // ####################### Map & Coordinates ####################### //
@@ -139,6 +139,10 @@ export class LocationFormComponent {
   // updates the marker and coordinates according to the map
   // does a reverse location search to get the address
   selectLocation(event: any) {
+    this.form.controls['street'].enable();
+    this.form.controls['postalCode'].enable();
+    this.form.controls['city'].enable();
+    this.form.controls['additionalInformation'].enable();
     this.updateMarker(event.latlng);
     this.coordinates = {latitude: event.latlng.lat, longitude: event.latlng.lng};
 
