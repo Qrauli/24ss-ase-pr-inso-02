@@ -30,7 +30,7 @@ public class CategorizationController {
     public ResponseEntity<CategorizationDTO> createSession(Principal principal) {
         MDC.put("user", principal.getName());
         log.info("Creating a new categorization session.");
-        CategorizationDTO categorization = service.createSession();
+        CategorizationDTO categorization = service.createSession(principal.getName());
         log.info("Session created with sessionId: {}", categorization.sessionID());
         return ResponseEntity.ok(categorization);
     }

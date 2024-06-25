@@ -47,16 +47,16 @@ public class CategorizationServiceImpl implements CategorizationService {
     /**
      * Creates a new categorization session by generating a random sessionId and adding the first question to the session.
      *
+     * @param name the name of the user who creates the session
      * @return an initialized CategorizationDTO object with a new sessionId and the first question.
      */
     @Override
-    public CategorizationDTO createSession() {
+    public CategorizationDTO createSession(String name) {
         Categorization categorization = new Categorization();
 
         // Initialization
         categorization.setSessionId(UUID.randomUUID());
-        // TODO set the correct user
-        categorization.setCreatedBy("admin");
+        categorization.setCreatedBy(name);
         categorization.setCreatedAt(LocalDateTime.now());
 
         // Get the first base question
@@ -142,11 +142,6 @@ public class CategorizationServiceImpl implements CategorizationService {
     private void handleBaseQuestionFlow(Categorization categorization, Categorization updatedCategorization, Answer answer) throws NotFoundException {
         BaseQuestion question = (BaseQuestion) questionSchemaService.getQuestionByTypeAndId(answer.getQuestionType(), answer.getQuestionId(), null);
 
-        if (question == null) {
-            log.error("Base question not found: {}", answer.getQuestionId());
-            throw new NotFoundException("Base question not found: " + answer.getQuestionId());
-        }
-
         // Retrieve the next question
         Question nextQuestion;
         if (question.getId() == protocolSelectorQuestionId) {
@@ -155,11 +150,6 @@ public class CategorizationServiceImpl implements CategorizationService {
 
             // Check if answer was already set previously and if the new value is different. If so, delete all protocol questions and set recommendedDispatchCode to null
             QuestionBundle beforeQuestionBundle = categorization.getQuestionBundleByTypeAndId(question.getQuestionType(), question.getId(), null);
-
-            if (beforeQuestionBundle == null) {
-                log.error("Question bundle not found for base questionId: {}, protocolId: {}", answer.getQuestionId(), answer.getProtocolId());
-                throw new NotFoundException("Question bundle not found for questionId: " + answer.getQuestionId() + ", protocolId: " + answer.getProtocolId());
-            }
 
             if (beforeQuestionBundle.getAnswer() != null &&
                     !beforeQuestionBundle.getAnswer().getAnswers().values().iterator().next().equals(answer.getAnswers().values().iterator().next())) {
@@ -171,12 +161,8 @@ public class CategorizationServiceImpl implements CategorizationService {
             nextQuestion = questionSchemaService.getQuestionByTypeAndId(QuestionType.BASE, question.getNextBaseQuestionId(), null);
         }
 
-        if (nextQuestion == null) {
-            log.error("Next base question not found for questionId: {}", question.getNextBaseQuestionId());
-            throw new NotFoundException("Next base question not found for questionId: " + question.getNextBaseQuestionId());
-        }
-
-        boolean isNextQuestionAlreadyInList = updatedCategorization.containsQuestionBundleByTypeAndId(nextQuestion.getQuestionType(), nextQuestion.getId(), null);
+        Integer protocolId = nextQuestion instanceof ProtocolQuestion ? ((ProtocolQuestion) nextQuestion).getProtocolId() : null;
+        boolean isNextQuestionAlreadyInList = updatedCategorization.containsQuestionBundleByTypeAndId(nextQuestion.getQuestionType(), nextQuestion.getId(), protocolId);
 
         if (!isNextQuestionAlreadyInList) {
             updatedCategorization.addQuestionBundle(new QuestionBundle(nextQuestion, null));
@@ -197,10 +183,6 @@ public class CategorizationServiceImpl implements CategorizationService {
         if (matcher.find()) {
             int protocolId = Integer.parseInt(matcher.group());
             Question nextQuestion = questionSchemaService.getQuestionByTypeAndId(QuestionType.PROTOCOL, 1, protocolId);
-            if (nextQuestion == null) {
-                log.error("First protocol question not found for protocol: {}", protocolIdString);
-                throw new NotFoundException("First protocol question not found for protocol: " + protocolIdString);
-            }
             return nextQuestion;
         } else {
             log.error("Protocol ID not found in response: {}", protocolIdString);
@@ -219,11 +201,6 @@ public class CategorizationServiceImpl implements CategorizationService {
     private void handleProtocolQuestionFlow(Categorization categorization, Categorization updatedCategorization, Answer answer) throws NotFoundException {
         // Get current protocol question
         ProtocolQuestion question = (ProtocolQuestion) questionSchemaService.getQuestionByTypeAndId(answer.getQuestionType(), answer.getQuestionId(), answer.getProtocolId());
-
-        if (question == null) {
-            log.error("Protocol question not found. protocolId: {}, questionId: {}", answer.getProtocolId(), answer.getQuestionId());
-            throw new NotFoundException("Protocol question not found. protocolId: " + answer.getProtocolId() + ", questionId: " + answer.getQuestionId());
-        }
 
         // Check if the answer leads to a dispatch code
         if (question.answerLeadsToDispatchCode(answer.getAnswers().values().iterator().next())) {
@@ -253,11 +230,6 @@ public class CategorizationServiceImpl implements CategorizationService {
 
         QuestionBundle beforeQuestionBundle = categorization.getQuestionBundleByTypeAndId(question.getQuestionType(), question.getId(), question.getProtocolId());
 
-        if (beforeQuestionBundle == null) {
-            log.error("Question bundle not found for questionId: {}, protocolId: {}", answer.getQuestionId(), answer.getProtocolId());
-            throw new NotFoundException("Question bundle not found for questionId: " + answer.getQuestionId() + ", protocolId: " + answer.getProtocolId());
-        }
-
         // Check if the answer was already set previously and if the new value is different
         if (beforeQuestionBundle.getAnswer() != null &&
                 !beforeQuestionBundle.getAnswer().getAnswers().values().iterator().next().equals(answer.getAnswers().values().iterator().next())) {
@@ -279,11 +251,6 @@ public class CategorizationServiceImpl implements CategorizationService {
      */
     private void handleNextProtocolQuestion(Categorization categorization, Categorization updatedCategorization, ProtocolQuestion question, Answer answer) throws NotFoundException {
         QuestionBundle beforeQuestionBundle = categorization.getQuestionBundleByTypeAndId(question.getQuestionType(), question.getId(), question.getProtocolId());
-
-        if (beforeQuestionBundle == null) {
-            log.error("Question bundle not found for questionId: {}, protocolId: {}", answer.getQuestionId(), answer.getProtocolId());
-            throw new NotFoundException("Question bundle not found for questionId: " + answer.getQuestionId() + ", protocolId: " + answer.getProtocolId());
-        }
 
         // Check if the answer was already set previously and if the new value is different
         if (beforeQuestionBundle.getAnswer() != null &&
@@ -307,11 +274,6 @@ public class CategorizationServiceImpl implements CategorizationService {
         ProtocolQuestion nextQuestion = (ProtocolQuestion) questionSchemaService.getQuestionByTypeAndId(
                 QuestionType.PROTOCOL, nextProtocolQuestionId.getQuestionId(), nextProtocolQuestionId.getProtocolId());
 
-        if (nextQuestion == null) {
-            log.error("Next protocol question not found. protocolId: {}, questionId: {}", nextProtocolQuestionId.getProtocolId(), nextProtocolQuestionId.getQuestionId());
-            throw new NotFoundException("Next protocol question not found. protocolId: " + nextProtocolQuestionId.getProtocolId() + ", questionId: " + nextProtocolQuestionId.getQuestionId());
-        }
-
         boolean isNextProtocolQuestionAlreadyInList = updatedCategorization.getQuestionBundles().stream()
                 .filter(bundle -> bundle.getQuestion().getQuestionType() == QuestionType.PROTOCOL)
                 .anyMatch(bundle -> ((ProtocolQuestion) bundle.getQuestion()).getProtocolId() == nextQuestion.getProtocolId() &&
@@ -334,11 +296,6 @@ public class CategorizationServiceImpl implements CategorizationService {
      */
     private Categorization validateAndInsertAnswer(Categorization categorization, Answer answer) throws NotFoundException, BadRequestException {
         QuestionBundle questionBundle = categorization.getQuestionBundleByTypeAndId(answer.getQuestionType(), answer.getQuestionId(), answer.getProtocolId());
-
-        if (questionBundle == null) {
-            log.error("Question bundle to answer not found in categorization: QuestionType: {}, ProtocolId: {}, QuestionId: {}", answer.getQuestionType(), answer.getProtocolId(), answer.getQuestionId());
-            throw new NotFoundException("Question bundle to answer not found in categorization: QuestionType: " + answer.getQuestionType() + ", ProtocolId: " + answer.getProtocolId() + ", QuestionId: " + answer.getQuestionId());
-        }
 
         validateAndSetAnswer(questionBundle, answer);
 
@@ -411,15 +368,14 @@ public class CategorizationServiceImpl implements CategorizationService {
      *
      * @param field       the field within the BaseQuestion to validate
      * @param answerValue the answer value to validate against the field
-     * @throws NotFoundException if the answer is not valid for the given field type or if the field type is unsupported
-     * @throws ValidationException if the answer is not a valid number
+     * @throws ValidationException if the answer is not valid for the given field type or if the field type is not supported
      */
-    private void validateBaseField(BaseQuestionField field, String answerValue) throws NotFoundException, ValidationException {
+    private void validateBaseField(BaseQuestionField field, String answerValue) throws ValidationException {
         switch (field.getType()) {
             case SINGLE_CHOICE:
                 if (field.getOptions().stream().noneMatch(option -> option.equalsIgnoreCase(answerValue))) {
                     log.error("Invalid answer for field: {}. Answer: {}", field.getFieldId(), answerValue);
-                    throw new NotFoundException("Invalid answer for field: " + field.getFieldId() + ". Answer: " + answerValue);
+                    throw new ValidationException("Invalid answer for field: " + field.getFieldId() + ". Answer: " + answerValue);
                 }
                 break;
             case NUMBER:
@@ -434,7 +390,7 @@ public class CategorizationServiceImpl implements CategorizationService {
                 break;
             default:
                 log.error("Unsupported field type for base question: {}", field.getType());
-                throw new NotFoundException("Unsupported field type for base question: " + field.getType());
+                throw new ValidationException("Unsupported field type for base question: " + field.getType());
         }
     }
 
@@ -444,17 +400,17 @@ public class CategorizationServiceImpl implements CategorizationService {
      *
      * @param field       the field within the ProtocolQuestion to validate
      * @param answerValue the answer value to validate against the field
-     * @throws NotFoundException if the answer is not valid for the given field type or if the field type is unsupported
+     * @throws ValidationException if the answer is not valid for the given field type or if the field type is not supported
      */
     private void validateProtocolField(ProtocolQuestionField field, String answerValue) throws NotFoundException {
         if (field.getType() == FieldType.SINGLE_CHOICE) {
             if (!field.containsOptionText(answerValue)) {
                 log.error("Invalid answer for field: {}. Answer: {}", field.getFieldId(), answerValue);
-                throw new NotFoundException("Invalid answer for field: " + field.getFieldId() + ". Answer: " + answerValue);
+                throw new ValidationException("Invalid answer for field: " + field.getFieldId() + ". Answer: " + answerValue);
             }
         } else {
             log.error("Unsupported field type for protocol question: {}", field.getType());
-            throw new NotFoundException("Unsupported field type for protocol question: " + field.getType());
+            throw new ValidationException("Unsupported field type for protocol question: " + field.getType());
         }
     }
 
