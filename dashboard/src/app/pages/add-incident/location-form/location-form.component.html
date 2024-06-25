@@ -4,19 +4,29 @@
          [leafletOptions]="options">
     </div>
     <div class="center-2">
+      <h3>{{ 'INCIDENT.ADDRESS_INPUT_HEADING' | translate }}</h3>
       <mat-form-field class="form-field">
         <mat-label>{{ 'INCIDENT.CITY' | translate }}</mat-label>
-        <input matInput [placeholder]="'INCIDENT.CITY_PH' | translate" formControlName="city"/>
+        <input matInput
+               [placeholder]="'INCIDENT.CITY_PH' | translate"
+               formControlName="city"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
         <mat-label>{{ 'INCIDENT.POSTAL_CODE' | translate }}</mat-label>
-        <input matInput placeholder="1010" formControlName="postalCode"/>
+        <input matInput
+               [placeholder]="'INCIDENT.POSTAL_CODE_PH' | translate"
+               formControlName="postalCode"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
         <mat-label>{{ 'INCIDENT.STREET' | translate }}</mat-label>
-        <input matInput [placeholder]="'INCIDENT.STREET_PH' | translate" formControlName="street"/>
+        <input matInput
+               [placeholder]="'INCIDENT.STREET_PH' | translate"
+               formControlName="street"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
