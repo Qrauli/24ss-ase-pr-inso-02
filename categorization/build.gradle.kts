@@ -55,7 +55,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
 	// Respond Common Lib
-	implementation("at.ase.respond:common-lib:0.0.1")
+	implementation("at.ase.respond:common-lib:0.1.0")
 }
 
 tasks.bootJar {

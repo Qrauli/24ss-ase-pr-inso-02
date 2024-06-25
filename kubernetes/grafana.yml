@@ -1,0 +1,1593 @@
+---
+# Source: grafana/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    helm.sh/chart: grafana-7.3.11
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+    app.kubernetes.io/version: "10.4.1"
+data:
+
+  grafana.ini: |
+    [analytics]
+    check_for_updates = true
+    [grafana_net]
+    url = https://grafana.net
+    [log]
+    mode = console
+    [paths]
+    data = /var/lib/grafana/
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+    provisioning = /etc/grafana/provisioning
+    [server]
+    domain = ''
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - access: proxy
+        editable: true
+        isDefault: true
+        name: Loki
+        type: loki
+        url: http://loki.24ss-ase-pr-inso-02.svc.cluster.local/
+        version: 1
+  dashboardproviders.yaml: |
+    apiVersion: 1
+    providers:
+      - disableDeletion: false
+        editable: true
+        folder: logs
+        name: log-dashboard
+        options:
+          path: /var/lib/grafana/dashboards/log-dashboard
+        orgId: 1
+        type: file
+---
+# Source: grafana/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    helm.sh/chart: grafana-7.3.11
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+    app.kubernetes.io/version: "10.4.1"
+spec:
+  type: ClusterIP
+  ports:
+    - name: service
+      port: 80
+      protocol: TCP
+      targetPort: 3000
+  selector:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+---
+# Source: grafana/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    helm.sh/chart: grafana-7.3.11
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: grafana
+    app.kubernetes.io/version: "10.4.1"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/instance: grafana
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: grafana
+        app.kubernetes.io/instance: grafana
+      annotations:
+        checksum/config: 925ace2798546c29874e928b8ab8defce469e03066169e49186685bdcd06bf1c
+        checksum/sc-dashboard-provider-config: 593c0a8778b83f11fe80ccb21dfb20bc46705e2be3178df1dc4c89d164c8cd9c
+        kubectl.kubernetes.io/default-container: grafana
+    spec:
+
+      serviceAccountName: default
+      automountServiceAccountToken: true
+      securityContext:
+        fsGroup: 472
+        runAsGroup: 472
+        runAsNonRoot: true
+        runAsUser: 472
+      enableServiceLinks: true
+      containers:
+        - name: grafana
+          image: "docker.io/grafana/grafana:10.4.1"
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: config
+              mountPath: "/etc/grafana/grafana.ini"
+              subPath: grafana.ini
+            - name: storage
+              mountPath: "/var/lib/grafana"
+            - name: dashboards-log-dashboard
+              mountPath: "/var/lib/grafana/dashboards/log-dashboard/overview.json"
+            - name: dashboards-incident-dashboard
+              mountPath: "/var/lib/grafana/dashboards/log-dashboard/incident.json"
+            - name: dashboards-categorization-dashboard
+              mountPath: "/var/lib/grafana/dashboards/log-dashboard/categorization.json"
+            - name: dashboards-dispatcher-dashboard
+              mountPath: "/var/lib/grafana/dashboards/log-dashboard/dispatcher.json"
+            - name: config
+              mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
+              subPath: "datasources.yaml"
+            - name: config
+              mountPath: "/etc/grafana/provisioning/dashboards/dashboardproviders.yaml"
+              subPath: "dashboardproviders.yaml"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "100m"
+              memory: "512Mi"
+          ports:
+            - name: grafana
+              containerPort: 3000
+              protocol: TCP
+            - name: gossip-tcp
+              containerPort: 9094
+              protocol: TCP
+            - name: gossip-udp
+              containerPort: 9094
+              protocol: UDP
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana
+                  key: admin-user
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana
+                  key: admin-password
+            - name: GF_PATHS_DATA
+              value: /var/lib/grafana/
+            - name: GF_PATHS_LOGS
+              value: /var/log/grafana
+            - name: GF_PATHS_PLUGINS
+              value: /var/lib/grafana/plugins
+            - name: GF_PATHS_PROVISIONING
+              value: /etc/grafana/provisioning
+          livenessProbe:
+            failureThreshold: 10
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 60
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+      volumes:
+        - name: config
+          configMap:
+            name: grafana
+        - name: dashboards-log-dashboard
+          configMap:
+            name: log-dashboard
+        - name: dashboards-incident-dashboard
+          configMap:
+            name: incident-dashboard
+        - name: dashboards-dispatcher-dashboard
+          configMap:
+            name: dispatcher-dashboard
+        - name: dashboards-categorization-dashboard
+          configMap:
+            name: categorization-dashboard
+        - name: storage
+          emptyDir: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-grafana-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /grafana(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  number: 3000
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: grafana
+  namespace: 24ss-ase-pr-inso-02
+data:
+  admin-password: cGFzc3dvcmQ=
+  admin-user: YWRtaW4=
+  ldap-toml: ""
+---
+# contains configuration for a default log dashboard that is imported during the installation of the grafana helmchart
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-dashboard
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    grafana_dashboard: "1"
+data:
+  respond-logs.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 164
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Line"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 274
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "labels"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 218
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "serviceName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 119
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "signatureTime"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "logLevel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 80
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 794
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Level"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 70
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "user"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 275
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 769
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 20,
+            "w": 22,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{filename=\"/var/log/respond.log\"} |= `serviceName` | json ",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "RESPOND Log Overview",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Line": true,
+                  "Time": true,
+                  "_timestamp": true,
+                  "_version": true,
+                  "filename": true,
+                  "id": true,
+                  "labels": true,
+                  "level": true,
+                  "level_value": true,
+                  "logMessage": true,
+                  "logger_name": true,
+                  "thread_name": true,
+                  "tsNs": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Line": 8,
+                  "Time": 7,
+                  "_timestamp": 11,
+                  "_version": 12,
+                  "filename": 13,
+                  "id": 10,
+                  "labels": 6,
+                  "level": 14,
+                  "level_value": 15,
+                  "logLevel": 2,
+                  "logMessage": 18,
+                  "logger_name": 16,
+                  "message": 4,
+                  "serviceName": 1,
+                  "signature": 5,
+                  "signatureTime": 0,
+                  "thread_name": 17,
+                  "tsNs": 9,
+                  "user": 3
+                },
+                "renameByName": {
+                  "logLevel": "Level",
+                  "message": "Message",
+                  "serviceName": "Service",
+                  "signature": "Signature",
+                  "signatureTime": "Time"
+                }
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Level": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Message": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Service": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Signature": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Time": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "´Time": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "RESPOND Log Overview",
+      "uid": "fdop9tb37te68a",
+      "version": 1,
+      "weekStart": ""
+    }
+---
+# configuration for incident logs dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: incident-dashboard
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    grafana_dashboard: "2"
+data:
+  respond-logs.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 164
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Line"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 274
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "labels"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 218
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "serviceName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 119
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "signatureTime"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "logLevel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 80
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 794
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Service"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 81
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Level"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 67
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 834
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "user"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 257
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 22,
+            "w": 22,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{filename=\"/var/log/respond.log\"} |= `serviceName` | json ",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Incident Service Logs",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels"
+              }
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Incident"
+                      }
+                    },
+                    "fieldName": "serviceName"
+                  }
+                ],
+                "match": "any",
+                "type": "include"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Line": true,
+                  "Time": true,
+                  "_timestamp": true,
+                  "_version": true,
+                  "filename": true,
+                  "id": true,
+                  "labels": true,
+                  "level": true,
+                  "level_value": true,
+                  "logMessage": true,
+                  "logger_name": true,
+                  "serviceName": false,
+                  "stack_trace": true,
+                  "thread_name": true,
+                  "tsNs": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Line": 8,
+                  "Time": 7,
+                  "_timestamp": 11,
+                  "_version": 12,
+                  "filename": 13,
+                  "id": 10,
+                  "labels": 6,
+                  "level": 14,
+                  "level_value": 15,
+                  "logLevel": 2,
+                  "logMessage": 18,
+                  "logger_name": 16,
+                  "message": 4,
+                  "serviceName": 1,
+                  "signature": 5,
+                  "signatureTime": 0,
+                  "stack_trace": 19,
+                  "thread_name": 17,
+                  "tsNs": 9,
+                  "user": 3
+                },
+                "renameByName": {
+                  "logLevel": "Level",
+                  "message": "Message",
+                  "serviceName": "",
+                  "signature": "Signature",
+                  "signatureTime": "Time"
+                }
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Level": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Message": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Service": {
+                    "aggregations": []
+                  },
+                  "Signature": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Time": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Incident Service Logs",
+      "uid": "adongu666h7uof",
+      "version": 2,
+      "weekStart": ""
+    }
+---
+# configuration for categorization logs dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: categorization-dashboard
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    grafana_dashboard: "3"
+data:
+  respond-logs.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 162
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Service"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 128
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Level"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 53
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 701
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "User"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 260
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 20,
+            "w": 22,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{filename=\"/var/log/respond.log\"} |= `serviceName` | json ",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Categorization Service Logs",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "keepTime": false,
+                "replace": false,
+                "source": "labels"
+              }
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Categorization"
+                      }
+                    },
+                    "fieldName": "serviceName"
+                  }
+                ],
+                "match": "any",
+                "type": "include"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Line": true,
+                  "Time": true,
+                  "_timestamp": true,
+                  "_version": true,
+                  "filename": true,
+                  "id": true,
+                  "labels": true,
+                  "level": true,
+                  "level_value": true,
+                  "logMessage": true,
+                  "logger_name": true,
+                  "serviceName": true,
+                  "thread_name": true,
+                  "tsNs": true,
+                  "user": false
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Line": 15,
+                  "Time": 14,
+                  "_timestamp": 6,
+                  "_version": 7,
+                  "filename": 8,
+                  "id": 17,
+                  "labels": 13,
+                  "level": 9,
+                  "level_value": 10,
+                  "logLevel": 2,
+                  "logMessage": 18,
+                  "logger_name": 11,
+                  "message": 4,
+                  "serviceName": 1,
+                  "signature": 5,
+                  "signatureTime": 0,
+                  "stack_trace": 19,
+                  "thread_name": 12,
+                  "tsNs": 16,
+                  "user": 3
+                },
+                "renameByName": {
+                  "logLevel": "Level",
+                  "message": "Message",
+                  "serviceName": "Service",
+                  "signature": "Signature",
+                  "signatureTime": "Time",
+                  "user": "User"
+                }
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Level": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Message": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Service": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Signature": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Time": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "User": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Categorization Service Logs",
+      "uid": "fdop9tb37te68b",
+      "version": 3,
+      "weekStart": ""
+    }
+---
+# configuration for dispatcher logs dashboard
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dispatcher-dashboard
+  namespace: 24ss-ase-pr-inso-02
+  labels:
+    grafana_dashboard: "4"
+data:
+  respond-logs.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": {
+              "type": "grafana",
+              "uid": "-- Grafana --"
+            },
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "graphTooltip": 0,
+      "links": [],
+      "panels": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "P8E80F9AEF21F6940"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
+                "inspect": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 164
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Line"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 274
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "labels"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 218
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "serviceName"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 119
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "signatureTime"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 170
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "logLevel"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 80
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 794
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Service"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 99
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Level"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 63
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Message"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 696
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "user"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 273
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 22,
+            "w": 22,
+            "x": 0,
+            "y": 0
+          },
+          "id": 1,
+          "options": {
+            "cellHeight": "sm",
+            "footer": {
+              "countRows": false,
+              "enablePagination": true,
+              "fields": "",
+              "reducer": [
+                "sum"
+              ],
+              "show": false
+            },
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "10.4.1",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "P8E80F9AEF21F6940"
+              },
+              "editorMode": "code",
+              "expr": "{filename=\"/var/log/respond.log\"} |= `serviceName` | json ",
+              "queryType": "range",
+              "refId": "A"
+            }
+          ],
+          "title": "Dispatcher Service Logs",
+          "transformations": [
+            {
+              "id": "extractFields",
+              "options": {
+                "source": "labels"
+              }
+            },
+            {
+              "id": "filterByValue",
+              "options": {
+                "filters": [
+                  {
+                    "config": {
+                      "id": "equal",
+                      "options": {
+                        "value": "Dispatcher"
+                      }
+                    },
+                    "fieldName": "serviceName"
+                  }
+                ],
+                "match": "any",
+                "type": "include"
+              }
+            },
+            {
+              "id": "organize",
+              "options": {
+                "excludeByName": {
+                  "Line": true,
+                  "Time": true,
+                  "_timestamp": true,
+                  "_version": true,
+                  "filename": true,
+                  "id": true,
+                  "labels": true,
+                  "level": true,
+                  "level_value": true,
+                  "logMessage": true,
+                  "logger_name": true,
+                  "serviceName": true,
+                  "stack_trace": true,
+                  "thread_name": true,
+                  "tsNs": true
+                },
+                "includeByName": {},
+                "indexByName": {
+                  "Line": 8,
+                  "Time": 7,
+                  "_timestamp": 11,
+                  "_version": 12,
+                  "filename": 13,
+                  "id": 10,
+                  "labels": 6,
+                  "level": 14,
+                  "level_value": 15,
+                  "logLevel": 2,
+                  "logMessage": 18,
+                  "logger_name": 16,
+                  "message": 4,
+                  "serviceName": 1,
+                  "signature": 5,
+                  "signatureTime": 0,
+                  "stack_trace": 19,
+                  "thread_name": 17,
+                  "tsNs": 9,
+                  "user": 3
+                },
+                "renameByName": {
+                  "logLevel": "Level",
+                  "message": "Message",
+                  "serviceName": "Service",
+                  "signature": "Signature",
+                  "signatureTime": "Time"
+                }
+              }
+            },
+            {
+              "id": "groupBy",
+              "options": {
+                "fields": {
+                  "Level": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Message": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Service": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Signature": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "Time": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  },
+                  "user": {
+                    "aggregations": [],
+                    "operation": "groupby"
+                  }
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "schemaVersion": 39,
+      "tags": [],
+      "templating": {
+        "list": []
+      },
+      "time": {
+        "from": "now-6h",
+        "to": "now"
+      },
+      "timepicker": {},
+      "timezone": "browser",
+      "title": "Dispatcher Service Logs",
+      "uid": "adongu666h7uoe",
+      "version": 3,
+      "weekStart": ""
+    }

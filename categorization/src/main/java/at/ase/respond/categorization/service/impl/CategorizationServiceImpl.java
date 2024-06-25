@@ -15,6 +15,7 @@ import at.ase.respond.categorization.presentation.mapper.AnswerMapper;
 import at.ase.respond.categorization.presentation.mapper.CategorizationMapper;
 import at.ase.respond.categorization.service.CategorizationService;
 import at.ase.respond.categorization.service.QuestionSchemaService;
+import at.ase.respond.common.logging.SignedLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,8 @@ public class CategorizationServiceImpl implements CategorizationService {
     private final CategorizationRepository categorizationRepository;
 
     private final QuestionSchemaService questionSchemaService;
+
+    private final SignedLogger signedLogger = new SignedLogger();
 
     @Value("${custom.questionschema.protocolSelectorQuestionId}")
     private int protocolSelectorQuestionId;
@@ -245,6 +248,8 @@ public class CategorizationServiceImpl implements CategorizationService {
 
         String dispatchCode = question.getDispatchCodeForAnswer(answer.getAnswers().values().iterator().next());
         updatedCategorization.setRecommendedDispatchCode(dispatchCode);
+        signedLogger.info("Dispatch code recommendation set to {} for session {}", dispatchCode, categorization.getSessionId());
+
 
         QuestionBundle beforeQuestionBundle = categorization.getQuestionBundleByTypeAndId(question.getQuestionType(), question.getId(), question.getProtocolId());
 

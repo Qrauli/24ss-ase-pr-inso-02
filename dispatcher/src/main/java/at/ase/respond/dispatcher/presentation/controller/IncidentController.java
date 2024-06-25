@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,8 +46,10 @@ public class IncidentController {
             security = @SecurityRequirement(name = "bearer")
     )
     public ResponseEntity<List<IncidentDTO>> findAll(
-            @RequestParam(value = "running", required = false, defaultValue = "true") boolean running
+            @RequestParam(value = "running", required = false, defaultValue = "true") boolean running,
+            Principal principal
     ) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(incidentService.findAll(running).stream().map(incidentMapper::toDTO).toList());
     }
 
@@ -59,7 +63,8 @@ public class IncidentController {
             summary = "Returns an incident by id",
             security = @SecurityRequirement(name = "bearer")
     )
-    public ResponseEntity<IncidentDTO> findById(@PathVariable UUID id) {
+    public ResponseEntity<IncidentDTO> findById(@PathVariable UUID id, Principal principal) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(incidentMapper.toDTO(incidentService.findById(id)));
     }
 
@@ -73,7 +78,8 @@ public class IncidentController {
             summary = "Returns a map of resource types to recommended resources",
             security = @SecurityRequirement(name = "bearer")
     )
-    public ResponseEntity<List<ResourceWithDistanceDTO>> getRecommendations(@PathVariable UUID id) {
+    public ResponseEntity<List<ResourceWithDistanceDTO>> getRecommendations(@PathVariable UUID id, Principal principal) {
+        MDC.put("user", principal.getName());
         return ResponseEntity.ok(
                 resourceService.getRecommendedResources(id).stream()
                         .map(r -> new ResourceWithDistanceDTO(r.getContent().getId(), r.getDistance().getValue()))

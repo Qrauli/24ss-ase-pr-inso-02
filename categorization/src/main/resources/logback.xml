@@ -1,0 +1,41 @@
+<configuration>
+    <property name="serviceName" value="Categorization" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.loggingevent.MdcJsonProvider">
+                <mdc> <!-- MDC fields will be included as individual fields in the JSON and dynamically set -->
+                    <key>timestamp</key>
+                    <key>signature</key>
+                    <key>signatureTime</key>
+                </mdc>
+            </provider>
+            <customFields>{"serviceName":"${serviceName}"}</customFields>
+        </encoder>
+    </appender>
+
+    <appender name="SIGNED" class="ch.qos.logback.core.FileAppender">
+        <file>/var/log/respond.log</file>
+        <append>true</append>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.loggingevent.MdcJsonProvider">
+                <mdc> <!-- MDC fields will be included as individual fields in the JSON and dynamically set -->
+                    <key>logLevel</key>
+                    <key>signature</key>
+                    <key>signatureTime</key>
+                </mdc>
+            </provider>
+            <customFields>{"serviceName":"${serviceName}"}</customFields>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <!-- Log to both stdout and scraped log file for signed logs -->
+    <logger name="at.ase.respond.common.logging.SignedLogger" level="INFO">
+        <appender-ref ref="SIGNED" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+</configuration>

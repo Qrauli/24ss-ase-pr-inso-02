@@ -1,5 +1,6 @@
 package at.ase.respond.dispatcher.service.impl;
 
+import at.ase.respond.common.logging.SignedLogger;
 import at.ase.respond.dispatcher.persistence.repository.ResourceRequestRepository;
 import at.ase.respond.dispatcher.persistence.model.ResourceRequest;
 import at.ase.respond.common.ResourceRequestState;
@@ -19,8 +20,11 @@ public class ResourceRequestServiceImpl implements ResourceRequestService {
 
     private final ResourceRequestRepository resourceRequestRepository;
 
+    private final SignedLogger signedLogger = new SignedLogger();
+
     @Override
     public List<ResourceRequest> findAll(boolean openOnly) {
+        log.trace("Retrieving {} resource requests", openOnly ? "open" : "all");
         return openOnly ? resourceRequestRepository.findByState(ResourceRequestState.OPEN)
                 : resourceRequestRepository.findAll();
     }
@@ -28,6 +32,9 @@ public class ResourceRequestServiceImpl implements ResourceRequestService {
     @Override
     public void create(ResourceRequest resourceRequest) {
         resourceRequestRepository.save(resourceRequest);
+        signedLogger.info("Resource Request {} for incident {} and resource type {} has been created",
+                resourceRequest.getId(), resourceRequest.getAssignedIncident(), resourceRequest.getRequestedResourceType());
+
     }
 
     @Override
@@ -36,7 +43,9 @@ public class ResourceRequestServiceImpl implements ResourceRequestService {
             .orElseThrow(() -> new NotFoundException("Resource request with id " + id + " not found"));
         updatedResourceRequest.setState(ResourceRequestState.FINISHED);
         resourceRequestRepository.save(updatedResourceRequest);
-        log.debug("Resource Request {} finished", updatedResourceRequest.getId());
+        signedLogger.info("Resource Request {} for incident {} and resource type {} has been completed",
+                updatedResourceRequest.getId(), updatedResourceRequest.getAssignedIncident(),
+                updatedResourceRequest.getRequestedResourceType());
         return updatedResourceRequest;
     }
 

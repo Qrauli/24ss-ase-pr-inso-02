@@ -25,7 +25,7 @@ spec:
               ephemeral-storage: "300Mi"
             limits:
               memory: "512Mi"
-              cpu: "400m"
+              cpu: "200m"
               ephemeral-storage: "300Mi"
           envFrom:
             - configMapRef:

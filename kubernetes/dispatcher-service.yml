@@ -24,12 +24,52 @@ spec:
               cpu: "100m"
             limits:
               memory: "512Mi"
-              cpu: "100m"
+              cpu: "200m"
+          env:
+            - name: LOG_KEY_PATH
+              value: "/etc/secret/privatekey.pem"
+            - name: PUBLIC_KEY_PATH
+              value: "/etc/secret/publickey.pem"
+            - name: SERVICE_NAME
+              value: 'Dispatcher'
           envFrom:
             - configMapRef:
                 name: 24ss-ase-pr-inso-02-dispatcher-config
             - secretRef:
                 name: 24ss-ase-pr-inso-02-dispatcher-secret
+          volumeMounts:
+            - name: shared-logs # shared space monitored with Promtail
+              mountPath: /var/log
+            - name: keys
+              mountPath: "/etc/secret"
+        - name: promtail
+          image: grafana/promtail:master
+          args:
+            - "-config.file=/etc/promtail/promtail.yaml" # Found in the ConfigMap
+          ports:
+            - containerPort: 9080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+            - name: shared-logs # shared space
+              mountPath: /var/log
+      volumes:
+        - name: keys
+          secret:
+            secretName: dispatcher-keys
+        - name: config
+          configMap:
+            name: promtail-sidecar-config-map
+        - name: shared-logs # shared space monitored with Promtail
+          emptyDir:
+            sizeLimit: 100Mi
       imagePullSecrets:
         - name: secret-dockercfg
   strategy:
@@ -106,3 +146,14 @@ spec:
                 name: s-24ss-ase-pr-inso-02-dispatcher-service
                 port:
                   number: 8082
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dispatcher-keys
+type: Opaque
+data:
+  privatekey.pem: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSU1NMHRTZ0RmODJZZUEwaVZYTUVhUEpSYnhQZ3dnSUFiWEtZaEVsRk43akMKLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQ==
+  publickey.pem: |
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQWtYaVBHeGdJWjd3TUtuODVZdmQ1dzNubDh3ajhwVnpJcGRBK2toREt1U0U9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQ==

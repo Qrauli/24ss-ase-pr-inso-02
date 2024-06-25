@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-categorization
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-categorization
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-categorization-container
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/categorization:test
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "300m"
+          env:
+            - name: LOG_KEY_PATH
+              value: "/etc/secret/privatekey.pem"
+            - name: PUBLIC_KEY_PATH
+              value: "/etc/secret/publickey.pem"
+            - name: SERVICE_NAME
+              value: 'Categorization'
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-categorization-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-categorization-secret
+          volumeMounts:
+            - name: shared-logs # shared space monitored with Promtail
+              mountPath: /var/log
+            - name: keys
+              mountPath: "/etc/secret"
+        - name: promtail
+          image: grafana/promtail:master
+          args:
+            - "-config.file=/etc/promtail/promtail.yaml" # Found in the ConfigMap
+          ports:
+            - containerPort: 9080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+            - name: shared-logs # shared space
+              mountPath: /var/log
+      volumes:
+        - name: keys
+          secret:
+            secretName: categorization-keys
+        - name: config
+          configMap:
+            name: promtail-sidecar-config-map
+        - name: shared-logs # shared space monitored with Promtail
+          emptyDir:
+            sizeLimit: 100Mi
+      imagePullSecrets:
+        - name: secret-dockercfg
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  SPRING_DATA_MONGODB_DATABASE: 'db'
+  SPRING_DATA_MONGODB_HOST: 's-24ss-ase-pr-inso-02-mongodb-service'
+  SPRING_DATA_MONGODB_PORT: '27017'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+    SPRING_DATASOURCE_PASSWORD: cGFzc3dk
+    SPRING_RABBITMQ_PASSWORD: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-categorization-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-categorization
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-categorization-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /categorization(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-categorization-service
+                port:
+                  number: 8081
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: categorization-keys
+type: Opaque
+data:
+  privatekey.pem: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSURVd3JKZjNIQmJhZE13Ukc5dUJRWmhVK3dGdEM2eXlucW1ndGpNUFVlV0MKLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQ==
+  publickey.pem: |
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQWlRZmozZDlOTGtuREZzN29SMHNHcno2VnZnbEV1b2lQTE8xWlNjVWQvbXM9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQ==

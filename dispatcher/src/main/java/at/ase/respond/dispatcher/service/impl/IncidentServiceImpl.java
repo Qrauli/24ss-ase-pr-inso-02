@@ -1,6 +1,7 @@
 package at.ase.respond.dispatcher.service.impl;
 
 import at.ase.respond.common.exception.NotFoundException;
+import at.ase.respond.common.logging.SignedLogger;
 import at.ase.respond.dispatcher.persistence.repository.IncidentRepository;
 import at.ase.respond.dispatcher.persistence.model.Incident;
 import at.ase.respond.common.IncidentState;
@@ -26,6 +27,8 @@ public class IncidentServiceImpl implements IncidentService {
     @Lazy
     private final ResourceService resourceService;
 
+    private final SignedLogger signedLogger = new SignedLogger();
+
     @Override
     public List<Incident> findAll(boolean running) {
         return running ? repository.findByStateNot(IncidentState.COMPLETED) : repository.findAll();
@@ -39,7 +42,20 @@ public class IncidentServiceImpl implements IncidentService {
 
     @Override
     public Incident save(Incident incident) {
-        return repository.save(incident);
+        log.debug("Saving incident {}", incident);
+        boolean isNew;
+        try {
+            findById(incident.getId());
+            isNew = false;
+        } catch (NotFoundException e) {
+            isNew = true;
+        }
+        incident = repository.save(incident);
+        if (isNew) {
+            signedLogger.info("Incident {} with code {} is ready to be dispatched", incident.getId(),
+                    incident.getCode());
+        }
+        return incident;
     }
 
     @Override
@@ -47,6 +63,7 @@ public class IncidentServiceImpl implements IncidentService {
         Incident incident = findById(id);
         incident.getAssignedResources().remove(resourceId);
         save(incident);
+        signedLogger.info("Resource {} has been unassigned from incident {}", resourceId, id);
     }
 
     @Override
@@ -60,9 +77,10 @@ public class IncidentServiceImpl implements IncidentService {
         Incident updatedIncident = findById(id);
         updatedIncident.setState(IncidentState.COMPLETED);
         save(updatedIncident);
-        log.debug("Incident {} completed", updatedIncident.getId());
+        signedLogger.info("Incident {} has been completed", updatedIncident.getId());
 
         return updatedIncident;
     }
+
 
 }
