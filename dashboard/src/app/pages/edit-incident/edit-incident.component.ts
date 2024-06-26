@@ -147,8 +147,10 @@ export class EditIncidentComponent implements OnInit {
         break;
       }
       case this.personsFormLabel: {
+        const personFormValues = this.personFormComponent.form.value;
         const numberOfPatients = this.personFormComponent.patients.length;
 
+        this.incident.callerNumber = personFormValues.caller?.number!;
         this.incident.patients = this.personFormComponent.patients;
         this.incident.numberOfPatients = numberOfPatients;
 
