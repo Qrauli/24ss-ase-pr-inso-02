@@ -219,7 +219,7 @@ export class DispatcherComponent implements OnInit {
 
     for (let i = 0; i < this.resources.length; i++) {
       let iconUrl = 'assets/ambulance_green.png';
-      if (this.resources[i].state != ResourceState.AVAILABE) {
+      if (this.resources[i].state != ResourceState.AVAILABLE) {
         if (this.resources[i].assignedIncident == this.selectedIncident) {
           iconUrl = 'assets/ambulance_blue.png';
         } else {

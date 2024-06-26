@@ -66,7 +66,7 @@ function mockResources(entries: number) {
     const resource: Resource = {
       id: "FLO-" + length,
       type: ResourceType.KTW,
-      state: assignment ? ResourceState.DISPATCHED : ResourceState.AVAILABE,
+      state: assignment ? ResourceState.DISPATCHED : ResourceState.AVAILABLE,
       locationCoordinates: {
         latitude: Math.random() * 0.1 + 48.227747192035764,
         longitude: Math.random() * 0.1 + 16.40545336304577

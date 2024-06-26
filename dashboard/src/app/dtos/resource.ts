@@ -9,7 +9,7 @@ export enum ResourceType {
 }
 
 export enum ResourceState {
-  AVAILABE = "AVAILABLE",
+  AVAILABLE = "AVAILABLE",
   DISPATCHED = "DISPATCHED",
   ON_ROUTE_TO_INCIDENT = "ON_ROUTE_TO_INCIDENT",
   AT_INCIDENT = "AT_INCIDENT",

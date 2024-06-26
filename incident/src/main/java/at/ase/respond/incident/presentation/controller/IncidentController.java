@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,12 +32,13 @@ public class IncidentController {
     private final IncidentMapper incidentMapper;
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponse(responseCode = "201", description = "Incident created successfully")
     @Operation(summary = "Records a new incident", security = @SecurityRequirement(name = "bearer"))
     @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE))
     public ResponseEntity<UUID> create(@RequestBody IncidentDTO payload, Principal principal) {
         MDC.put("user", principal.getName());
-        return ResponseEntity.ok(service.create(payload));
+        return new ResponseEntity<>(service.create(payload), HttpStatus.CREATED);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

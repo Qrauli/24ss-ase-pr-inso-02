@@ -60,7 +60,7 @@ public interface ResourceService {
     Resource updateState(String resourceId, ResourceState state) throws NotFoundException;
 
     /**
-     * Returns an ordered list of the top 10 recommended resources for the incident with the specified id.
+     * Returns an ordered list of the top recommended resources for the incident with the specified id.
      * Note that these resources are grouped by type and ordered by distance. Also, those resources are
      * either available or dispatched.
      *

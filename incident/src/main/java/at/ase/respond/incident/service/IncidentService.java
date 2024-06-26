@@ -1,5 +1,6 @@
 package at.ase.respond.incident.service;
 
+import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
 
@@ -33,6 +34,7 @@ public interface IncidentService {
      * Finds an incident by its ID.
      * @param id the ID of the incident to be found
      * @return the incident
+     * @throws NotFoundException if the incident is not found
      */
     Incident findById(UUID id);
 

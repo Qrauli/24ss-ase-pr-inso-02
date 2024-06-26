@@ -134,7 +134,8 @@ public class IncidentControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
         final List<IncidentDTO> actual = new ObjectMapper()
-                .readValue(result.getResponse().getContentAsString(), new TypeReference<List<IncidentDTO>>(){});
+                .readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                });
         assertEquals(incidentDTOList, actual);
     }
 
@@ -148,7 +149,7 @@ public class IncidentControllerTest {
     }
 
     @Test
-    void whenJWT_create_then200Ok() throws Exception {
+    void whenJWT_create_then201Created() throws Exception {
         IncidentDTO incidentDTO = createDummyIncidentDTO(UUID.randomUUID());
         UUID incidentId = UUID.randomUUID();
         when(incidentService.create(any())).thenReturn(incidentId);
@@ -157,7 +158,7 @@ public class IncidentControllerTest {
                         .with(jwt().jwt(jwt -> jwt.claim("realm_access", Map.of("roles", List.of("calltaker")))))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(incidentDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().string('"' + String.valueOf(incidentId) + '"'));
         // for some reason quotation marks are added to strings from content()
     }
