@@ -63,14 +63,21 @@ export class CalltakerComponent implements OnInit {
     )
     .subscribe({
       next: data => {
+        let filter = this.dataSource ? this.dataSource.filter : "";
         this.dataSource = new MatTableDataSource(data);
         this.dataSource.sort = this.sort;
+        this.dataSource.filterPredicate = (data: any, filter) => {
+          const dataStr = JSON.stringify(data).toLowerCase();
+          return dataStr.indexOf(filter) != -1; 
+        }
         this.dataSource.data.sort((a, b) => {
           // move created to the top and everything else to the bottom
           if (a.state == State.READY) return -1;
           if (b.state == State.READY) return 1;
+
           return 0;
         });
+        this.dataSource.filter = filter;
       },
       error: (err) => {
         this.notificationService.showErrorNotification(
@@ -101,6 +108,20 @@ export class CalltakerComponent implements OnInit {
   showDetail(row: any) {
     //console.log(row.id);
     this.router.navigate(['/incident/' + row.id]);
+  }
+
+  /**
+   *
+   * @param e the event to filter the incidents
+   */
+
+  doFilter = (e: Event) => {
+    const value = (e.target as HTMLInputElement).value;
+    this.dataSource.filterPredicate = (data: any, filter) => {
+      const dataStr = JSON.stringify(data).toLowerCase();
+      return dataStr.indexOf(filter) != -1; 
+    }
+    this.dataSource.filter = value.trim().toLocaleLowerCase();
   }
 
   protected readonly prettyLocationAddress = prettyLocationAddress;
