@@ -104,7 +104,7 @@ export class DispatcherComponent implements OnInit {
 
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
-      data.sort((a, b) => a.state.localeCompare(b.state));
+      data.sort((a, b) => b.state.localeCompare(a.state));
       this.incidents = data;
     });
 
@@ -131,7 +131,7 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
       .subscribe(data => {
-        data.sort((a, b) => a.state.localeCompare(b.state));
+        data.sort((a, b) => b.state.localeCompare(a.state));
         this.incidentRefresher(data);
       }
       ))

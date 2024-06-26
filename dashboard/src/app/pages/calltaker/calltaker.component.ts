@@ -70,13 +70,7 @@ export class CalltakerComponent implements OnInit {
           const dataStr = JSON.stringify(data).toLowerCase();
           return dataStr.indexOf(filter) != -1; 
         }
-        this.dataSource.data.sort((a, b) => {
-          // move created to the top and everything else to the bottom
-          if (a.state == State.READY) return -1;
-          if (b.state == State.READY) return 1;
-
-          return 0;
-        });
+        this.dataSource.data.sort((a, b) => b.state.localeCompare(a.state));
         this.dataSource.filter = filter;
       },
       error: (err) => {
