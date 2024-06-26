@@ -103,16 +103,6 @@ export class CalltakerComponent implements OnInit {
     this.router.navigate(['/incident/' + row.id]);
   }
 
-  /**
-   *
-   * @param e the event to filter the incidents
-   */
-
-  doFilter = (e: Event) => {
-    const value = (e.target as HTMLInputElement).value;
-    this.dataSource.filter = value.trim().toLocaleLowerCase();
-  }
-
   protected readonly prettyLocationAddress = prettyLocationAddress;
   protected readonly geocoderAddressConverter = geocoderAddressConverter;
 }
