@@ -71,8 +71,8 @@ public class IncidentServiceImpl implements IncidentService {
         log.trace("Update incident {}", incident);
         Incident saved = repository.save(incidentMapper.toEntity(incident));
         sender.publish(incidentMapper.toEvent(saved));
-        signedLogger.info("Updated incident {} at {} with code {} in session", saved.getId(), saved.getLocation(),
-                saved.getCode(), saved.getQuestionaryId());
+        signedLogger.info("Updated incident {} with code {} in session {}", saved.getId(), saved.getCode(),
+                saved.getQuestionaryId());
         return saved;
     }
 
