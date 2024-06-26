@@ -122,7 +122,11 @@ export class DispatcherComponent implements OnInit {
       )
       .subscribe(data => {
         this.resources = data;
-        this.resources.sort((a, b) => this.recommended.has(a.id) ? -1 : this.recommended.has(b.id) ? 1 : 0);
+        this.resources.sort((a, b) => {
+          if (a.assignedIncident == this.selectedIncident) return -1;
+          if (b.assignedIncident == this.selectedIncident) return 1;
+          return this.recommended.has(a.id) ? -1 : this.recommended.has(b.id) ? 1 : 0
+        });
         this.showLocations();
       }
       )
