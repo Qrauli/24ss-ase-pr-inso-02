@@ -107,7 +107,6 @@ export class DispatcherComponent implements OnInit {
       data.sort((a, b) => {
         if (a.state == State.READY) return -1;
         if (b.state == State.READY) return 1;
-
         return 0;});
       this.incidents = data;
     });
@@ -138,7 +137,6 @@ export class DispatcherComponent implements OnInit {
         data.sort((a, b) => {
           if (a.state == State.READY) return -1;
           if (b.state == State.READY) return 1;
-
           return 0;});
         this.incidentRefresher(data);
       }
@@ -179,7 +177,7 @@ export class DispatcherComponent implements OnInit {
           this.notificationService.showPriorityNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
         }
         else {
-          this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000);
+          this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
         }
       }
     }
