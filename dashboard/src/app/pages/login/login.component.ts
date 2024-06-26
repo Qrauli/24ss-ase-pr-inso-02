@@ -6,7 +6,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {environment} from "../../../environments/environment";
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import { NotificationService } from '../../services/notification.service';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class LoginComponent {
   private calltakerToken = environment.mockCalltakerToken;
 
   constructor(
-    private fb: FormBuilder,         // {3}
+    private fb: FormBuilder, private notificationService: NotificationService, public translate: TranslateService
   ) {
     this.form = this.fb.group({     // {5}
       userName: ['', Validators.required],
@@ -52,6 +53,13 @@ export class LoginComponent {
       window.location.href = `${redirectUri}#token_type=Bearer&id_token=${this.dispatcherToken}&access_token=${this.dispatcherToken}&state=${state}&expires_in=3600`;
     } else if (this.form.value.userName === 'calltaker') {
       window.location.href = `${redirectUri}#token_type=Bearer&id_token=${this.calltakerToken}&access_token=${this.calltakerToken}&state=${state}&expires_in=3600`;
+    }
+    else {
+      this.notificationService.showErrorNotification(          
+        this.translate.instant('WRONG_CREDENTIALS'),
+        'OK',
+        7000
+      )  
     }
   }
 

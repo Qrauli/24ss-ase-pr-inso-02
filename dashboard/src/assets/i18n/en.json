@@ -116,6 +116,7 @@
         "CANCEL": "No"
     },
     "LOGIN": "Please log in to continue",
+    "WRONG_CREDENTIALS": "This username and password combination is not valid!",
     "QUESTIONAIRE": {
         "BASE": {
             "2": {
