@@ -23,12 +23,12 @@ public class ResourceCustomRepositoryImpl implements ResourceCustomRepository {
     private final MongoTemplate mongoTemplate;
 
     public List<GeoResult<Resource>> findRecommendedResources(GeoJsonPoint incidentLocation, ResourceType resourceType) {
-        Criteria criteria = Criteria.where("state").in(ResourceState.AVAILABLE, ResourceState.DISPATCHED)
+        Criteria criteria = Criteria.where("state").in(ResourceState.AVAILABLE)
                 .and("type").is(resourceType);
 
         NearQuery query = NearQuery.near(incidentLocation, Metrics.KILOMETERS)
                 .spherical(true)
-                .limit(10)
+                .limit(1)
                 .query(Query.query(criteria));
 
         return mongoTemplate.geoNear(query, Resource.class).getContent();

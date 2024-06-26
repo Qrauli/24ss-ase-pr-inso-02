@@ -10,7 +10,7 @@ import java.util.List;
 public interface ResourceCustomRepository {
 
     /**
-     * Returns an ordered list of the top 10 recommended resources for the incident at the specified location.
+     * Returns an ordered list of the top recommended resources for the incident at the specified location.
      * Note that those resources are either available or dispatched.
      *
      * @param incidentLocation the location of the incident

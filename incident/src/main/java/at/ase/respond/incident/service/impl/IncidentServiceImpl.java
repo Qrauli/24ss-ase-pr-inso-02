@@ -2,6 +2,7 @@ package at.ase.respond.incident.service.impl;
 
 import at.ase.respond.common.logging.LogFormatter;
 import at.ase.respond.common.logging.SignedLogger;
+import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.incident.persistence.IncidentRepository;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
@@ -60,7 +61,9 @@ public class IncidentServiceImpl implements IncidentService {
     @Override
     public Incident findById(UUID id) {
         log.trace("Find incident by id {}", id);
-        return repository.findById(id).orElse(null);
+
+        return repository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Incident with id " + id + " not found"));
     }
 
     @Override

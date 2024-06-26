@@ -274,7 +274,7 @@ describe('DispatcherComponent', () => {
       {
         "id": "",
         type: ResourceType.NEF,
-        state: ResourceState.AVAILABE,
+        state: ResourceState.AVAILABLE,
         locationCoordinates: {
           latitude: 0,
           longitude: 0
@@ -283,7 +283,7 @@ describe('DispatcherComponent', () => {
       {
         "id": "",
         type: ResourceType.NEF,
-        state: ResourceState.AVAILABE,
+        state: ResourceState.AVAILABLE,
         locationCoordinates: {
           latitude: 0,
           longitude: 0

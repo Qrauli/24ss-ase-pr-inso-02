@@ -5,6 +5,7 @@ import at.ase.respond.common.dto.LocationAddressDTO;
 import at.ase.respond.common.dto.LocationCoordinatesDTO;
 import at.ase.respond.common.dto.LocationDTO;
 import at.ase.respond.common.event.IncidentCreatedOrUpdatedEvent;
+import at.ase.respond.common.exception.NotFoundException;
 import at.ase.respond.incident.persistence.IncidentRepository;
 import at.ase.respond.incident.persistence.model.Incident;
 import at.ase.respond.incident.presentation.dto.IncidentDTO;
@@ -123,9 +124,7 @@ class IncidentServiceTest {
     void testFindById_NotFound() {
         when(repository.findById(incidentId)).thenReturn(Optional.empty());
 
-        Incident result = incidentService.findById(incidentId);
-
-        assertNull(result);
+        assertThrows(NotFoundException.class, () -> incidentService.findById(incidentId));
         verify(repository).findById(incidentId);
     }
 

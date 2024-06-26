@@ -47,8 +47,8 @@ public class RabbitConfig {
     }
 
     @Bean
-    public Binding incidentsBinding(Queue resourceQueue, Exchange exchange) {
-        return BindingBuilder.bind(resourceQueue).to(exchange).with(incidentsRoute + ".*").noargs();
+    public Binding incidentsBinding(Queue incidentsQueue, Exchange exchange) {
+        return BindingBuilder.bind(incidentsQueue).to(exchange).with(incidentsRoute + ".*").noargs();
     }
 
     @Bean

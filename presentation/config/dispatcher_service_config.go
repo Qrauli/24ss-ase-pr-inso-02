@@ -1,0 +1,27 @@
+package config
+
+import "fmt"
+
+type DispatcherServiceConfig struct {
+	Host string
+	Port int
+}
+
+func GetDispatcherServiceConfig() *DispatcherServiceConfig {
+	return &DispatcherServiceConfig{
+		Host: GetEnvStr("DISPATCHER_SERVICE_HOST", "localhost"),
+		Port: GetEnvInt("DISPATCHER_SERVICE_PORT", 8082),
+	}
+}
+
+func GetDispatcherURI() string {
+	return fmt.Sprintf(
+		"http://%s:%d",
+		GetDispatcherServiceConfig().Host,
+		GetDispatcherServiceConfig().Port,
+	)
+}
+
+func GetDispatcherToken() string {
+	return GetEnvStr("DISPATCHER_SERVICE_API_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IjI3MWUxZjhjMTlmYmE3ZTRjOThiNjQzMTQ5ZmNhNjlkIn0.eyJpc3MiOiJtYTcwLndpZW4uZ3YuYXQiLCJzdWIiOiJtYXJ0aGFtdXN0ZXJmcmF1QG1hNzAud2llbi5ndi5hdCIsIm5hbWUiOiJNYXJ0aGEgTXVzdGVyZnJhdSIsImF1ZCI6ImF0LmFzZS5yZXNwb25kIiwiaWF0IjoxNzExOTI5NjAwLCJleHAiOjE3MjI0NzA0MDAsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkaXNwYXRjaGVyIl19fQ.eFafH0uEtzzUSON0CAqQ_IQ4ySmn3xxxtFxRihfWjHbbxBm3eBbJlE3BOQobchS0tPfKJXm5W7lyYGGFaO88odtyrPg-46Po3Bu5P5WD9V8fUGsI8L11IaCSrrBPfW57w9UcUAstb9Hp58atqi4MvJLVTgDWiYB3vb1yh4RE-c4PQuIp1QbixoZBRTXb3J0dUqWFx1ma9BRLkY-sUaKou8g4_1PYueTlonD3lLSya2bBCI7rIOwZZF8b2loBij0plyMepd5UMR4Qxpsg4Hh3BJJnuRsHgawZ7RaMwRJfchtsD2VZZhX7x3xJTx1WibIeK7tVbPFQ_fBxSKyQvf65jmZoTQwhPCdwuudT-1DOCQ47flj7RaCuB1I5X5r3HRXM5Cbbf4HNa5BrX9UxxO0ykPN2vBetHhbAbOmy1qKGzSaMrQQ7rGPCOwp1nSOG7cd737HR5L0Fm8FXbY1UEFm6z1OSE-BRPUsDY0cbRs2w_PYj22CxxRzyzCvYd6ZDgpaY")
+}
