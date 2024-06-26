@@ -222,6 +222,10 @@ export class QuestionsFormEditComponent {
   }
 
   answerSelectionQuestion(mpdsProtocolId: string) {
+    if(!mpdsProtocolId){
+      return;
+    }
+    
     const answer: Answer = {
       questionType: QuestionType.BASE,
       questionId: "2",
@@ -270,6 +274,10 @@ export class QuestionsFormEditComponent {
   }
 
   answerProtocolQuestion(question: ProtocolQuestion, answers: {[fieldId: string]: string}, index: number) {
+
+    if(!answers || Object.keys(answers).length == 0){
+      return;
+    }
 
     console.log(this.selectedProtocolOptions);
     console.log(answers)
