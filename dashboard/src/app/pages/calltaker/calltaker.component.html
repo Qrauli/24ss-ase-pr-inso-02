@@ -1,7 +1,11 @@
 <app-header title="Call-Taker"></app-header>
 <div class="button-container">
 <button class="main-button" mat-flat-button color="primary" (click)="performMainAction()">{{ 'CALLTAKER.NEW_INCIDENT' | translate }}</button>
-
+<form class="example-form" style="margin-left: 40px; margin-top: 20px;">
+  <mat-form-field>
+    <input matInput type="text" (keyup)="doFilter($event)" placeholder="Filter">
+  </mat-form-field>
+    </form>
 </div>
 
 <div class="dashboard-container">
