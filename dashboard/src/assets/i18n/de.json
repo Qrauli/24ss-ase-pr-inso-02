@@ -117,6 +117,7 @@
         "CONFIRM": "Ja",
         "CANCEL": "Nein"
     },
-    "LOGIN": "Bitte einloggen um fortzufahren"
+    "LOGIN": "Bitte einloggen um fortzufahren",
+    "WRONG_CREDENTIALS": "Diese Kombination aus Benutzername und Passwort ist nicht gültig!"
 
 }

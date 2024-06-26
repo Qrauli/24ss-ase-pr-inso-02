@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
-import { Incident } from '../../dtos/incident';
+import { Incident, State } from '../../dtos/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Resource, ResourceState } from '../../dtos/resource';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -104,7 +104,10 @@ export class DispatcherComponent implements OnInit {
 
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
-      data.sort((a, b) => a.state.localeCompare(b.state));
+      data.sort((a, b) => {
+        if (a.state == State.READY) return -1;
+        if (b.state == State.READY) return 1;
+        return 0;});
       this.incidents = data;
     });
 
@@ -131,7 +134,10 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
       .subscribe(data => {
-        data.sort((a, b) => a.state.localeCompare(b.state));
+        data.sort((a, b) => {
+          if (a.state == State.READY) return -1;
+          if (b.state == State.READY) return 1;
+          return 0;});
         this.incidentRefresher(data);
       }
       ))
@@ -171,7 +177,7 @@ export class DispatcherComponent implements OnInit {
           this.notificationService.showPriorityNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
         }
         else {
-          this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000);
+          this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
         }
       }
     }
