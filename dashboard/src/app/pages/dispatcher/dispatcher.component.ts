@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MatListModule } from '@angular/material/list';
-import { Incident } from '../../dtos/incident';
+import { Incident, State } from '../../dtos/incident';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Resource, ResourceState } from '../../dtos/resource';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -104,7 +104,11 @@ export class DispatcherComponent implements OnInit {
 
   ngOnInit(): void {
     this.incidentService.getIncidentsOngoingDispatcher().subscribe(data => {
-      data.sort((a, b) => b.state.localeCompare(a.state));
+      data.sort((a, b) => {
+        if (a.state == State.READY) return -1;
+        if (b.state == State.READY) return 1;
+
+        return 0;});
       this.incidents = data;
     });
 
@@ -131,7 +135,11 @@ export class DispatcherComponent implements OnInit {
         switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
       .subscribe(data => {
-        data.sort((a, b) => b.state.localeCompare(a.state));
+        data.sort((a, b) => {
+          if (a.state == State.READY) return -1;
+          if (b.state == State.READY) return 1;
+
+          return 0;});
         this.incidentRefresher(data);
       }
       ))
