@@ -6,7 +6,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import {OAuthModule} from "angular-oauth2-oidc";
 import { TranslateModule } from '@ngx-translate/core';
-import { Observable, of as observableOf, throwError } from 'rxjs';
+import { Observable, Subscription, of as observableOf, throwError } from 'rxjs';
 import { LatLng, Marker } from 'leaflet';
 
 describe('DetailIncidentComponent', () => {
@@ -29,10 +29,10 @@ describe('DetailIncidentComponent', () => {
   });
 
   it('should run #ngOnDestroy()', async () => {
-    (<any>component).subcription = (<any>component).subcription || {};
-    spyOn((<any>component).subcription, 'unsubscribe');
+    (<any>component).subscriptions = (<any>component).subscriptions || {};
+    (<any>component).subscriptions = [new Subscription()];
     (<any>component).ngOnDestroy();
-    expect((<any>component).subcription.unsubscribe).toHaveBeenCalled();
+    expect((<any>component).subscriptions[0].closed).toBeTrue();
   });
 
   it('should run #editIncident()', async () => {
