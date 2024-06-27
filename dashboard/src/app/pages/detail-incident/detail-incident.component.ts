@@ -33,14 +33,39 @@ export class DetailIncidentComponent implements OnInit {
 
   incident: Incident | undefined;
 
-  subcription: Subscription;
+  subscriptions: Subscription[] = [];
+
+  incidentMarker: Leaflet.Marker | null = null;
 
   resourceMarkers: Leaflet.Marker[] = [];
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private incidentService: IncidentService, private resourcesService: ResourceService, public translate: TranslateService) { }
 
   ngOnInit(): void {
+    this.subscriptions.push(
+    timer(0, 2000).
+      pipe(
+        switchMap(() => this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']))
+      )
+      .subscribe(data => {
+        if (this.incidentMarker) {
+          this.map.removeLayer(this.incidentMarker);
+        }
+        this.incident = data;
+        if (this.map) {
+          this.incidentMarker = Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
+            icon: Leaflet.icon({
+              iconSize: [37, 61],
+              iconAnchor: [19, 61],
+              iconUrl: 'assets/incident.png',
+              shadowUrl: 'leaflet/marker-shadow.png'
+            })
+          })
+          this.incidentMarker.addTo(this.map).bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
+        }
+      }));
     this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']).subscribe(data => {
+
       this.incident = data;
       if (this.map) {
         Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
@@ -54,21 +79,21 @@ export class DetailIncidentComponent implements OnInit {
       }
     });
 
-    this.subcription =
-    timer(500, 5000)
+    this.subscriptions.push(
+    timer(500, 2000)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
       .subscribe(data => {
         this.showLocations(data);
       }
-      )
+      ));
     //TODO: fetch categorization data
   }
   map: Leaflet.Map;
 
   ngOnDestroy(): void {
-    this.subcription.unsubscribe();
+    this.subscriptions.forEach(subscription => subscription.unsubscribe());
   }
 
   /**
