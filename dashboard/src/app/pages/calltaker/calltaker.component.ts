@@ -57,7 +57,7 @@ export class CalltakerComponent implements OnInit {
   constructor(private router: Router, private authService: AuthService, private incidentService: IncidentService, private notificationService: NotificationService, public translate: TranslateService) { }
 
   ngOnInit(): void {
-    this.incidentSubscription = timer(0, 500)
+    this.incidentSubscription = timer(0, 5000)
     .pipe(
       switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
     )
@@ -68,7 +68,7 @@ export class CalltakerComponent implements OnInit {
         this.dataSource.sort = this.sort;
         this.dataSource.filterPredicate = (data: any, filter) => {
           const dataStr = JSON.stringify(data).toLowerCase();
-          return dataStr.indexOf(filter) != -1; 
+          return dataStr.indexOf(filter) != -1;
         }
         this.dataSource.data.sort((a, b) => {
           // move created to the top and everything else to the bottom
@@ -119,7 +119,7 @@ export class CalltakerComponent implements OnInit {
     const value = (e.target as HTMLInputElement).value;
     this.dataSource.filterPredicate = (data: any, filter) => {
       const dataStr = JSON.stringify(data).toLowerCase();
-      return dataStr.indexOf(filter) != -1; 
+      return dataStr.indexOf(filter) != -1;
     }
     this.dataSource.filter = value.trim().toLocaleLowerCase();
   }

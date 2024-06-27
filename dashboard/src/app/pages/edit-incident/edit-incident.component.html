@@ -1,4 +1,4 @@
-<app-header [backButton]="true" backRoute="/calltaker" title="{{ 'INCIDENT.EDIT_HEADER' | translate }}"></app-header>
+<app-header [backButton]="true" backRoute="/calltaker" [title]="'INCIDENT.EDIT_HEADER' | translate"></app-header>
 <div class="container">
   <mat-stepper #stepper (selectionChange)="handleSelectionChange($event)">
     <mat-step label="{{ locationFormLabel }}">

@@ -21,6 +21,7 @@ services:
       - 'RABBITMQ_DEFAULT_USER=user'
       - 'RABBITMQ_DEFAULT_PASS=passwd'
   incident-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:latest
     build:
       context: '../incident'
       args:
@@ -55,6 +56,7 @@ services:
       - ./../resources/keys/incident/log-private.pem:/run/secrets/private-key.pem
       - ./../resources/keys/incident/log-public.pem:/run/secrets/public-key.pem
   categorization-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/categorization:latest
     build:
       context: '../categorization'
       args:
@@ -72,11 +74,13 @@ services:
       - 'LOG_KEY_PATH=/run/secrets/private-key.pem'
       - 'PUBLIC_KEY_PATH=/run/secrets/public-key.pem'
       - 'SERVICE_NAME=Categorization'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
     volumes:
       - categorization_logs:/var/log/
       - ./../resources/keys/categorization/log-private.pem:/run/secrets/private-key.pem
       - ./../resources/keys/categorization/log-public.pem:/run/secrets/public-key.pem
   dispatcher-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dispatcher:latest
     build:
       context: '../dispatcher'
       args:
@@ -142,6 +146,7 @@ services:
       - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
       - 'SPRING_PROFILES_ACTIVE=presentation'
   dashboard:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dashboard:latest
     build: 
       context: '../dashboard'
       args:

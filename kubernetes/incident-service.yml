@@ -15,8 +15,7 @@ spec:
     spec:
       containers:
         - name: 24ss-ase-pr-inso-02-incident-container
-          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:test
-          imagePullPolicy: Never
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:latest
           ports:
             - containerPort: 8081
           resources:
