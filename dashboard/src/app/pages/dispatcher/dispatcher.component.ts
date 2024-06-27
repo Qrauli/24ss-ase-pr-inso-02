@@ -116,7 +116,7 @@ export class DispatcherComponent implements OnInit {
     });
 
     this.subscriptions.push(
-    timer(0, 500)
+    timer(0, 5000)
       .pipe(
         switchMap(() => this.resourcesService.getResources())
       )
@@ -133,7 +133,7 @@ export class DispatcherComponent implements OnInit {
     )
 
     this.subscriptions.push(
-      interval(500)
+      interval(5000)
       .pipe(
         switchMap(() => this.incidentService.getIncidentsOngoingDispatcher())
       )
@@ -147,7 +147,7 @@ export class DispatcherComponent implements OnInit {
       ))
 
     this.subscriptions.push(
-      interval(500)
+      interval(5000)
         .pipe(
           switchMap(() => this.resourcesService.getOpenResourceRequests())
         )
@@ -310,7 +310,7 @@ export class DispatcherComponent implements OnInit {
     this.selectedIncidentData = incident;
     this.incidentService.getRecommendations(incident.id).subscribe(data => {
       this.recommended = new Set(data.map(r => r.resourceId));
-      this.resources.sort((a, b) => 
+      this.resources.sort((a, b) =>
       {
         if (a.assignedIncident == this.selectedIncident) return -1;
         if (b.assignedIncident == this.selectedIncident) return 1;

@@ -25,7 +25,8 @@ data:
     plugins = /var/lib/grafana/plugins
     provisioning = /etc/grafana/provisioning
     [server]
-    domain = ''
+    root_url = https://24ss-ase-pr-inso-02.apps.student.inso-w.at/grafana/
+    serve_from_sub_path = false
   datasources.yaml: |
     apiVersion: 1
     datasources:
@@ -143,7 +144,7 @@ spec:
               cpu: "100m"
               memory: "256Mi"
             limits:
-              cpu: "100m"
+              cpu: "300m"
               memory: "512Mi"
           ports:
             - name: grafana
@@ -215,6 +216,8 @@ metadata:
   namespace: 24ss-ase-pr-inso-02
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      rewrite ^(/grafana)$ /grafana/ break;
 spec:
   rules:
     - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
@@ -227,6 +230,7 @@ spec:
                 name: grafana
                 port:
                   number: 3000
+
 ---
 apiVersion: v1
 kind: Secret

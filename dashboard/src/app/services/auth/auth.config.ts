@@ -6,7 +6,7 @@ export const authConfig: AuthConfig = {
   loginUrl : environment.idpLoginUrl,
   issuer: environment.idpIssuer,
   clientId : environment.idpClientId,
-  redirectUri : window.location.origin + '/',
+  redirectUri : window.location.href,
   responseType: 'id_token token',
   scope : 'openid profile email',
   jwks: jwksData,
