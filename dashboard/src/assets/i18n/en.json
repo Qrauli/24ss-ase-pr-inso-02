@@ -32,7 +32,8 @@
         "NOTIFICATIONS": {
             "ACTION": "Select",
             "REQUEST": "New Resource Request",
-            "INCIDENT": "New Incident: "
+            "INCIDENT": "New Incident: ",
+            "INCIDENT_CHANGED": "Incident data changed"
         },
         "RECOMMENDED": "Recommended",
         "COMPLETE_BUTTON": "Complete",

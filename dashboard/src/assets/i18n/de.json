@@ -34,7 +34,8 @@
         "NOTIFICATIONS":{
             "ACTION": "Auswählen",
             "REQUEST": "Neue Resourcen-Anfrage",
-            "INCIDENT": "Neuer Einsatz: "
+            "INCIDENT": "Neuer Einsatz: ",
+            "INCIDENT_CHANGED": "Einsatz-Daten geändert"
         },
         "RECOMMENDED": "Empfohlen",
         "COMPLETE_BUTTON": "Abschließen",
