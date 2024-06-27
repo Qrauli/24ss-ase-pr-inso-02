@@ -13,7 +13,7 @@
             "STREET": "Street",
             "LOCATION_ADDITIONAL": "Additional Information",
             "CITY": "City",
-            "CALLEE": "Callee",
+            "CALLEE": "Caller",
             "AFFECTED": "Affected",
             "REQUESTS": "Additional Resource Requests"
         },
@@ -75,7 +75,7 @@
         "LOCATION_ADDITIONAL_PH": "outbuilding, floor, etc.",
         "CITY": "City (use map)",
         "CITY_PH": "Vienna, Austria",
-        "CALLEE": "Callee:",
+        "CALLEE": "Caller:",
         "CALLEE_NUMBER": "Number",
         "CALLEE_NAME": "Name",
         "ADDRESS": "Address",

@@ -10,7 +10,7 @@
       <mat-form-field style="width: 400px">
 
         <mat-select [(ngModel)]="selectionQuestionOption">
-          <mat-option *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options; index as i" [value]="option">{{ getTranslationForBaseQuestionOption(i, getSelectionQuestion()?.baseQuestion) }}</mat-option>
+          <mat-option *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options; index as i" [value]="option" [disabled]="i > 1">{{ getTranslationForBaseQuestionOption(i, getSelectionQuestion()?.baseQuestion) }}</mat-option>
         </mat-select>
 
 <!--        <mat-radio-button-->
