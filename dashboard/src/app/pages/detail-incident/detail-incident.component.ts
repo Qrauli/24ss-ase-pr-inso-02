@@ -64,20 +64,7 @@ export class DetailIncidentComponent implements OnInit {
           this.incidentMarker.addTo(this.map).bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
         }
       }));
-    this.incidentService.getIncidentById(this.activatedRoute.snapshot.params['id']).subscribe(data => {
 
-      this.incident = data;
-      if (this.map) {
-        Leaflet.marker(new Leaflet.LatLng(this.incident.location.coordinates!.latitude, this.incident.location.coordinates!.longitude), {
-          icon: Leaflet.icon({
-            iconSize: [37, 61],
-            iconAnchor: [19, 61],
-            iconUrl: 'assets/incident.png',
-            shadowUrl: 'leaflet/marker-shadow.png'
-          })
-        }).addTo(this.map).bindTooltip(this.translate.instant('DISPATCHER.TOOLTIP_INCIDENT_MAP'), { permanent: true, direction: 'center' });
-      }
-    });
 
     this.subscriptions.push(
     timer(500, 2000)
