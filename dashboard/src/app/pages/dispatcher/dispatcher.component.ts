@@ -173,6 +173,12 @@ export class DispatcherComponent implements OnInit {
       for (let j = 0; j < oldIncidents.length; j++) {
         if (oldIncidents[j].id == data[i].id) {
           flag = true;
+          if(this.selectedIncident == data[i].id){
+            this.selectedIncidentData = data[i]
+          }
+          if (JSON.stringify(oldIncidents[j]) != JSON.stringify(data[i]) && data[i].state == State.READY) {
+            this.notificationService.showDefaultNotification(this.translate.instant('DISPATCHER.NOTIFICATIONS.INCIDENT_CHANGED') + data[i].code, this.translate.instant('DISPATCHER.NOTIFICATIONS.ACTION'), 7000, () => this.selectIncident(data[i]));
+          }
           break;
         }
       }
