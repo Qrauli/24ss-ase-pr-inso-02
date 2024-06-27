@@ -10,7 +10,8 @@
         <input matInput
                [placeholder]="'INCIDENT.CITY_PH' | translate"
                formControlName="city"
-               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
@@ -18,7 +19,8 @@
         <input matInput
                [placeholder]="'INCIDENT.POSTAL_CODE_PH' | translate"
                formControlName="postalCode"
-               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">
@@ -26,7 +28,8 @@
         <input matInput
                [placeholder]="'INCIDENT.STREET_PH' | translate"
                formControlName="street"
-               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"/>
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
       </mat-form-field>
       <br>
       <mat-form-field class="form-field">

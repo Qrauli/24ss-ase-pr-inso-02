@@ -169,7 +169,7 @@ describe('AddIncidentComponent', () => {
     (<any>component).answerProtocolQuestion({
       id: {},
       protocolId: {}
-    }, {}, {});
+    }, {id: {}}, {});
     expect((<any>component).saveAnswerWithIndexChange).toHaveBeenCalled();
   });
 
