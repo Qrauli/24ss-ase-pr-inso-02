@@ -1,0 +1,84 @@
+<mat-tab-group [selectedIndex]="selectedIndex" (selectedIndexChange)="changeIndex($event)" *ngIf="isSelectionQuestionDefined()">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <mat-icon *ngIf="isSelectionQuestionAnswered()" class="check">check</mat-icon>
+      <mat-icon *ngIf="!isSelectionQuestionAnswered()" class="notcheck">close</mat-icon>
+      {{ 'INCIDENT.QUESTIONAIRE.PROTOCOL' | translate }}
+    </ng-template>
+    <div class="tab-center">
+      <h3>{{ getTranslationForBaseQuestion(getSelectionQuestion()?.baseQuestion) }}</h3>
+      <mat-form-field style="width: 400px">
+
+        <mat-select [(ngModel)]="selectionQuestionOption">
+          <mat-option *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options; index as i" [value]="option" [disabled]="i > 1">{{ getTranslationForBaseQuestionOption(i, getSelectionQuestion()?.baseQuestion) }}</mat-option>
+        </mat-select>
+
+<!--        <mat-radio-button-->
+<!--          *ngFor="let option of getSelectionQuestion()?.baseQuestion?.fields?.at(0)!.options"-->
+<!--          class="radio-button"-->
+<!--          color="primary" value="{{ option }}">-->
+<!--            {{ option }}-->
+<!--        </mat-radio-button>-->
+
+      </mat-form-field>
+      <button mat-flat-button color="primary" (click)="answerSelectionQuestion(selectionQuestionOption)">Bestätigen</button>
+    </div>
+  </mat-tab>
+
+  <mat-tab *ngFor="let protocolQuestion of getProtocolQuestions(); let i = index" [attr.data-index]="i">
+    <ng-template mat-tab-label>
+      <mat-icon *ngIf="isProtocolQuestionAnswerd(protocolQuestion.id)" class="check">check</mat-icon>
+      <mat-icon *ngIf="!isProtocolQuestionAnswerd(protocolQuestion.id)" class="notcheck">close</mat-icon>
+      {{ 'INCIDENT.QUESTIONAIRE.PROTOCOL_QUESTION' | translate }} {{ i + 1 }}
+    </ng-template>
+    <div class="tab-center">
+      <h3>{{ getTranslationForProtocolQuestion(protocolQuestion) }}</h3>
+      <div *ngFor="let field of protocolQuestion.fields!">
+        <!-- TODO other field types -->
+        <mat-form-field *ngIf="field.type == FieldType.SINGLE_CHOICE" style="width: 400px">
+          <mat-label>{{ 'INCIDENT.QUESTIONAIRE.CHOOSE' | translate }}</mat-label>
+          <mat-select [(ngModel)]="selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id][field.fieldId]">
+            <mat-option *ngFor="let option of field.options; index as i" [value]="option.text">{{ getTranslationForProtocolQuestionOption(i, protocolQuestion) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <button mat-flat-button color="primary"
+              (click)="answerProtocolQuestion(
+                protocolQuestion,
+                selectedProtocolOptions[protocolQuestion.protocolId][protocolQuestion.id],
+                selectedIndex + 1)
+              ">
+        {{ 'INCIDENT.QUESTIONAIRE.CONFIRM' | translate }}
+      </button>
+    </div>
+  </mat-tab>
+  <mat-tab *ngIf="recommendation != ''">
+    <ng-template mat-tab-label>
+      <mat-icon class="done">cloud_done</mat-icon>
+      {{ 'INCIDENT.QUESTIONAIRE.RECOMMENDATION_MESSAGE' | translate }}
+    </ng-template>
+    <div class="tab-center">
+      <h3>{{ 'INCIDENT.QUESTIONAIRE.RECOMMENDATION_MESSAGE' | translate }}</h3>
+        <span style="font-size: 20px; margin: 0 0 5px 0;"><b>{{ recommendation }}</b></span>
+    </div>
+  </mat-tab>
+
+<!--  <mat-tab>-->
+<!--    <ng-template mat-tab-label>-->
+<!--      <mat-icon class="notcheck">close</mat-icon>-->
+<!--      Third-->
+<!--    </ng-template>-->
+<!--    <div class="tab-center">-->
+<!--      <h3>Frage 3:</h3>-->
+<!--      <mat-form-field>-->
+<!--        <mat-label>Select</mat-label>-->
+<!--        <mat-select>-->
+<!--          <mat-option value="one">First option</mat-option>-->
+<!--          <mat-option value="two">Second option</mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+<!--      <button mat-flat-button color="primary">Bestätigen</button>-->
+<!--    </div>-->
+<!--  </mat-tab>-->
+</mat-tab-group>

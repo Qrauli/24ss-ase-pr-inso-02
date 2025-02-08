@@ -1,0 +1,46 @@
+server:
+  port: 8081
+
+logging:
+  level:
+    at.ase.respond.incident: 'trace'
+
+rabbit:
+  backoff-policy:
+    multiplier: 5
+    init-interval: 500
+    max-interval: 10000
+  retry-policy:
+    max-attempts: 15
+  exchange: 'respond-exchange'
+  routes:
+    incidents: 'respond-incidents-route'
+  queues:
+    incidents: 'respond-incidents-queue'
+
+spring:
+  rabbitmq:
+    host: 'localhost'
+    port: 5672
+    username: 'user'
+    password: 'passwd'
+    publisher-confirm-type: 'correlated'
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/db'
+    username: 'user'
+    password: 'passwd'
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:oauth2.pub
+          jws-algorithms:
+            - RS256
+          audiences:
+            - 'at.ase.respond'
+          jwk-set-uri: 'http://localhost/assets/jwks.json'
+

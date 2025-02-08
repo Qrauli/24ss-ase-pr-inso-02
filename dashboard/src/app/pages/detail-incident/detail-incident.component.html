@@ -1,0 +1,38 @@
+<app-header style="position: fixed; width:100%; z-index: 9999;" [backButton] = "true" backRoute = "/calltaker" [title]="'INCIDENT.DETAIL_HEADER' | translate" [backCheck]="false"></app-header>
+
+<div class="container">
+<button style="position: fixed; right: 30px" mat-raised-button color="primary" (click)="editIncident()">{{ 'INCIDENT.EDIT_ACTION' | translate }}</button>
+
+<div class="map" (leafletMapReady)="onMapReady($event)" leaflet [leafletOptions]="options">
+</div>
+<br>
+
+<mat-grid-list cols="5" rowHeight="50px" style="width: 50%">
+  <mat-grid-tile colspan="2" class="key">{{ 'DISPATCHER.SELECT.POSTAL_CODE' | translate }}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.postalCode}}</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">{{ 'DISPATCHER.SELECT.CITY' | translate }}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.city}}</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">{{ 'DISPATCHER.SELECT.STREET' | translate }}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.location?.address?.street}}</mat-grid-tile>
+  <mat-grid-tile colspan="2" rowspan="2" class="key">{{ 'DISPATCHER.SELECT.LOCATION_ADDITIONAL' | translate }}</mat-grid-tile>
+  <mat-grid-tile colspan="3" rowspan="2" class="property">{{incident?.location?.address?.additionalInformation}}</mat-grid-tile>
+  <mat-grid-tile colspan="2" class="key">{{ 'DISPATCHER.SELECT.DISPATCH_STATE' | translate }}</mat-grid-tile>
+  <mat-grid-tile colspan="3" class="property">{{incident?.state}}</mat-grid-tile>
+</mat-grid-list>
+
+<h3>{{ 'DISPATCHER.SELECT.CLASSIFICATION' | translate }}: {{incident?.code}}</h3>
+
+<h4>{{ 'INCIDENT.SECTION_PERSONS' | translate }}</h4>
+
+<mat-grid-list cols="6" rowHeight="50px" style="width: 50%">
+  <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.CALLEE' | translate }}</i></mat-grid-tile>
+  <mat-grid-tile colspan="6" class="property">{{incident?.callerNumber}}</mat-grid-tile>
+  <mat-grid-tile colspan="6" class="incident-property" style="background-color: lightgrey;"><i>{{ 'DISPATCHER.SELECT.AFFECTED' | translate }}</i></mat-grid-tile>
+  <ng-container *ngFor="let patient of incident?.patients">
+    <mat-grid-tile colspan="3" class="key-normal">{{patient.sex}}</mat-grid-tile>
+    <mat-grid-tile colspan="3" class="property">{{patient.age}}</mat-grid-tile>
+  </ng-container>
+
+</mat-grid-list>
+
+</div>

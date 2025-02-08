@@ -20,8 +20,13 @@ services:
     environment:
       - 'RABBITMQ_DEFAULT_USER=user'
       - 'RABBITMQ_DEFAULT_PASS=passwd'
-  categorizer:
-    build: '../categorizer'
+  incident-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:latest
+    build:
+      context: '../incident'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
     ports:
       - '8081:8081'
     depends_on:
@@ -35,8 +40,52 @@ services:
       - 'SPRING_RABBITMQ_PORT=5672'
       - 'SPRING_RABBITMQ_USERNAME=user'
       - 'SPRING_RABBITMQ_PASSWORD=passwd'
-  dispatcher:
-    build: '../dispatcher'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
+      - 'RABBIT_EXCHANGE=respond-exchange'
+      - 'RABBIT_ROUTES_INCIDENTS=respond-incidents-route'
+      - 'RABBIT_QUEUES_INCIDENTS=respond-incidents-queue'
+      - 'RABBIT_BACKOFF_POLICY_MULTIPLIER=10'
+      - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
+      - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
+      - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+      - 'LOG_KEY_PATH=/run/secrets/private-key.pem'
+      - 'PUBLIC_KEY_PATH=/run/secrets/public-key.pem'
+      - 'SERVICE_NAME=Incident'
+    volumes:
+      - incident_logs:/var/log/
+      - ./../resources/keys/incident/log-private.pem:/run/secrets/private-key.pem
+      - ./../resources/keys/incident/log-public.pem:/run/secrets/public-key.pem
+  categorization-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/categorization:latest
+    build:
+      context: '../categorization'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
+    ports:
+      - '8083:8083'
+    depends_on:
+      - mongo
+    environment:
+      - 'SPRING_DATA_MONGODB_DATABASE=db'
+      - 'SPRING_DATA_MONGODB_HOST=mongo'
+      - 'SPRING_DATA_MONGODB_PORT=27017'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
+      - 'LOG_KEY_PATH=/run/secrets/private-key.pem'
+      - 'PUBLIC_KEY_PATH=/run/secrets/public-key.pem'
+      - 'SERVICE_NAME=Categorization'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
+    volumes:
+      - categorization_logs:/var/log/
+      - ./../resources/keys/categorization/log-private.pem:/run/secrets/private-key.pem
+      - ./../resources/keys/categorization/log-public.pem:/run/secrets/public-key.pem
+  dispatcher-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dispatcher:latest
+    build:
+      context: '../dispatcher'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
     ports:
       - '8082:8082'
     depends_on:
@@ -46,11 +95,112 @@ services:
       - 'SPRING_DATA_MONGODB_DATABASE=db'
       - 'SPRING_DATA_MONGODB_HOST=mongo'
       - 'SPRING_DATA_MONGODB_PORT=27017'
+      - 'SPRING_DATA_MONGODB_AUTO_INDEX_CREATION=true'
       - 'SPRING_RABBITMQ_HOST=rabbit'
       - 'SPRING_RABBITMQ_PORT=5672'
       - 'SPRING_RABBITMQ_USERNAME=user'
       - 'SPRING_RABBITMQ_PASSWORD=passwd'
-  dashboard:
-    build: '../dashboard'
+      - 'SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE=manual'
+      - 'SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://dashboard/assets/jwks.json'
+      - 'RABBIT_EXCHANGE=respond-exchange'
+      - 'RABBIT_ROUTES_INCIDENTS=respond-incidents-route'
+      - 'RABBIT_QUEUES_INCIDENTS=respond-incidents-queue'
+      - 'RABBIT_ROUTES_RESOURCES=respond-resources-route'
+      - 'RABBIT_QUEUES_RESOURCES=respond-resources-queue'
+      - 'RABBIT_BACKOFF_POLICY_MULTIPLIER=10'
+      - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
+      - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
+      - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+      - 'SPRING_PROFILES_ACTIVE=presentation'
+      - 'LOG_KEY_PATH=/run/secrets/private-key.pem'
+      - 'PUBLIC_KEY_PATH=/run/secrets/public-key.pem'
+      - 'SERVICE_NAME=Dispatcher'
+    volumes:
+      - dispatcher_logs:/var/log/
+      - ./../resources/keys/dispatcher/log-private.pem:/run/secrets/private-key.pem
+      - ./../resources/keys/dispatcher/log-public.pem:/run/secrets/public-key.pem
+  datafeeder:
+    build:
+      context: '../datafeeder'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
     ports:
-      - '4200:4200'
+      - '8084:8084'
+    depends_on:
+      - rabbit
+    environment:
+      - 'SPRING_RABBITMQ_HOST=rabbit'
+      - 'SPRING_RABBITMQ_PORT=5672'
+      - 'SPRING_RABBITMQ_USERNAME=user'
+      - 'SPRING_RABBITMQ_PASSWORD=passwd'
+      - 'SPRING_RABBITMQ_LISTENER_SIMPLE_ACKNOWLEDGE_MODE=manual'
+      - 'RABBIT_EXCHANGE=respond-exchange'
+      - 'RABBIT_ROUTES_INCIDENTS=respond-incidents-route'
+      - 'RABBIT_ROUTES_RESOURCES_STATUS=respond-resources-status-route'
+      - 'RABBIT_ROUTES_RESOURCES_LOCATION=respond-resources-location-route'
+      - 'RABBIT_QUEUES_INCIDENTS=respond-datafeeder-incidents-queue'
+      - 'RABBIT_BACKOFF_POLICY_MULTIPLIER=10'
+      - 'RABBIT_BACKOFF_POLICY_INIT_INTERVAL=500'
+      - 'RABBIT_BACKOFF_POLICY_MAX_INTERVAL=10000'
+      - 'RABBIT_RETRY_POLICY_MAX_ATTEMPTS=15'
+      - 'SPRING_PROFILES_ACTIVE=presentation'
+  dashboard:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dashboard:latest
+    build: 
+      context: '../dashboard'
+      args:
+        - BUILD_ENV=dev
+    ports:
+      - '80:80'
+  grafana:
+    image: grafana/grafana:10.4.1
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: password
+      GF_PATHS_DATA: "/var/lib/grafana/data"
+      GF_PATHS_LOGS: "/var/log/grafana"
+      GF_PATHS_PLUGINS: "/var/lib/grafana/plugins"
+      GF_PATHS_PROVISIONING: "/etc/grafana/provisioning"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./grafana/dashboardproviders.yaml:/etc/grafana/provisioning/dashboards/dashboardproviders.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards/log-dashboard
+
+    restart: unless-stopped
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki_data:/loki
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+  promtail-dispatcher:
+    image: grafana/promtail:latest
+    volumes:
+      - ./promtail/promtail-config.yaml:/etc/promtail/config.yml
+      - dispatcher_logs:/var/log/  # Ensure this is the same path as your application logs to
+    command: -config.file=/etc/promtail/config.yml
+  promtail-incident:
+    image: grafana/promtail:latest
+    volumes:
+      - ./promtail/promtail-config.yaml:/etc/promtail/config.yml
+      - incident_logs:/var/log/  # Ensure this is the same path as your application logs to
+    command: -config.file=/etc/promtail/config.yml
+  promtail-categorization:
+    image: grafana/promtail:latest
+    volumes:
+      - ./promtail/promtail-config.yaml:/etc/promtail/config.yml
+      - categorization_logs:/var/log/  # Ensure this is the same path as your application logs to
+    command: -config.file=/etc/promtail/config.yml
+volumes:
+  grafana_data:
+  dispatcher_logs:
+  incident_logs:
+  categorization_logs:
+  loki_data:

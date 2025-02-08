@@ -1,0 +1,48 @@
+<form [formGroup]="form">
+  <div class="center-1">
+    <div class="map" (leafletMapReady)="onMapReady($event)" (leafletClick)="selectLocation($event)" leaflet
+         [leafletOptions]="options">
+    </div>
+    <div class="center-2">
+      <h3>{{ 'INCIDENT.ADDRESS_INPUT_HEADING' | translate }}</h3>
+      <mat-form-field class="form-field">
+        <mat-label>{{ 'INCIDENT.CITY' | translate }}</mat-label>
+        <input matInput
+               [placeholder]="'INCIDENT.CITY_PH' | translate"
+               formControlName="city"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="form-field">
+        <mat-label>{{ 'INCIDENT.POSTAL_CODE' | translate }}</mat-label>
+        <input matInput
+               [placeholder]="'INCIDENT.POSTAL_CODE_PH' | translate"
+               formControlName="postalCode"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="form-field">
+        <mat-label>{{ 'INCIDENT.STREET' | translate }}</mat-label>
+        <input matInput
+               [placeholder]="'INCIDENT.STREET_PH' | translate"
+               formControlName="street"
+               [matTooltip]="'INCIDENT.ADDRESS_INPUT_TOOLTIP' | translate"
+               [matTooltipDisabled]="coordinates != null"/>
+      </mat-form-field>
+      <br>
+      <mat-form-field class="form-field">
+        <mat-label>{{ 'INCIDENT.LOCATION_ADDITIONAL' | translate }}</mat-label>
+        <textarea matInput [placeholder]="'INCIDENT.LOCATION_ADDITIONAL_PH' | translate"
+                  formControlName="additionalInformation"> </textarea>
+      </mat-form-field>
+      <div *ngIf="coordinates" style="color: gray; display: grid; grid-template-columns: auto auto; grid-template-rows: auto">
+        <div style="margin-right: 10px">Lng:</div>
+        <div>{{coordinates.longitude}}</div>
+        <div>Lat:</div>
+        <div>{{coordinates.latitude}}</div>
+      </div>
+    </div>
+  </div>
+</form>

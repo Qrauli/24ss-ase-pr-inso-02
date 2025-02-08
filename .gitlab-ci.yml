@@ -1,0 +1,250 @@
+variables:
+  FF_PRINT_POD_EVENTS: "true"
+
+stages:
+  - publish
+  - test
+  - build
+  - deploy
+
+.build-rules-main:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
+
+.build-rules-dev:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: always
+
+.deploy-rules:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
+
+publish-common-lib:
+  stage: publish
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
+  image: gradle:8.7-jdk21
+  script:
+    - cd common
+    - gradle check
+    - gradle publish
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+test-data-feeder:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: datafeeder/build/test-results/test/**/TEST-*.xml
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
+  script:
+    - cd datafeeder
+    - gradle check
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+test-incident-service:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: incident/build/test-results/test/**/TEST-*.xml
+    paths:
+      - incident/build/reports
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
+  script:
+    - cd incident
+    - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+test-categorization-service:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: categorization/build/test-results/test/**/TEST-*.xml
+    paths:
+      - categorization/build/reports
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
+  script:
+    - cd categorization
+    - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+test-dispatcher-service:
+  stage: test
+  image: gradle:8.7-jdk21
+  artifacts:
+    when: always
+    reports:
+      junit: dispatcher/build/test-results/test/**/TEST-*.xml
+    paths:
+      - dispatcher/build/reports
+  before_script:
+    - mkdir -p $GRADLE_USER_HOME
+  script:
+    - cd dispatcher
+    - gradle check
+  coverage: '/Complexity Coverage: \d+\.\d+%/'
+  variables:
+    GRADLE_USER_HOME: "$CI_PROJECT_DIR/.gradle"
+
+test-dashboard:
+  stage: test
+  image: timbru31/node-chrome:slim
+  artifacts:
+    when: always
+    reports:
+      junit: dashboard/tmp/test/TESTS-*.xml
+    paths:
+      - dashboard/coverage/
+  coverage: '/Lines \W+: (\d+\.\d+)%.*/'
+  script:
+    - cd dashboard
+    - npm install
+    - npm run test:ci
+
+.build-template-kaniko:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:v1.22.0-debug
+    entrypoint: [""]
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"},\"$CI_DEPENDENCY_PROXY_SERVER\":{\"auth\":\"$(printf "%s:%s" ${CI_DEPENDENCY_PROXY_USER} "${CI_DEPENDENCY_PROXY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor 
+      --context "${CI_PROJECT_DIR}/${SUBPROJECT}"
+      --build-arg CI="${CI}"
+      --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}"
+      --build-arg CI_PROJECT_ID="${CI_PROJECT_ID}"
+      --dockerfile "${CI_PROJECT_DIR}/${SUBPROJECT}/Dockerfile" 
+      --label "org.opencontainers.image.source=${CI_PROJECT_URL}"
+      --label "org.opencontainers.image.revision=${CI_COMMIT_SHA}"
+      --label "org.opencontainers.image.created=${CI_JOB_STARTED_AT}"
+      --label "org.opencontainers.image.ref.name=${CI_COMMIT_REF_NAME}"
+      --destination "${CI_REGISTRY_IMAGE}/${SUBPROJECT}:${IMAGE_TAG}"
+
+.build-incident-service-main:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-main, rules]
+  variables:
+    SUBPROJECT: incident
+    IMAGE_TAG: ${CI_PIPELINE_ID}
+
+.build-categorization-service-main:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-main, rules]
+  variables:
+    SUBPROJECT: categorization
+    IMAGE_TAG: ${CI_PIPELINE_ID}
+
+.build-dispatcher-service-main:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-main, rules]
+  variables:
+    SUBPROJECT: dispatcher
+    IMAGE_TAG: ${CI_PIPELINE_ID}
+
+.build-dashboard-main:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-main, rules]
+  variables:
+    SUBPROJECT: dashboard
+    IMAGE_TAG: ${CI_PIPELINE_ID}
+
+.build-incident-service-dev:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-dev, rules]
+  variables:
+    SUBPROJECT: incident
+    IMAGE_TAG: latest
+
+.build-categorization-service-dev:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-dev, rules]
+  variables:
+    SUBPROJECT: categorization
+    IMAGE_TAG: latest
+
+.build-dispatcher-service-dev:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-dev, rules]
+  variables:
+    SUBPROJECT: dispatcher
+    IMAGE_TAG: latest
+
+.build-dashboard-dev:
+  extends: .build-template-kaniko
+  rules: !reference [.build-rules-dev, rules]
+  variables:
+    SUBPROJECT: dashboard
+    IMAGE_TAG: latest
+
+.deploy-external:
+  stage: deploy
+  rules:
+    - !reference [.deploy-rules, rules]
+  image: bitnami/kubectl
+  script:
+    - echo "Deploying 3rd Party Service ${DEPLOYMENT_NAME}"
+    - kubectl apply -f kubernetes/${DEPLOYMENT_NAME}.yml
+
+.deploy-internally-built:
+  stage: deploy
+  rules:
+    - !reference [.deploy-rules, rules]
+  image: bitnami/kubectl
+  script:
+    - echo "Deploying ${DEPLOYMENT_NAME}"
+    - sed -i "s/:latest/:$CI_PIPELINE_ID/g" kubernetes/${DEPLOYMENT_NAME}.yml
+    - cat kubernetes/${DEPLOYMENT_NAME}.yml
+    - kubectl apply -f kubernetes/${DEPLOYMENT_NAME}.yml
+
+.deploy-postgres:
+  extends:  .deploy-external
+  variables:
+    DEPLOYMENT_NAME: "postgres"
+
+.deploy-rabbitmq:
+  extends: .deploy-external
+  variables:
+    DEPLOYMENT_NAME: "rabbitmq"
+
+.deploy-mongodb:
+  extends: .deploy-external
+  variables:
+    DEPLOYMENT_NAME: "mongodb"
+
+.deploy-incident-service:
+  extends: .deploy-internally-built
+  variables:
+    DEPLOYMENT_NAME: "incident-service"
+
+.deploy-categorization-service:
+  extends: .deploy-internally-built
+  variables:
+    DEPLOYMENT_NAME: "categorization-service"
+
+.deploy-dispatcher-service:
+  extends: .deploy-internally-built
+  variables:
+    DEPLOYMENT_NAME: "dispatcher-service"
+
+.deploy-dashboard:
+  extends: .deploy-internally-built
+  variables:
+    DEPLOYMENT_NAME: "dashboard"

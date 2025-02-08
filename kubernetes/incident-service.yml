@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-incident
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-incident
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-incident
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-incident-container
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:latest
+          ports:
+            - containerPort: 8081
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "400m"
+          env:
+            - name: LOG_KEY_PATH
+              value:  "/etc/secret/privatekey.pem"
+            - name: PUBLIC_KEY_PATH
+              value:  "/etc/secret/publickey.pem"
+            - name: SERVICE_NAME
+              value: 'Incident'
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-incident-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-incident-secret
+          volumeMounts:
+            - name: shared-logs # shared space monitored with Promtail
+              mountPath: /var/log
+            - name: keys
+              mountPath: "/etc/secret"
+        - name: promtail
+          image: grafana/promtail:master
+          args:
+            - "-config.file=/etc/promtail/promtail.yaml" # Found in the ConfigMap
+          ports:
+            - containerPort: 9080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+            - name: shared-logs # shared space
+              mountPath: /var/log
+      volumes:
+        - name: keys
+          secret:
+            secretName: incident-keys
+        - name: config
+          configMap:
+            name: promtail-sidecar-config-map
+        - name: shared-logs # shared space monitored with Promtail
+          emptyDir:
+            sizeLimit: 100Mi
+      imagePullSecrets:
+        - name: secret-dockercfg
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-incident-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  SPRING_DATASOURCE_URL: 'jdbc:postgresql://s-24ss-ase-pr-inso-02-postgres-service:5432/db'
+  SPRING_DATASOURCE_USERNAME: 'user'
+  SPRING_RABBITMQ_HOST: 's-24ss-ase-pr-inso-02-rabbitmq-service'
+  SPRING_RABBITMQ_PORT: '5672'
+  SPRING_RABBITMQ_USERNAME: 'user'
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: 'http://s-24ss-ase-pr-inso-02-dashboard-service/assets/jwks.json'
+  RABBIT_EXCHANGE: 'respond-exchange'
+  RABBIT_ROUTES_INCIDENTS: 'respond-incidents-route'
+  RABBIT_QUEUES_INCIDENTS: 'respond-incidents-queue'
+  RABBIT_BACKOFF_POLICY_MULTIPLIER: '10'
+  RABBIT_BACKOFF_POLICY_INIT_INTERVAL: '500'
+  RABBIT_BACKOFF_POLICY_MAX_INTERVAL: '10000'
+  RABBIT_RETRY_POLICY_MAX_ATTEMPTS: '15'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-incident-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+    SPRING_DATASOURCE_PASSWORD: cGFzc3dk
+    SPRING_RABBITMQ_PASSWORD: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-incident-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-incident
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-incident-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /incident(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-incident-service
+                port:
+                  number: 8081
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: incident-keys
+type: Opaque
+data:
+  privatekey.pem: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSUxHSWNBcWxCdnZJZGNqemVLaWRLK1NUaVJNRGRKQ0NnaGlVNGJoWHFQbXUKLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLS0tLQ==
+  publickey.pem: |
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQXF4UlhlUFhmVDNIeCtsQmU0bndETXRKSE14ZGh0cm9BcElwVU9tdzFtWUk9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQ==

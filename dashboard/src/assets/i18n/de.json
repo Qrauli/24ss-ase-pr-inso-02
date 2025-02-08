@@ -1,0 +1,124 @@
+{
+    "DISPATCHER": {
+        "INCIDENT_LIST": "Einsatz-Liste",
+        "SELECTED_INCIDENT": "Ausgewählter Einsatz",
+        "RESOURCES": "Ressourcen",
+        "RESOURCE_STANDARD": "Standard",
+        "RESOURCE_ADDITIONAL": "Zusätzlich",
+        "SELECT" :
+        {
+            "DISPATCH_STATE": "Dispatch Status",
+            "CLASSIFICATION": "Klassifikation",
+            "LOCATION": "Standort",
+            "POSTAL_CODE": "PLZ",
+            "STREET": "Straße",
+            "LOCATION_ADDITIONAL": "Zusätzliche Informationen",
+            "CITY": "Ort",
+            "CALLEE": "AnruferIn",
+            "AFFECTED": "Betroffene",
+            "REQUESTS": "Zusätzliche Resourcenanfragen"
+        },
+        "TOOLTIP_RESOURCE_TOGGLE": "Zugewiesen Resourcen anzeigen",
+        "TOOLTIP_DESELECT_INCIDENT": "Einsatz abwählen",
+        "TOOLTIP_INCIDENT_MAP": "Einsatz",
+        "DIALOGS":
+        {
+            "DISPATCH_CONFORMATION": "Sollen die ausgewählten Ressourcen wirklich zum Einsatz geschickt werden?",
+            "REQUEST_CONFORMATION_HEADER": "Anfrage abschließen",
+            "REQUEST_CONFORMATION_BODY": "Soll die Anfrage wirklich abgeschlossen werden?",
+            "REDISPATCH_CONFORMATION_HEADER": "Neu zuweisen",
+            "REDISPATCH_CONFORMATION_BODY": "Diese Resource ist bereits einem Einsatz zugeweisen. <br> Möchten Sie diese Resource sicher neu zuweisen?",
+            "INCIDENT_COMPLETE_HEADER": "Einsatz abschließen",
+            "INCIDENT_COMPLETE_BODY": "Soll der Einsatz wirklich abgeschlossen werden?"
+        },
+        "NOTIFICATIONS":{
+            "ACTION": "Auswählen",
+            "REQUEST": "Neue Resourcen-Anfrage",
+            "INCIDENT": "Neuer Einsatz: ",
+            "INCIDENT_CHANGED": "Einsatz-Daten geändert"
+        },
+        "RECOMMENDED": "Empfohlen",
+        "COMPLETE_BUTTON": "Abschließen",
+        "NO_INCIDENTS": "Keine Einsätze verfügbar",
+        "NO_RESOURCES": "Keine Resourcen verfügbar"
+    },
+    "CALLTAKER": {
+        "DISPATCH_STATE": "Dispatch Status",
+        "LOCATION": "Standort",
+        "CLASSIFICATION": "Klassifikation",
+        "NEW_INCIDENT": "Neuer Einsatz",
+        "ERROR_FETCH": "Es ist Fehler beim Abfragen der Einsätze aufgetreten",
+        "NO_INCIDENTS": "Keine Einsätze verfügbar"
+    },
+    "INCIDENT": {
+        "ADD_INCIDENT_HEADER": "Neuer Einsatz",
+        "SECTION_LOCATION": "Standort",
+        "STREET_SEARCH": "Straße eingeben",
+        "ADDRESS_SEARCH": "Adresse suchen",
+        "SECTION_PERSONS": "Personen",
+        "SECTION_QUESTIONNAIRE": "Fragen",
+        "SECTION_CLASSIFICATION": "Klassifikation",
+        "RECOMMENDATION_MESSAGE": "Empfehlung des Klassifizierungssystems: ",
+        "SELECTED_MESSAGE": "Ausgewählt:",
+        "CATEGORY_ACTION": "Kategorie auswählen",
+        "SUMMARY_QUESTIONS": "Zusammenfassung des Befragungsschemas",
+        "ERROR_CATEGORY": "Es muss eine Kategorie gesetzt sein!",
+        "ERROR_LOCATION": "Es müssen Einsatzkoordinaten gesetzt sein!",
+        "HURT_PERSON": "eine verletzte Person",
+        "HURT_PERSONS": " verletzte Personen",
+        "SUCCESS_INCIDENT_CREATION": "Einsatz erfolgreich erstellt!",
+        "ERROR_INCIDENT_CREATION": "Es ist Fehler beim Erstellen des Einsatzes aufgetreten",
+        "ADDRESS_INPUT_HEADING": "Adressinformation Verfeinern",
+        "ADDRESS_INPUT_TOOLTIP": "Bitte verwenden Sie das Eingabefeld der Karte links.",
+        "POSTAL_CODE": "PLZ (Karte verwenden)",
+        "POSTAL_CODE_PH": "1010",
+        "STREET": "Straße (Karte verwenden)",
+        "STREET_PH": "Hauptstraße 1",
+        "LOCATION_ADDITIONAL": "Zusätzliche Informationen",
+        "LOCATION_ADDITIONAL_PH": "Nebengebäude, Stockwerk, etc.",
+        "CITY": "Ort (Karte verwenden)",
+        "CITY_PH": "Wien, Österreich",
+        "CALLEE": "AnruferIn:",
+        "CALLEE_NUMBER": "Nummer",
+        "CALLEE_NAME": "Name",
+        "ADDRESS": "Adresse",
+        "AFFECTED": "Betroffene:",
+        "AFFECTED_AGE": "Alter",
+        "AFFECTED_GENDER": "Geschlecht",
+        "GENDER_M": "Männlich",
+        "GENDER_F": "Weiblich",
+        "GENDER_U": "Unbekannt",
+        "NUMBER_AFFECTED": "Anzahl der Betroffenen",
+        "SAVE_INCIDENT": "Einsatz speichern",
+        "QUESTIONAIRE":{
+            "PROTOCOL": "Protokoll",
+            "CONFIRM": "Bestätigen",
+            "PROTOCOL_QUESTION": "Protokoll Frage",
+            "CHOOSE": "Auswählen",
+            "RECOMMENDATION_MESSAGE": "Vorschlag des Kategorisierungs-Systems",
+            "ERROR_SESSION": "Es konnte keine Session für die Kategorisierung erstellt werden",
+            "ERROR_COMMUNICATION": "Fehler in der Kommunikation mit dem Kategorisierungs-Service"
+        },
+        "EDIT_ACTION": "Einsatz bearbeiten",
+        "EDIT_FETCH_ERROR": "Es ist ein Fehler beim Abfragen des Einsatzes aufgetreten",
+        "EDIT_SUCCESS": "Einsatz erfolgreich aktualisiert!",
+        "EDIT_ERROR": "Es ist ein Fehler beim Bearbeiten des Einsatzes aufgetreten",
+        "DETAIL_HEADER": "Einsatz Details",
+        "EDIT_HEADER": "Einsatz Bearbeiten",
+        "CODE_1": "Bauchschmerzen/-beschwerden",
+        "CODE_2": "Allergie/Kontakt mit giftigen Tieren"
+    },
+    "HEADER": {
+        "LOGOUT_HEADER": "Ausloggen",
+        "LOGOUT_BODY": "Wollen sie sich sicher ausloggen?",
+        "BACK_HEADER": "Abbrechen",
+        "BACK_BODY": "Sollen die derzeitigen Änderungen wirklich verworfen werden?"
+    },
+    "DIALOG":{
+        "CONFIRM": "Ja",
+        "CANCEL": "Nein"
+    },
+    "LOGIN": "Bitte einloggen um fortzufahren",
+    "WRONG_CREDENTIALS": "Diese Kombination aus Benutzername und Passwort ist nicht gültig!"
+
+}

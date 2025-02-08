@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  incident-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/incident:latest
+    build:
+      context: '../incident'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
+  categorization-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/categorization:latest
+    build:
+      context: '../categorization'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
+  dispatcher-service:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dispatcher:latest
+    build:
+      context: '../dispatcher'
+      args:
+        - CI_JOB_TOKEN=$CI_JOB_TOKEN
+        - CI_PROJECT_ID=$CI_PROJECT_ID
+  dashboard:
+    image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dashboard:latest
+    build: 
+      context: '../dashboard'
+      args:
+        - BUILD_ENV=prod

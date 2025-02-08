@@ -1,0 +1,31 @@
+rabbit:
+  backoff-policy:
+    multiplier: 5
+    init-interval: 500
+    max-interval: 10000
+  retry-policy:
+    max-attempts: 15
+  exchange: 'respond-exchange'
+  routes:
+    requests: 'respond-requests-route'
+    incidents: 'respond-incidents-route'
+    resources:
+      status: 'respond-resources-status-route'
+      location: 'respond-resources-location-route'
+  queues:
+    incidents: 'respond-incidents-queue'
+    requests: 'respond-requests-queue'
+    resources:
+      status: 'respond-resources-status-queue'
+      location: 'respond-resources-location-queue'
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:oauth2.pub
+          jws-algorithms:
+            - RS256
+          audiences:
+            - 'at.ase.respond'

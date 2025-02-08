@@ -1,0 +1,15 @@
+custom:
+  questionschema:
+    path: "/data/question_schema.json"
+    protocolSelectorQuestionId: 2
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:oauth2.pub
+          jws-algorithms:
+            - RS256
+          audiences:
+            - 'at.ase.respond'

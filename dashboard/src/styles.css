@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.alert-red {
+    --mdc-snackbar-container-color: red;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: white;
+}
+
+.alert-default {
+    --mdc-snackbar-container-color: white;
+    --mat-mdc-snack-bar-button-color: #fff;
+    --mdc-snackbar-supporting-text-color: black;
+}
+
+.alert-red button {
+  color: white !important;
+  background-color: #4758B8 !important;
+}

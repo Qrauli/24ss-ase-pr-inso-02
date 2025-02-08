@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-mongodb
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-mongodb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-mongodb
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-mongodb-container
+          image: mongo
+          ports:
+            - containerPort: 27017
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "25m"
+              ephemeral-storage: "300Mi"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+              ephemeral-storage: "300Mi"
+      securityContext:
+        runAsUser: 999
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-mongodb-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP
+  clusterIP: None

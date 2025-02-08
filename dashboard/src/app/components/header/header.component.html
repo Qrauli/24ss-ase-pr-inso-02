@@ -1,0 +1,16 @@
+<mat-toolbar color="primary">
+    <button *ngIf="backButton" mat-icon-button aria-label="Logout" (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div><span><b>RESPOND</b> | {{title}}</span></div>
+    <span class="spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>language</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item *ngFor="let lang of translate.getLangs()" (click)="changeLang(lang)" [disabled]="currentLang === lang">{{ lang }} </button>
+    </mat-menu>
+    <button mat-icon-button aria-label="Logout" (click)="logout()">
+      <mat-icon>exit_to_app</mat-icon>
+    </button>
+  </mat-toolbar>

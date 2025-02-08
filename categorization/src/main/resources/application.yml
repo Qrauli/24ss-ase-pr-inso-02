@@ -1,0 +1,33 @@
+server:
+  port: 8083
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+logging:
+  level:
+    at.ase.respond.categorization: 'debug'
+
+spring:
+  data:
+    mongodb:
+      host: 'localhost'
+      port: 27017
+      database: 'db'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          public-key-location: classpath:oauth2.pub
+          jws-algorithms:
+            - RS256
+          audiences:
+            - 'at.ase.respond'
+          jwk-set-uri: 'http://localhost/assets/jwks.json'
+
+custom:
+  questionschema:
+    path: "/data/question_schema.json"
+    protocolSelectorQuestionId: 2

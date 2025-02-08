@@ -1,0 +1,53 @@
+.dashboard-container {
+    padding:0 20px 0 20px;
+    height: calc(100vh - 136px);
+    overflow: auto;
+  }
+.button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    height: 60px
+  }
+
+  .demo-table {
+    width: 100%;
+    height: 100px !important;
+    max-height: 100px;
+    overflow-y: scroll;
+  }
+  
+  .mat-column-demo-position {
+    width: 32px;
+    border-right: 1px solid currentColor;
+    padding-right: 24px;
+    text-align: center;
+  }
+
+  .check {
+    color: green;
+}
+.notcheck{
+    color: red;
+}
+
+.mat-mdc-row .mat-mdc-cell {
+    cursor: pointer;
+  }
+  
+  .mat-mdc-row:hover .mat-mdc-cell {
+    border-color: currentColor;
+    background-color: lightgray;
+  }
+
+.no-data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    font-size: 20px;
+    color: #9e9e9e;
+}
+  
+  

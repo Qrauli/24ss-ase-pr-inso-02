@@ -1,0 +1,160 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 24ss-ase-pr-inso-02-dispatcher
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    matchLabels:
+      app: 24ss-ase-pr-inso-02-dispatcher
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: 24ss-ase-pr-inso-02-dispatcher
+    spec:
+      containers:
+        - name: 24ss-ase-pr-inso-02-dispatcher-container
+          image: registry.reset.inso-w.at/2024ss-ase-pr-group/24ss-ase-pr-inso-02/dispatcher:latest
+          ports:
+            - containerPort: 8082
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "200m"
+          env:
+            - name: LOG_KEY_PATH
+              value: "/etc/secret/privatekey.pem"
+            - name: PUBLIC_KEY_PATH
+              value: "/etc/secret/publickey.pem"
+            - name: SERVICE_NAME
+              value: 'Dispatcher'
+          envFrom:
+            - configMapRef:
+                name: 24ss-ase-pr-inso-02-dispatcher-config
+            - secretRef:
+                name: 24ss-ase-pr-inso-02-dispatcher-secret
+          volumeMounts:
+            - name: shared-logs # shared space monitored with Promtail
+              mountPath: /var/log
+            - name: keys
+              mountPath: "/etc/secret"
+        - name: promtail
+          image: grafana/promtail:master
+          args:
+            - "-config.file=/etc/promtail/promtail.yaml" # Found in the ConfigMap
+          ports:
+            - containerPort: 9080
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+            - name: shared-logs # shared space
+              mountPath: /var/log
+      volumes:
+        - name: keys
+          secret:
+            secretName: dispatcher-keys
+        - name: config
+          configMap:
+            name: promtail-sidecar-config-map
+        - name: shared-logs # shared space monitored with Promtail
+          emptyDir:
+            sizeLimit: 100Mi
+      imagePullSecrets:
+        - name: secret-dockercfg
+  strategy:
+    type: Recreate
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: 24ss-ase-pr-inso-02-dispatcher-config
+  namespace: 24ss-ase-pr-inso-02
+data:
+  SPRING_PROFILES_ACTIVE: 'presentation'
+  SPRING_DATA_MONGODB_DATABASE: 'db'
+  SPRING_DATA_MONGODB_HOST: 's-24ss-ase-pr-inso-02-mongodb-service'
+  SPRING_DATA_MONGODB_PORT: '27017'
+  SPRING_DATA_MONGODB_AUTO_INDEX_CREATION: 'true'
+  SPRING_DATASOURCE_USERNAME: 'user'
+  SPRING_DATASOURCE_PASSWORD: 'passwd'
+  SPRING_RABBITMQ_HOST: 's-24ss-ase-pr-inso-02-rabbitmq-service'
+  SPRING_RABBITMQ_PORT: '5672'
+  SPRING_RABBITMQ_USERNAME: 'user'
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: 'http://s-24ss-ase-pr-inso-02-dashboard-service/assets/jwks.json'
+  RABBIT_EXCHANGE: 'respond-exchange'
+  RABBIT_ROUTES_INCIDENTS: 'respond-incidents-route'
+  RABBIT_QUEUES_INCIDENTS: 'respond-incidents-queue'
+  RABBIT_ROUTES_RESOURCES_STATUS: 'respond-resources-status-route'
+  RABBIT_QUEUES_RESOURCES_STATUS: 'respond-resources-status-queue'
+  RABBIT_ROUTES_RESOURCES_LOCATION: 'respond-resources-location-route'
+  RABBIT_QUEUES_RESOURCES_LOCATION: 'respond-resources-location-queue'
+  RABBIT_BACKOFF_POLICY_MULTIPLIER: '10'
+  RABBIT_BACKOFF_POLICY_INIT_INTERVAL: '500'
+  RABBIT_BACKOFF_POLICY_MAX_INTERVAL: '10000'
+  RABBIT_RETRY_POLICY_MAX_ATTEMPTS: '15'
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: 24ss-ase-pr-inso-02-dispatcher-secret
+  namespace: 24ss-ase-pr-inso-02
+data:
+  SPRING_RABBITMQ_PASSWORD: cGFzc3dk
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s-24ss-ase-pr-inso-02-dispatcher-service
+  namespace: 24ss-ase-pr-inso-02
+spec:
+  selector:
+    app: 24ss-ase-pr-inso-02-dispatcher
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: 24ss-ase-pr-inso-02-dispatcher-ingress
+  namespace: 24ss-ase-pr-inso-02
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: "24ss-ase-pr-inso-02.apps.student.inso-w.at"
+      http:
+        paths:
+          - path: /dispatcher(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: s-24ss-ase-pr-inso-02-dispatcher-service
+                port:
+                  number: 8082
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dispatcher-keys
+type: Opaque
+data:
+  privatekey.pem: |
+    LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1DNENBUUF3QlFZREsyVndCQ0lFSU1NMHRTZ0RmODJZZUEwaVZYTUVhUEpSYnhQZ3dnSUFiWEtZaEVsRk43akMKLS0tLS1FTkQgUFJJVkFURSBLRVktLS0tLQ==
+  publickey.pem: |
+    LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUNvd0JRWURLMlZ3QXlFQWtYaVBHeGdJWjd3TUtuODVZdmQ1dzNubDh3ajhwVnpJcGRBK2toREt1U0U9Ci0tLS0tRU5EIFBVQkxJQyBLRVktLS0tLQ==

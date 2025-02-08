@@ -1,0 +1,35 @@
+server:
+  port: 8084
+
+logging:
+  level:
+    at.ase.respond.datafeeder: 'debug'
+
+rabbit:
+  backoff-policy:
+    multiplier: 5
+    init-interval: 500
+    max-interval: 10000
+  retry-policy:
+    max-attempts: 15
+  exchange: 'respond-exchange'
+  routes:
+    incidents: 'respond-incidents-route'
+    resources:
+      status: 'respond-resources-status-route'
+      location: 'respond-resources-location-route'
+    requests: 'respond-requests-route'
+  queues:
+    incidents: 'respond-queue'
+    requests: 'respond-requests-datafeeder-incidents-queue'
+    resources: 'respond-resources-queue'
+
+spring:
+  rabbitmq:
+    listener:
+      simple:
+        acknowledge-mode: 'manual'
+    host: 'localhost'
+    port: 5672
+    username: 'user'
+    password: 'passwd'
